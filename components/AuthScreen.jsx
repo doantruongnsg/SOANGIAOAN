@@ -231,6 +231,9 @@ export default function AuthScreen({ onLoginSuccess }) {
                   <div className="nsg-input-group">
                     <label>Họ và tên Giảng viên:</label>
                     <input 
+                      id="authFullName" 
+                      name="fullname" 
+                      autoComplete="name" 
                       type="text" 
                       placeholder="Ví dụ: ThS. Trần Hữu Nhân" 
                       value={displayName}
@@ -243,6 +246,9 @@ export default function AuthScreen({ onLoginSuccess }) {
                 <div className="nsg-input-group">
                   <label>Email công tác:</label>
                   <input 
+                    id="authEmail" 
+                    name="email" 
+                    autoComplete="email" 
                     type="email" 
                     placeholder="name@bknsg.edu.vn" 
                     value={email}
@@ -254,6 +260,9 @@ export default function AuthScreen({ onLoginSuccess }) {
                 <div className="nsg-input-group">
                   <label>Mật khẩu:</label>
                   <input 
+                    id="authPassword" 
+                    name="password" 
+                    autoComplete="current-password" 
                     type="password" 
                     placeholder="Nhập mật khẩu (tối thiểu 6 ký tự)" 
                     value={password}

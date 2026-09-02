@@ -21,6 +21,33 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         />
+        {/* SHIELD AGAINST THIRD-PARTY CHROME EXTENSION RUNTIME ERRORS */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (typeof window !== 'undefined') {
+                window.addEventListener('error', function(e) {
+                  if (
+                    (e.filename && (e.filename.includes('chrome-extension:') || e.filename.includes('moz-extension:') || e.filename.includes('executors'))) ||
+                    (e.message && (e.message.includes('M_ID') || e.message.includes('chrome-extension')))
+                  ) {
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+                    return true;
+                  }
+                }, true);
+                window.addEventListener('unhandledrejection', function(e) {
+                  const str = String(e.reason || '');
+                  if (str.includes('chrome-extension:') || str.includes('M_ID')) {
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+                    return true;
+                  }
+                }, true);
+              }
+            `
+          }}
+        />
       </head>
       <body>{children}</body>
     </html>
