@@ -142,23 +142,27 @@ async function runTests() {
   console.log("=======================================================");
 }
 
-// Start server in child process and run tests
-const serverProcess = spawn('node', ['server.js'], { cwd: path.join(__dirname, '..') });
-
-serverProcess.stdout.on('data', (data) => {
-  const str = data.toString();
-  if (str.includes('Server đang chạy tại')) {
-    runTests().then(() => {
-      serverProcess.kill();
-      process.exit(0);
-    }).catch(err => {
-      console.error("TEST FAILED:", err);
-      serverProcess.kill();
-      process.exit(1);
-    });
-  }
-});
-
-serverProcess.stderr.on('data', (data) => {
-  console.error("Server stderr:", data.toString());
+// Check if server is already running
+makeRequest('GET', '/api/health').then(() => {
+  console.log("Existing server detected on port 3000. Running tests directly...");
+  runTests().then(() => process.exit(0)).catch(err => {
+    console.error("TEST FAILED:", err);
+    process.exit(1);
+  });
+}).catch(() => {
+  console.log("Starting server for tests...");
+  const serverProcess = spawn('node', ['server.js'], { cwd: path.join(__dirname, '..') });
+  serverProcess.stdout.on('data', (data) => {
+    const str = data.toString();
+    if (str.includes('Server đang chạy tại')) {
+      runTests().then(() => {
+        serverProcess.kill();
+        process.exit(0);
+      }).catch(err => {
+        console.error("TEST FAILED:", err);
+        serverProcess.kill();
+        process.exit(1);
+      });
+    }
+  });
 });

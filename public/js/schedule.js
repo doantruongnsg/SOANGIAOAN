@@ -1121,64 +1121,139 @@ function renderSavedSessionList(){
   if(activeWorkSessionId && store[activeWorkSessionId]) sel.value=activeWorkSessionId;
   updateSavedSessionInfo();
 }
-async function updateSavedSessionInfo(){
-  try {
-    const res = await API.getSchedules();
-    const sessions = res.data || [];
-    const select = document.getElementById("savedSessionsSelect");
-    const countEl = document.getElementById("savedSessionsCount");
-    if(countEl) countEl.innerText = sessions.length + " phiên";
-    if(select) {
-      select.innerHTML = '<option value="">-- Chọn phiên đã lưu để mở --</option>';
-      sessions.forEach(s => {
-        const opt = document.createElement("option");
-        opt.value = s.id;
-        const cName = (s.course && s.course.name) ? s.course.name : "";
-        const dStr = s.updatedAt ? new Date(s.updatedAt).toLocaleDateString("vi-VN") : "";
-        opt.textContent = (s.name || "Phiên chưa đặt tên") + " (" + cName + " - " + dStr + ")";
-        select.appendChild(opt);
-      });
-    }
-  } catch(e) {
-    console.error("Error updating saved sessions:", e);
-  }
-}
-
-async function loadSelectedWorkSession(){
-  const select = document.getElementById("savedSessionsSelect");
-  if(!select || !select.value){
-    showToast("Vui lòng chọn một phiên từ danh sách.", "warning");
+function updateSavedSessionInfo(){
+  const sel=document.getElementById("savedSessionSelect");
+  const info=document.getElementById("savedSessionInfo");
+  if(!sel||!info) return;
+  const store=readWorkSessions();
+  const x=store[sel.value];
+  if(!x){
+    info.textContent="Phiên được lưu trên trình duyệt của máy này, gồm chương trình môn học, lịch học, ngày nghỉ và Sổ đầu bài. Phiên gần nhất sẽ tự khôi phục khi mở lại ứng dụng.";
     return;
   }
-  try {
-    const res = await API.getSchedule(select.value);
-    if(res.data) {
-      applyWorkSessionState(res.data);
-      if(Array.isArray(res.data.sessions) && res.data.sessions.length > 0) {
-        currentSessions = res.data.sessions;
-        renderSchedule(currentSessions);
-      }
-      showToast("Đã tải phiên làm việc từ máy chủ!", "success");
+  const dt=x.savedAt?new Date(x.savedAt):null;
+  const when=dt && !isNaN(dt) ? dt.toLocaleString("vi-VN") : "";
+  info.innerHTML=`<b>${esc(x.name||"Phiên làm việc")}</b>${when?` · lưu lúc ${esc(when)}`:""} · ${Number(x.state?.programSequence?.length||0)} mục chương trình.`;
+}
+function saveWorkSession(){
+  if(!programSequence.length){ alert("Chưa có Chương trình môn học để lưu phiên."); return; }
+
+  const store=readWorkSessions();
+  const cleanName=sessionDefaultName();
+  const currentCode=String(course.code||"").trim().toLowerCase();
+  const currentName=String(course.name||"").trim().toLowerCase();
+
+  // Nếu phiên đang mở đúng môn hiện tại thì cập nhật chính phiên đó.
+  let id="";
+  if(activeWorkSessionId && store[activeWorkSessionId]){
+    const activeCourse=store[activeWorkSessionId]?.state?.course||{};
+    const activeCode=String(activeCourse.code||"").trim().toLowerCase();
+    const activeName=String(activeCourse.name||"").trim().toLowerCase();
+    if((currentCode && activeCode===currentCode) || (!currentCode && currentName && activeName===currentName)){
+      id=activeWorkSessionId;
     }
-  } catch(e) {
-    showToast("Lỗi tải phiên: " + e.message, "error");
+  }
+
+  // Nếu chưa có phiên đang mở đúng môn, tìm phiên đã lưu của chính môn này để cập nhật,
+  // tránh tạo nhiều phiên trùng tên khi người dùng làm việc với nhiều môn.
+  if(!id){
+    const found=Object.entries(store).find(([sid,x])=>{
+      const c=x?.state?.course||{};
+      const code=String(c.code||"").trim().toLowerCase();
+      const name=String(c.name||"").trim().toLowerCase();
+      return (currentCode && code===currentCode) || (!currentCode && currentName && name===currentName);
+    });
+    if(found) id=found[0];
+  }
+
+  if(!id) id="ws_"+Date.now()+"_"+Math.random().toString(36).slice(2,7);
+
+  store[id]={name:cleanName,savedAt:new Date().toISOString(),state:collectWorkSessionState()};
+  store[id].state.savedAt=store[id].savedAt;
+  writeWorkSessions(store);
+  activeWorkSessionId=id;
+  localStorage.setItem(WORK_SESSION_LAST,id);
+  renderSavedSessionList();
+  alert("Đã lưu phiên làm việc: "+cleanName);
+}
+function autoSaveActiveWorkSession(){
+  if(!activeWorkSessionId || !programSequence.length) return;
+  const store=readWorkSessions();
+  if(!store[activeWorkSessionId]) return;
+  store[activeWorkSessionId].savedAt=new Date().toISOString();
+  store[activeWorkSessionId].state=collectWorkSessionState();
+  store[activeWorkSessionId].state.savedAt=store[activeWorkSessionId].savedAt;
+  writeWorkSessions(store);
+  localStorage.setItem(WORK_SESSION_LAST,activeWorkSessionId);
+  renderSavedSessionList();
+}
+function applyWorkSessionState(state){
+  if(!state || !Array.isArray(state.programSequence)) throw new Error("Dữ liệu phiên không hợp lệ.");
+  courseMode=state.courseMode||""; const modeEl=document.getElementById("courseMode");if(modeEl)modeEl.value=courseMode; onCourseModeChange();
+  course=safeCloneData(state.course||{name:"",code:"",total:0,lt:0,th:0,kt:0});
+  programSequence=safeCloneData(state.programSequence||[]);
+  lessons=programSequence.filter(x=>x.kind==="lesson");
+  exclusions=safeCloneData(state.exclusions||[]);
+
+  document.getElementById("startDate").value=state.startDate||"";
+  document.getElementById("weeklyCount").value=String(Math.max(1,Math.min(7,Number(state.weeklyCount)||1)));
+  renderWeeklySlots();
+
+  const slots=[...document.querySelectorAll(".slot")];
+  (state.weeklySlots||[]).forEach((x,i)=>{
+    if(!slots[i]) return;
+    slots[i].querySelector(".weekday").value=String(x.day);
+    slots[i].querySelector(".periods").value=String(x.periods);
+  });
+
+  document.getElementById("excludeStartDate").value="";
+  document.getElementById("excludeEndDate").value="";
+  document.getElementById("excludeReason").value="";
+  renderExclusions();
+  updateCourseCards();
+  renderConversionPreview();
+  updateWeeklyCheck();
+  document.getElementById("fileStatus").innerHTML=`<b>Đã khôi phục phiên đã lưu.</b> Không cần tải lại file chương trình môn học.`;
+  if(programSequence.length && state.startDate) buildSchedule();
+}
+function loadWorkSessionById(id,quiet=false){
+  const store=readWorkSessions();
+  const item=store[id];
+  if(!item) return false;
+  try{
+    activeWorkSessionId=id;
+    applyWorkSessionState(item.state);
+    localStorage.setItem(WORK_SESSION_LAST,id);
+    renderSavedSessionList();
+    if(!quiet) alert("Đã mở phiên: "+(item.name||"Phiên làm việc"));
+    return true;
+  }catch(e){
+    if(!quiet) alert("Không mở được phiên: "+e.message);
+    return false;
   }
 }
-
-async function deleteSelectedWorkSession(){
-  const select = document.getElementById("savedSessionsSelect");
-  if(!select || !select.value){
-    showToast("Vui lòng chọn phiên cần xóa.", "warning");
-    return;
-  }
-  if(!confirm("Bạn có chắc chắn muốn xóa phiên đã lưu này trên máy chủ?")) return;
-  try {
-    await API.deleteSchedule(select.value);
-    showToast("Đã xóa phiên thành công.", "success");
-    await updateSavedSessionInfo();
-  } catch(e) {
-    showToast("Lỗi xóa phiên: " + e.message, "error");
-  }
+function loadSelectedWorkSession(){
+  const id=document.getElementById("savedSessionSelect")?.value||"";
+  if(!id){ alert("Chưa có phiên để mở."); return; }
+  loadWorkSessionById(id,false);
+}
+function deleteSelectedWorkSession(){
+  const sel=document.getElementById("savedSessionSelect");
+  const id=sel?.value||"";
+  if(!id){ alert("Chưa có phiên để xóa."); return; }
+  const store=readWorkSessions();
+  const item=store[id];
+  if(!confirm(`Xóa phiên "${item?.name||"Phiên làm việc"}"?`)) return;
+  delete store[id];
+  writeWorkSessions(store);
+  if(activeWorkSessionId===id) activeWorkSessionId="";
+  if(localStorage.getItem(WORK_SESSION_LAST)===id) localStorage.removeItem(WORK_SESSION_LAST);
+  renderSavedSessionList();
+}
+function restoreLastWorkSession(){
+  renderSavedSessionList();
+  const id=localStorage.getItem(WORK_SESSION_LAST)||"";
+  if(id) loadWorkSessionById(id,true);
 }
 
 function exportExcel(){
@@ -1206,18 +1281,69 @@ document.getElementById("tbody").innerHTML="";
 restoreLastWorkSession();
 
 
+// Expose ScheduleModule globally
 window.ScheduleModule = {
-  chiaLich,
-  saveWorkSession,
-  loadSelectedWorkSession,
-  deleteSelectedWorkSession,
-  updateSavedSessionInfo,
-  exportExcel,
+  courseModeLabel,
+  assessmentModeFromCourse,
+  onCourseModeChange,
+  conversionSummary,
+  convertedTotal,
+  updateCourseCards,
+  normalizeLines,
+  exactKey,
+  getExactCellLines,
+  parseCourseInfo,
+  parseDetailItems,
+  numbered,
+  cellNumber,
+  parseProgramTable,
+  recalcAssessments,
+  renderConversionPreview,
+  readProgramFile,
+  renderWeeklySlots,
+  updateWeeklyCheck,
+  balancedTypes,
+  lessonToUnits,
+  distributeItemCounts,
+  assessmentToUnits,
+  buildProgramUnits,
+  esc,
+  fmt,
+  weekdayName,
+  dateKey,
+  refreshScheduleAfterCalendarChange,
+  formatDateInput,
+  displayDateToISO,
+  getDraftExclusion,
+  getActiveExclusions,
+  onExclusionDraftChange,
   addExclusion,
   removeExclusion,
   clearExclusions,
-  onCourseModeChange,
-  readProgramFile,
+  vnDate,
+  renderExclusions,
+  isExcludedDate,
+  nextScheduledDates,
+  rawSessionItems,
+  displaySessionItems,
+  buildSchedule,
+  sendSessionToPlanner,
+  readWorkSessions,
+  writeWorkSessions,
+  safeCloneData,
   collectWorkSessionState,
-  applyWorkSessionState
+  sessionDefaultName,
+  renderSavedSessionList,
+  updateSavedSessionInfo,
+  saveWorkSession,
+  autoSaveActiveWorkSession,
+  applyWorkSessionState,
+  loadWorkSessionById,
+  loadSelectedWorkSession,
+  deleteSelectedWorkSession,
+  restoreLastWorkSession,
+  exportExcel,
+  chiaLich: function() {
+    buildSchedule();
+  }
 };

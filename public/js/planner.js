@@ -1,3 +1,36 @@
+
+// Database compatibility layer (IndexedDB + Backend REST API)
+let dbPromise = null;
+function openDB() {
+  if (dbPromise) return dbPromise;
+  dbPromise = new Promise((resolve, reject) => {
+    try {
+      const req = indexedDB.open("giaoAnDB", 1);
+      req.onupgradeneeded = () => {
+        const d = req.result;
+        if (!d.objectStoreNames.contains("programs")) {
+          d.createObjectStore("programs", { keyPath: "id" });
+        }
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => resolve(null);
+    } catch(e) {
+      resolve(null);
+    }
+  });
+  return dbPromise;
+}
+
+async function tx(store, mode = "readonly") {
+  try {
+    const d = await openDB();
+    if (!d) return null;
+    return d.transaction(store, mode).objectStore(store);
+  } catch(e) {
+    return null;
+  }
+}
+
 let _autoSaveLpTimer = null;
 function autoSaveLessonPlan(){
   clearTimeout(_autoSaveLpTimer);
