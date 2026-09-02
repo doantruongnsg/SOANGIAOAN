@@ -151,18 +151,29 @@ export default function MainAppShell() {
     return (
       <div style={{
         minHeight: '100vh',
-        backgroundColor: '#000000',
+        background: 'radial-gradient(circle at 10% 20%, #e0edff 0%, #f0f7ff 40%, #f8fafc 90%)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        color: '#ffffff',
-        fontFamily: 'sans-serif'
+        color: '#1e293b',
+        fontFamily: '"Plus Jakarta Sans", sans-serif'
       }}>
-        <svg viewBox="0 0 24 24" aria-hidden="true" style={{ width: 64, height: 64, marginBottom: 20 }}>
-          <path fill="#ffffff" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 24.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-        </svg>
-        <div style={{ fontSize: 16, color: '#71767b' }}>Đang khởi tạo phiên làm việc...</div>
+        <div style={{
+          width: 80,
+          height: 80,
+          borderRadius: 20,
+          background: 'linear-gradient(135deg, #16469d 0%, #1a56db 100%)',
+          color: '#ffffff',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 32,
+          fontWeight: 900,
+          boxShadow: '0 10px 25px rgba(26, 86, 219, 0.3)',
+          marginBottom: 18
+        }}>NSG</div>
+        <div style={{ fontSize: 15, fontWeight: 700, color: '#1e3a8a' }}>Đang khởi tạo phiên làm việc Bách khoa Nam Sài Gòn...</div>
       </div>
     );
   }

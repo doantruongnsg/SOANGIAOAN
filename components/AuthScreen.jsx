@@ -82,45 +82,60 @@ export default function AuthScreen({ onLoginSuccess }) {
   };
 
   return (
-    <div className="x-auth-wrapper">
-      <div className="x-auth-container">
-        {/* LEFT COLUMN: BRAND LOGO */}
-        <div className="x-left-hero">
-          <div className="x-logo-box">
-            <svg viewBox="0 0 24 24" aria-hidden="true" className="x-logo-svg">
-              <path fill="#ffffff" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 24.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-            </svg>
-            <div className="x-school-tag">
-              <span>Trường Cao đẳng Bách khoa Nam Sài Gòn</span>
-              <b>Hệ thống Quản lý Sổ đầu bài & Soạn giáo án Phụ lục 10</b>
+    <div className="nsg-auth-wrapper">
+      <div className="nsg-auth-container">
+        {/* LEFT COLUMN: LUMINOUS NSG EMBLEM */}
+        <div className="nsg-left-hero">
+          <div className="nsg-brand-card">
+            <div className="nsg-logo-emblem">
+              <div className="nsg-emblem-inner">
+                <span className="nsg-letters">NSG</span>
+                <span className="nsg-sub-text">BÁCH KHOA</span>
+              </div>
+              <div className="nsg-glow-ring"></div>
+            </div>
+
+            <div className="nsg-school-info">
+              <div className="nsg-school-badge">
+                <span className="material-symbols-outlined">verified</span>
+                <span>HỆ THỐNG ĐÀO TẠO CHUẨN BỘ LĐ-TB&XH</span>
+              </div>
+              <h2 className="nsg-school-name">TRƯỜNG CAO ĐẲNG BÁCH KHOA NAM SÀI GÒN</h2>
+              <p className="nsg-department">Khoa Công nghệ Thông tin - Kinh tế số</p>
+              <div className="nsg-app-tag">
+                <b>Quản lý Sổ đầu bài & Soạn giáo án Phụ lục 10</b>
+                <span>Thiết kế bởi Giảng viên Trần Hữu Nhân</span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* RIGHT COLUMN: AUTH ACTIONS */}
-        <div className="x-right-content">
-          <div className="x-auth-form-box">
-            <div className="x-mobile-logo">
-              <svg viewBox="0 0 24 24" aria-hidden="true" className="x-mobile-logo-svg">
-                <path fill="#ffffff" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 24.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-              </svg>
+        {/* RIGHT COLUMN: LUMINOUS AUTH CARD */}
+        <div className="nsg-right-content">
+          <div className="nsg-auth-card">
+            <div className="nsg-mobile-header">
+              <div className="nsg-mini-logo">NSG</div>
+              <div>
+                <b>Bách khoa Nam Sài Gòn</b>
+                <p>Cổng Quản lý Giáo án & SĐB</p>
+              </div>
             </div>
 
-            <h1 className="x-main-heading">Đang diễn ra ngay bây giờ</h1>
-            <h2 className="x-sub-heading">Tham gia hôm nay.</h2>
+            <h1 className="nsg-main-title">Đang diễn ra ngay bây giờ</h1>
+            <p className="nsg-sub-title">Đăng nhập để đồng bộ lịch dạy và giáo án cá nhân trên Cloud.</p>
 
             {error && (
-              <div className="x-error-banner">
+              <div className="nsg-error-banner">
                 <span className="material-symbols-outlined">error</span>
                 <span>{error}</span>
               </div>
             )}
 
-            <div className="x-action-buttons">
+            <div className="nsg-actions-box">
               {/* GOOGLE SIGN IN */}
               <button 
                 type="button" 
-                className="x-pill-btn x-btn-google"
+                className="nsg-pill-btn nsg-btn-google"
                 onClick={handleGoogleSignIn}
                 disabled={loading}
               >
@@ -130,49 +145,51 @@ export default function AuthScreen({ onLoginSuccess }) {
                   <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
                   <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
                 </svg>
-                <span>Đăng ký / Đăng nhập bằng Google</span>
+                <span>Đăng nhập với Google</span>
               </button>
 
               {/* DIVIDER */}
-              <div className="x-divider">
-                <span className="x-divider-line"></span>
-                <span className="x-divider-text">hoặc</span>
-                <span className="x-divider-line"></span>
+              <div className="nsg-divider">
+                <span className="nsg-divider-line"></span>
+                <span className="nsg-divider-text">hoặc tài khoản giảng viên</span>
+                <span className="nsg-divider-line"></span>
               </div>
 
-              {/* CREATE ACCOUNT BUTTON */}
+              {/* CREATE ACCOUNT */}
               <button 
                 type="button" 
-                className="x-pill-btn x-btn-primary"
+                className="nsg-pill-btn nsg-btn-primary"
                 onClick={() => { setError(""); setModalMode("signup"); }}
               >
-                Tạo tài khoản giảng viên
+                <span className="material-symbols-outlined">person_add</span>
+                <span>Tạo tài khoản Giảng viên mới</span>
               </button>
 
-              <p className="x-terms-text">
-                Bằng cách đăng ký, bạn đồng ý với <a href="#terms">Điều khoản Dịch vụ</a> và <a href="#privacy">Chính sách Quyền riêng tư</a> của Khoa CNTT - KTĐ.
-              </p>
+              <div className="nsg-terms">
+                Bằng cách đăng nhập, bạn đồng ý với Quy chế Đào tạo & Quản lý Giáo án điện tử của Trường Bách khoa Nam Sài Gòn.
+              </div>
 
-              {/* ALREADY HAVE ACCOUNT */}
-              <div className="x-signin-prompt">
-                <h3>Đã có tài khoản?</h3>
+              {/* SIGN IN PROMPT */}
+              <div className="nsg-signin-section">
+                <span className="signin-label">Đã có tài khoản hệ thống?</span>
                 <button 
                   type="button" 
-                  className="x-pill-btn x-btn-outline"
+                  className="nsg-pill-btn nsg-btn-outline"
                   onClick={() => { setError(""); setModalMode("signin"); }}
                 >
-                  Đăng nhập
+                  <span className="material-symbols-outlined">login</span>
+                  <span>Đăng nhập bằng Email</span>
                 </button>
               </div>
 
-              {/* GUEST DEMO ACCESS */}
-              <div className="x-guest-box">
+              {/* GUEST DEMO */}
+              <div className="nsg-guest-section">
                 <button 
                   type="button" 
-                  className="x-pill-btn x-btn-guest"
+                  className="nsg-pill-btn nsg-btn-guest"
                   onClick={handleGuestSignIn}
                 >
-                  ⚡ Trải nghiệm ngay không cần tài khoản (Guest Mode)
+                  ⚡ Trải nghiệm ngay không cần đăng nhập (Guest Mode)
                 </button>
               </div>
             </div>
@@ -182,35 +199,31 @@ export default function AuthScreen({ onLoginSuccess }) {
 
       {/* MODAL DIALOG (SIGN IN / SIGN UP) */}
       {modalMode && (
-        <div className="x-modal-overlay" onClick={() => setModalMode(null)}>
-          <div className="x-modal-box" onClick={(e) => e.stopPropagation()}>
-            <div className="x-modal-header">
-              <button className="x-close-btn" onClick={() => setModalMode(null)}>✕</button>
-              <div className="x-modal-logo">
-                <svg viewBox="0 0 24 24" aria-hidden="true" style={{ width: 28, height: 28 }}>
-                  <path fill="#ffffff" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 24.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                </svg>
+        <div className="nsg-modal-overlay" onClick={() => setModalMode(null)}>
+          <div className="nsg-modal-box" onClick={(e) => e.stopPropagation()}>
+            <div className="nsg-modal-header">
+              <div className="nsg-modal-brand">
+                <span className="nsg-mini-badge">NSG</span>
+                <b>{modalMode === 'signup' ? 'Đăng ký tài khoản' : 'Đăng nhập hệ thống'}</b>
               </div>
-              <div style={{ width: 28 }}></div>
+              <button className="nsg-close-btn" onClick={() => setModalMode(null)}>✕</button>
             </div>
 
-            <div className="x-modal-body">
-              <h2 className="x-modal-title">
-                {modalMode === 'signup' ? 'Tạo tài khoản giảng viên' : 'Đăng nhập vào hệ thống'}
-              </h2>
-
+            <div className="nsg-modal-body">
               {error && (
-                <div className="x-error-banner" style={{ margin: "12px 0 16px" }}>
+                <div className="nsg-error-banner" style={{ margin: "0 0 16px" }}>
+                  <span className="material-symbols-outlined">error</span>
                   <span>{error}</span>
                 </div>
               )}
 
               <form onSubmit={modalMode === 'signup' ? handleEmailSignUp : handleEmailSignIn}>
                 {modalMode === 'signup' && (
-                  <div className="x-input-group">
+                  <div className="nsg-input-group">
+                    <label>Họ và tên Giảng viên:</label>
                     <input 
                       type="text" 
-                      placeholder="Họ và tên giảng viên" 
+                      placeholder="Ví dụ: ThS. Trần Hữu Nhân" 
                       value={displayName}
                       onChange={(e) => setDisplayName(e.target.value)}
                       required
@@ -218,20 +231,22 @@ export default function AuthScreen({ onLoginSuccess }) {
                   </div>
                 )}
 
-                <div className="x-input-group">
+                <div className="nsg-input-group">
+                  <label>Email công tác:</label>
                   <input 
                     type="email" 
-                    placeholder="Email công tác (ví dụ: gv@bknsg.edu.vn)" 
+                    placeholder="name@bknsg.edu.vn" 
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                   />
                 </div>
 
-                <div className="x-input-group">
+                <div className="nsg-input-group">
+                  <label>Mật khẩu:</label>
                   <input 
                     type="password" 
-                    placeholder="Mật khẩu" 
+                    placeholder="Nhập mật khẩu (tối thiểu 6 ký tự)" 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -240,18 +255,18 @@ export default function AuthScreen({ onLoginSuccess }) {
 
                 <button 
                   type="submit" 
-                  className="x-pill-btn x-btn-modal-submit"
+                  className="nsg-pill-btn nsg-btn-submit"
                   disabled={loading}
                 >
-                  {loading ? "Đang xử lý..." : (modalMode === 'signup' ? "Đăng ký" : "Đăng nhập")}
+                  {loading ? "Đang xử lý..." : (modalMode === 'signup' ? "Hoàn tất Đăng ký" : "Đăng nhập ngay")}
                 </button>
               </form>
 
-              <div className="x-modal-footer">
+              <div className="nsg-modal-footer">
                 {modalMode === 'signup' ? (
-                  <p>Đã có tài khoản? <span className="x-link" onClick={() => { setError(""); setModalMode('signin'); }}>Đăng nhập</span></p>
+                  <p>Đã có tài khoản? <span className="nsg-link" onClick={() => { setError(""); setModalMode('signin'); }}>Đăng nhập tại đây</span></p>
                 ) : (
-                  <p>Chưa có tài khoản? <span className="x-link" onClick={() => { setError(""); setModalMode('signup'); }}>Đăng ký ngay</span></p>
+                  <p>Chưa có tài khoản? <span className="nsg-link" onClick={() => { setError(""); setModalMode('signup'); }}>Tạo tài khoản mới</span></p>
                 )}
               </div>
             </div>
@@ -259,102 +274,228 @@ export default function AuthScreen({ onLoginSuccess }) {
         </div>
       )}
 
-      {/* X AESTHETIC CSS */}
+      {/* LUMINOUS BRIGHT THEME CSS */}
       <style jsx>{`
-        .x-auth-wrapper {
+        .nsg-auth-wrapper {
           min-height: 100vh;
-          background-color: #000000;
-          color: #e7e9ea;
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+          background: radial-gradient(circle at 10% 20%, #e0edff 0%, #f0f7ff 40%, #f8fafc 90%);
+          color: #1e293b;
+          font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 20px;
+          padding: 24px 16px;
         }
 
-        .x-auth-container {
+        .nsg-auth-container {
           width: 100%;
-          max-width: 1200px;
+          max-width: 1220px;
           display: flex;
           align-items: center;
           justify-content: space-between;
           gap: 60px;
         }
 
-        .x-left-hero {
-          flex: 1;
+        /* LEFT BRAND COLUMN */
+        .nsg-left-hero {
+          flex: 1.1;
           display: flex;
           justify-content: center;
-          align-items: center;
         }
 
-        .x-logo-box {
+        .nsg-brand-card {
+          background: rgba(255, 255, 255, 0.75);
+          backdrop-filter: blur(16px);
+          border: 1px solid rgba(255, 255, 255, 0.9);
+          border-radius: 28px;
+          padding: 44px 38px;
+          box-shadow: 0 20px 50px rgba(22, 70, 157, 0.12), 0 1px 3px rgba(0,0,0,0.05);
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 24px;
-        }
-
-        .x-logo-svg {
-          width: 280px;
-          height: 280px;
-          filter: drop-shadow(0 0 40px rgba(29, 155, 240, 0.25));
-        }
-
-        .x-school-tag {
           text-align: center;
-          color: #71767b;
-          font-size: 14px;
-          max-width: 320px;
-          line-height: 1.5;
+          position: relative;
+          max-width: 480px;
         }
 
-        .x-school-tag b {
+        .nsg-logo-emblem {
+          position: relative;
+          width: 170px;
+          height: 170px;
+          margin-bottom: 28px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .nsg-emblem-inner {
+          width: 150px;
+          height: 150px;
+          border-radius: 36px;
+          background: linear-gradient(135deg, #16469d 0%, #1a56db 50%, #0284c7 100%);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 14px 35px rgba(26, 86, 219, 0.35);
+          color: #ffffff;
+          position: relative;
+          z-index: 2;
+          transform: rotate(-3deg);
+          transition: transform 0.3s ease;
+        }
+
+        .nsg-emblem-inner:hover {
+          transform: rotate(0deg) scale(1.03);
+        }
+
+        .nsg-letters {
+          font-size: 50px;
+          font-weight: 900;
+          letter-spacing: -2px;
+          line-height: 1;
+          text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .nsg-sub-text {
+          font-size: 11px;
+          font-weight: 800;
+          letter-spacing: 2px;
+          margin-top: 4px;
+          opacity: 0.9;
+        }
+
+        .nsg-glow-ring {
+          position: absolute;
+          top: -10px;
+          left: -10px;
+          right: -10px;
+          bottom: -10px;
+          border-radius: 46px;
+          background: radial-gradient(circle, rgba(26, 86, 219, 0.25) 0%, rgba(26, 86, 219, 0) 70%);
+          z-index: 1;
+        }
+
+        .nsg-school-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          background: #e0edff;
+          color: #1a56db;
+          font-size: 11.5px;
+          font-weight: 800;
+          padding: 5px 14px;
+          border-radius: 9999px;
+          margin-bottom: 14px;
+          letter-spacing: 0.3px;
+        }
+
+        .nsg-school-badge .material-symbols-outlined {
+          font-size: 16px;
+        }
+
+        .nsg-school-name {
+          font-size: 21px;
+          font-weight: 900;
+          color: #0f2c59;
+          letter-spacing: -0.4px;
+          line-height: 1.3;
+          margin-bottom: 6px;
+        }
+
+        .nsg-department {
+          font-size: 14.5px;
+          color: #475569;
+          font-weight: 600;
+          margin-bottom: 20px;
+        }
+
+        .nsg-app-tag {
+          border-top: 1px solid #e2e8f0;
+          padding-top: 16px;
+          width: 100%;
+        }
+
+        .nsg-app-tag b {
           display: block;
-          color: #1d9bf0;
-          margin-top: 6px;
-          font-size: 15px;
+          font-size: 14px;
+          color: #1e3a8a;
         }
 
-        .x-right-content {
+        .nsg-app-tag span {
+          font-size: 12px;
+          color: #64748b;
+          display: block;
+          margin-top: 2px;
+        }
+
+        /* RIGHT CONTENT CARD */
+        .nsg-right-content {
           flex: 1;
-          max-width: 580px;
+          max-width: 540px;
         }
 
-        .x-mobile-logo {
+        .nsg-auth-card {
+          background: #ffffff;
+          border: 1px solid #e2e8f0;
+          border-radius: 28px;
+          padding: 44px 40px;
+          box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
+        }
+
+        .nsg-mobile-header {
           display: none;
+          align-items: center;
+          gap: 12px;
           margin-bottom: 24px;
         }
 
-        .x-mobile-logo-svg {
-          width: 44px;
-          height: 44px;
+        .nsg-mini-logo {
+          background: linear-gradient(135deg, #16469d, #1a56db);
+          color: #ffffff;
+          font-weight: 900;
+          font-size: 16px;
+          padding: 8px 12px;
+          border-radius: 12px;
         }
 
-        .x-main-heading {
-          font-size: 54px;
-          font-weight: 800;
-          letter-spacing: -1.2px;
-          line-height: 1.15;
-          margin-bottom: 36px;
-          color: #f7f9f9;
+        .nsg-mobile-header b {
+          font-size: 15px;
+          color: #0f2c59;
+          display: block;
         }
 
-        .x-sub-heading {
-          font-size: 28px;
-          font-weight: 800;
-          letter-spacing: -0.5px;
+        .nsg-mobile-header p {
+          font-size: 12px;
+          color: #64748b;
+          margin: 0;
+        }
+
+        .nsg-main-title {
+          font-size: 34px;
+          font-weight: 900;
+          color: #0f172a;
+          letter-spacing: -0.8px;
+          line-height: 1.2;
+          margin-bottom: 8px;
+        }
+
+        .nsg-sub-title {
+          font-size: 14.5px;
+          color: #64748b;
+          line-height: 1.5;
           margin-bottom: 28px;
-          color: #f7f9f9;
         }
 
-        .x-action-buttons {
-          max-width: 340px;
+        .nsg-actions-box {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
         }
 
-        .x-pill-btn {
+        .nsg-pill-btn {
           width: 100%;
-          height: 42px;
+          height: 48px;
           border-radius: 9999px;
           font-size: 14.5px;
           font-weight: 700;
@@ -368,125 +509,128 @@ export default function AuthScreen({ onLoginSuccess }) {
           font-family: inherit;
         }
 
-        .x-btn-google {
-          background-color: #ffffff;
-          color: #0f1419;
-          border: 1px solid #dadce0;
+        .nsg-btn-google {
+          background: #ffffff;
+          color: #1e293b;
+          border: 1px solid #cbd5e1;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.04);
         }
 
-        .x-btn-google:hover {
-          background-color: #e6e6e6;
+        .nsg-btn-google:hover {
+          background: #f8fafc;
+          border-color: #94a3b8;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+          transform: translateY(-1px);
         }
 
         .google-icon {
-          width: 19px;
-          height: 19px;
+          width: 20px;
+          height: 20px;
         }
 
-        .x-divider {
+        .nsg-divider {
           display: flex;
           align-items: center;
-          margin: 16px 0;
-          gap: 10px;
+          margin: 10px 0;
+          gap: 12px;
         }
 
-        .x-divider-line {
+        .nsg-divider-line {
           flex: 1;
           height: 1px;
-          background-color: #2f3336;
+          background: #e2e8f0;
         }
 
-        .x-divider-text {
-          color: #71767b;
-          font-size: 14px;
+        .nsg-divider-text {
+          color: #94a3b8;
+          font-size: 12.5px;
+          font-weight: 600;
         }
 
-        .x-btn-primary {
-          background-color: #1d9bf0;
+        .nsg-btn-primary {
+          background: linear-gradient(135deg, #16469d 0%, #1a56db 100%);
           color: #ffffff;
+          box-shadow: 0 4px 14px rgba(26, 86, 219, 0.3);
         }
 
-        .x-btn-primary:hover {
-          background-color: #1a8cd8;
+        .nsg-btn-primary:hover {
+          background: linear-gradient(135deg, #0f3ba1 0%, #16469d 100%);
+          box-shadow: 0 6px 18px rgba(26, 86, 219, 0.4);
+          transform: translateY(-1px);
         }
 
-        .x-terms-text {
-          font-size: 11px;
-          color: #71767b;
+        .nsg-terms {
+          font-size: 11.5px;
+          color: #94a3b8;
           line-height: 1.45;
-          margin: 10px 0 36px;
+          text-align: center;
+          margin: 6px 0 14px;
         }
 
-        .x-terms-text a {
-          color: #1d9bf0;
-          text-decoration: none;
+        .nsg-signin-section {
+          border-top: 1px solid #f1f5f9;
+          padding-top: 16px;
         }
 
-        .x-terms-text a:hover {
-          text-decoration: underline;
-        }
-
-        .x-signin-prompt {
-          margin-top: 24px;
-        }
-
-        .x-signin-prompt h3 {
-          font-size: 16px;
+        .signin-label {
+          display: block;
+          font-size: 13px;
           font-weight: 700;
-          margin-bottom: 14px;
-          color: #e7e9ea;
+          color: #334155;
+          margin-bottom: 10px;
         }
 
-        .x-btn-outline {
-          background-color: transparent;
-          border: 1px solid #536471;
-          color: #1d9bf0;
+        .nsg-btn-outline {
+          background: #f8fafc;
+          border: 1px solid #cbd5e1;
+          color: #1a56db;
         }
 
-        .x-btn-outline:hover {
-          background-color: rgba(29, 155, 240, 0.1);
+        .nsg-btn-outline:hover {
+          background: #eff6ff;
+          border-color: #93c5fd;
         }
 
-        .x-guest-box {
-          margin-top: 24px;
-          border-top: 1px dashed #2f3336;
-          padding-top: 18px;
+        .nsg-guest-section {
+          margin-top: 10px;
         }
 
-        .x-btn-guest {
-          background-color: #16181c;
-          border: 1px solid #2f3336;
-          color: #e7e9ea;
-          font-size: 13.5px;
+        .nsg-btn-guest {
+          background: #f1f5f9;
+          color: #475569;
+          font-size: 13px;
+          font-weight: 600;
+          border: 1px solid #e2e8f0;
         }
 
-        .x-btn-guest:hover {
-          background-color: #202327;
-          border-color: #536471;
+        .nsg-btn-guest:hover {
+          background: #e2e8f0;
+          color: #1e293b;
         }
 
-        .x-error-banner {
+        .nsg-error-banner {
           display: flex;
           align-items: center;
           gap: 8px;
-          background-color: #451214;
-          border: 1px solid #f4212e;
-          color: #ffffff;
-          padding: 10px 14px;
+          background: #fef2f2;
+          border: 1px solid #fecaca;
+          color: #b91c1c;
+          padding: 11px 14px;
           border-radius: 12px;
           font-size: 13px;
+          font-weight: 600;
           margin-bottom: 16px;
         }
 
         /* MODAL STYLES */
-        .x-modal-overlay {
+        .nsg-modal-overlay {
           position: fixed;
           top: 0;
           left: 0;
           right: 0;
           bottom: 0;
-          background-color: rgba(91, 112, 131, 0.4);
-          backdrop-filter: blur(4px);
+          background: rgba(15, 23, 42, 0.45);
+          backdrop-filter: blur(6px);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -494,127 +638,154 @@ export default function AuthScreen({ onLoginSuccess }) {
           padding: 16px;
         }
 
-        .x-modal-box {
-          background-color: #000000;
-          border: 1px solid #2f3336;
-          border-radius: 18px;
+        .nsg-modal-box {
+          background: #ffffff;
+          border: 1px solid #e2e8f0;
+          border-radius: 24px;
           width: 100%;
-          max-width: 500px;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+          max-width: 460px;
+          box-shadow: 0 25px 60px rgba(15, 23, 42, 0.2);
           overflow: hidden;
           animation: modalPop 0.25s ease-out;
         }
 
         @keyframes modalPop {
-          from { opacity: 0; transform: scale(0.94); }
+          from { opacity: 0; transform: scale(0.95); }
           to { opacity: 1; transform: scale(1); }
         }
 
-        .x-modal-header {
+        .nsg-modal-header {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 12px 18px;
+          padding: 18px 24px;
+          background: #f8fafc;
+          border-bottom: 1px solid #e2e8f0;
         }
 
-        .x-close-btn {
+        .nsg-modal-brand {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .nsg-mini-badge {
+          background: #1a56db;
+          color: #ffffff;
+          font-size: 11px;
+          font-weight: 800;
+          padding: 3px 8px;
+          border-radius: 6px;
+        }
+
+        .nsg-modal-brand b {
+          font-size: 16px;
+          color: #0f172a;
+        }
+
+        .nsg-close-btn {
           background: transparent;
           border: 0;
-          color: #e7e9ea;
-          font-size: 18px;
+          color: #64748b;
+          font-size: 16px;
           cursor: pointer;
-          width: 34px;
-          height: 34px;
+          width: 32px;
+          height: 32px;
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
+          transition: all 0.15s;
         }
 
-        .x-close-btn:hover {
-          background-color: rgba(239, 243, 244, 0.1);
+        .nsg-close-btn:hover {
+          background: #e2e8f0;
+          color: #0f172a;
         }
 
-        .x-modal-body {
-          padding: 16px 36px 36px;
+        .nsg-modal-body {
+          padding: 24px 28px;
         }
 
-        .x-modal-title {
-          font-size: 26px;
-          font-weight: 800;
-          margin-bottom: 24px;
-          color: #f7f9f9;
-        }
-
-        .x-input-group {
+        .nsg-input-group {
           margin-bottom: 16px;
         }
 
-        .x-input-group input {
-          width: 100%;
-          height: 52px;
-          background-color: #000000;
-          border: 1px solid #333639;
-          border-radius: 6px;
-          padding: 12px 14px;
-          color: #ffffff;
-          font-size: 16px;
-          box-sizing: border-box;
-          transition: border-color 0.2s;
+        .nsg-input-group label {
+          display: block;
+          font-size: 13px;
+          font-weight: 700;
+          color: #334155;
+          margin-bottom: 6px;
         }
 
-        .x-input-group input:focus {
-          border-color: #1d9bf0;
+        .nsg-input-group input {
+          width: 100%;
+          height: 46px;
+          background: #ffffff;
+          border: 1px solid #cbd5e1;
+          border-radius: 10px;
+          padding: 10px 14px;
+          color: #0f172a;
+          font-size: 14.5px;
+          box-sizing: border-box;
+          transition: all 0.2s;
+        }
+
+        .nsg-input-group input:focus {
+          border-color: #1a56db;
+          box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.15);
           outline: none;
         }
 
-        .x-btn-modal-submit {
-          background-color: #eff3f4;
-          color: #0f1419;
-          margin-top: 24px;
+        .nsg-btn-submit {
+          background: linear-gradient(135deg, #16469d 0%, #1a56db 100%);
+          color: #ffffff;
+          margin-top: 20px;
           height: 48px;
+          box-shadow: 0 4px 12px rgba(26, 86, 219, 0.25);
         }
 
-        .x-btn-modal-submit:hover {
-          background-color: #d7dbdc;
+        .nsg-btn-submit:hover {
+          background: #0f3ba1;
         }
 
-        .x-modal-footer {
-          margin-top: 24px;
+        .nsg-modal-footer {
+          margin-top: 20px;
           text-align: center;
-          font-size: 14px;
-          color: #71767b;
+          font-size: 13.5px;
+          color: #64748b;
         }
 
-        .x-link {
-          color: #1d9bf0;
+        .nsg-link {
+          color: #1a56db;
           cursor: pointer;
-          font-weight: 600;
+          font-weight: 700;
         }
 
-        .x-link:hover {
+        .nsg-link:hover {
           text-decoration: underline;
         }
 
-        @media (max-width: 900px) {
-          .x-auth-container {
+        @media (max-width: 960px) {
+          .nsg-auth-container {
             flex-direction: column;
-            gap: 20px;
+            gap: 24px;
           }
-          .x-left-hero {
+          .nsg-left-hero {
             display: none;
           }
-          .x-mobile-logo {
-            display: block;
+          .nsg-mobile-header {
+            display: flex;
           }
-          .x-main-heading {
-            font-size: 38px;
-          }
-          .x-sub-heading {
-            font-size: 22px;
-          }
-          .x-action-buttons {
+          .nsg-right-content {
             max-width: 100%;
+          }
+          .nsg-auth-card {
+            padding: 28px 20px;
+          }
+          .nsg-main-title {
+            font-size: 26px;
           }
         }
       `}</style>
