@@ -1,31 +1,24 @@
-import { useEffect, useState } from 'react';
 import Head from 'next/head';
+import { useEffect, useRef } from 'react';
+import fs from 'fs';
+import path from 'path';
 
-export default function HomePage() {
-  const [loaded, setLoaded] = useState(false);
+export default function HomePage({ initialHtml }) {
+  const initialized = useRef(false);
 
   useEffect(() => {
-    async function loadApp() {
-      try {
-        const res = await fetch('/app-template.html');
-        const html = await res.text();
-        const container = document.getElementById('rootAppContainer');
-        if (container) {
-          container.innerHTML = html;
-        }
-        setLoaded(true);
+    if (initialized.current) return;
+    initialized.current = true;
 
-        // Initialize scripts
-        setTimeout(() => {
-          if (typeof window !== 'undefined' && window.App && window.App.init) {
-            window.App.init();
-          }
-        }, 150);
-      } catch (err) {
-        console.error("Error loading app template:", err);
+    // Small delay to ensure external CDN scripts (Mammoth, html2pdf, Firebase) are ready
+    const timer = setInterval(() => {
+      if (typeof window !== 'undefined' && window.App && window.App.init) {
+        window.App.init();
+        clearInterval(timer);
       }
-    }
-    loadApp();
+    }, 100);
+
+    return () => clearInterval(timer);
   }, []);
 
   return (
@@ -33,13 +26,21 @@ export default function HomePage() {
       <Head>
         <title>Quản lý Sổ đầu bài & Soạn giáo án - Bách khoa Nam Sài Gòn</title>
       </Head>
-      <div id="rootAppContainer">
-        {!loaded && (
-          <div style={{ textAlign: 'center', padding: '50px', fontSize: '18px', color: '#16469d', fontWeight: 'bold' }}>
-            ⏳ Đang tải Hệ thống Quản lý Sổ đầu bài & Soạn giáo án (Next.js)...
-          </div>
-        )}
-      </div>
+      <div 
+        id="rootAppContainer" 
+        dangerouslySetInnerHTML={{ __html: initialHtml }} 
+        suppressHydrationWarning={true}
+      />
     </>
   );
+}
+
+export async function getStaticProps() {
+  const filePath = path.join(process.cwd(), 'public/app-template.html');
+  const initialHtml = fs.readFileSync(filePath, 'utf8');
+  return {
+    props: {
+      initialHtml
+    }
+  };
 }
