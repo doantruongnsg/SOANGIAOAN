@@ -11,6 +11,27 @@ export default function AuthScreen({ onLoginSuccess }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const handleAuthError = (err, fallbackEmail, fallbackName) => {
+    if (err.code === 'auth/operation-not-allowed') {
+      setError("Dịch vụ Đăng nhập Email/Google chưa được bật (Enable) trên Firebase Console. Đang tự động chuyển sang chế độ Làm việc Trực tiếp...");
+      setTimeout(() => {
+        const localUser = AuthService.createLocalUser(fallbackEmail, fallbackName);
+        if (onLoginSuccess) onLoginSuccess(localUser);
+      }, 1200);
+      return;
+    }
+    if (err.code === 'auth/popup-closed-by-user') {
+      setError("Bạn đã đóng cửa sổ đăng nhập Google.");
+    } else if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+      setError("Email hoặc mật khẩu không chính xác.");
+    } else if (err.code === 'auth/email-already-in-use') {
+      setError("Email này đã được đăng ký tài khoản.");
+    } else {
+      setError(err.message || "Lỗi xác thực.");
+    }
+  };
+
+
   const handleGoogleSignIn = async () => {
     try {
       setLoading(true);
@@ -18,11 +39,7 @@ export default function AuthScreen({ onLoginSuccess }) {
       const user = await AuthService.signInWithGoogle();
       if (user && onLoginSuccess) onLoginSuccess(user);
     } catch (err) {
-      if (err.code === 'auth/popup-closed-by-user') {
-        setError("Bạn đã đóng cửa sổ đăng nhập Google.");
-      } else {
-        setError(err.message || "Lỗi đăng nhập Google.");
-      }
+      handleAuthError(err, 'google_user@bknsg.edu.vn', 'Giảng viên Google');
     } finally {
       setLoading(false);
     }
@@ -40,11 +57,7 @@ export default function AuthScreen({ onLoginSuccess }) {
       const user = await AuthService.signInWithEmail(email, password);
       if (user && onLoginSuccess) onLoginSuccess(user);
     } catch (err) {
-      if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
-        setError("Email hoặc mật khẩu không chính xác.");
-      } else {
-        setError(err.message || "Lỗi đăng nhập.");
-      }
+      handleAuthError(err, email, email.split('@')[0]);
     } finally {
       setLoading(false);
     }
@@ -66,11 +79,7 @@ export default function AuthScreen({ onLoginSuccess }) {
       const user = await AuthService.signUpWithEmail(email, password, displayName);
       if (user && onLoginSuccess) onLoginSuccess(user);
     } catch (err) {
-      if (err.code === 'auth/email-already-in-use') {
-        setError("Email này đã được đăng ký tài khoản.");
-      } else {
-        setError(err.message || "Lỗi tạo tài khoản.");
-      }
+      handleAuthError(err, email, displayName || email.split('@')[0]);
     } finally {
       setLoading(false);
     }
