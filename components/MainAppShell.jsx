@@ -1,8 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import AuthScreen from "./AuthScreen";
+import { AuthService } from "../lib/auth";
+import { UserSyncService } from "../lib/user-sync";
 
 export default function MainAppShell() {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [userDropdown, setUserDropdown] = useState(false);
+
   const plannerRef = useRef(null);
   const scheduleRef = useRef(null);
   const step2Ref = useRef(null);
@@ -16,12 +23,25 @@ export default function MainAppShell() {
   const [lessonPlansList, setLessonPlansList] = useState([]);
   const [serverStatus, setServerStatus] = useState("connecting");
 
+  // Auth State Listener
   useEffect(() => {
-    // Check server health
+    const unsubscribe = AuthService.onAuthChange((user) => {
+      setCurrentUser(user);
+      setAuthLoading(false);
+      if (user) {
+        // Load per-user data from Firestore
+        loadUserCloudData(user.uid);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  // Check server health
+  useEffect(() => {
     fetch("/api/health")
       .then(res => res.json())
       .then(data => {
-        if (data.status === "ok") setServerStatus("online");
+        if (data.status === "ok" || data.ok) setServerStatus("online");
         else setServerStatus("error");
       })
       .catch(() => setServerStatus("offline"));
@@ -51,6 +71,18 @@ export default function MainAppShell() {
         if (e.data.height && e.data.height > 600) {
           setPlannerHeight(e.data.height + 40);
         }
+      } else if (e.data?.type === "USER_SAVE_SCHEDULE") {
+        if (currentUser?.uid && e.data.payload) {
+          UserSyncService.saveSchedule(currentUser.uid, e.data.payload)
+            .then(() => loadUserCloudData(currentUser.uid))
+            .catch(err => console.warn("Auto save schedule cloud error:", err));
+        }
+      } else if (e.data?.type === "USER_SAVE_LESSON_PLAN") {
+        if (currentUser?.uid && e.data.payload) {
+          UserSyncService.saveLessonPlan(currentUser.uid, e.data.payload)
+            .then(() => loadUserCloudData(currentUser.uid))
+            .catch(err => console.warn("Auto save lesson plan cloud error:", err));
+        }
       }
     };
 
@@ -58,16 +90,44 @@ export default function MainAppShell() {
     return () => window.removeEventListener("message", handler);
   }, []);
 
+  const loadUserCloudData = async (uid) => {
+    if (!uid) return;
+    try {
+      const [userScheds, userPlans, statsRes] = await Promise.all([
+        UserSyncService.getSchedules(uid),
+        UserSyncService.getLessonPlans(uid),
+        fetch("/api/stats").then(r => r.json()).catch(() => ({ success: false }))
+      ]);
+
+      if (userScheds.length > 0) setSchedulesList(userScheds);
+      if (userPlans.length > 0) setLessonPlansList(userPlans);
+      
+      if (statsRes && statsRes.success) {
+        setStats({
+          ...statsRes.data,
+          totalSchedules: userScheds.length || statsRes.data.totalSchedules,
+          totalLessonPlans: userPlans.length || statsRes.data.totalLessonPlans
+        });
+      }
+    } catch (e) {
+      console.warn("Could not load per-user cloud data:", e);
+    }
+  };
+
   const loadDashboardData = async () => {
     try {
-      const [statsRes, schedRes, lpRes] = await Promise.all([
-        fetch("/api/stats").then(r => r.json()),
-        fetch("/api/schedules").then(r => r.json()),
-        fetch("/api/lesson-plans").then(r => r.json())
-      ]);
-      if (statsRes.success) setStats(statsRes.data);
-      if (schedRes.success) setSchedulesList(schedRes.data || []);
-      if (lpRes.success) setLessonPlansList(lpRes.data || []);
+      if (currentUser?.uid) {
+        await loadUserCloudData(currentUser.uid);
+      } else {
+        const [statsRes, schedRes, lpRes] = await Promise.all([
+          fetch("/api/stats").then(r => r.json()),
+          fetch("/api/schedules").then(r => r.json()),
+          fetch("/api/lesson-plans").then(r => r.json())
+        ]);
+        if (statsRes.success) setStats(statsRes.data);
+        if (schedRes.success) setSchedulesList(schedRes.data || []);
+        if (lpRes.success) setLessonPlansList(lpRes.data || []);
+      }
     } catch (e) {
       console.error("Error loading dashboard data:", e);
     }
@@ -80,20 +140,101 @@ export default function MainAppShell() {
     }
   };
 
+  const handleSignOut = async () => {
+    await AuthService.signOut();
+    setCurrentUser(null);
+    setUserDropdown(false);
+  };
+
+  // Loading spinner while checking auth
+  if (authLoading) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        backgroundColor: '#000000',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#ffffff',
+        fontFamily: 'sans-serif'
+      }}>
+        <svg viewBox="0 0 24 24" aria-hidden="true" style={{ width: 64, height: 64, marginBottom: 20 }}>
+          <path fill="#ffffff" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 24.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+        </svg>
+        <div style={{ fontSize: 16, color: '#71767b' }}>Đang khởi tạo phiên làm việc...</div>
+      </div>
+    );
+  }
+
+  // If not logged in -> Show X Authentication Screen
+  if (!currentUser) {
+    return <AuthScreen onLoginSuccess={(user) => setCurrentUser(user)} />;
+  }
+
   return (
     <main className="md-shell">
       {/* MATERIAL 3 TOP APP BAR & HERO */}
       <header className="md-hero">
         <div className="md-hero-content">
-          <div className="md-hero-badge">
-            <span className="material-symbols-outlined">school</span>
-            <span>Trường Cao đẳng Bách khoa Nam Sài Gòn · Khoa CNTT - KTĐ</span>
+          <div className="md-hero-top-row">
+            <div className="md-hero-badge">
+              <span className="material-symbols-outlined">school</span>
+              <span>Trường Cao đẳng Bách khoa Nam Sài Gòn · Khoa CNTT - KTĐ</span>
+            </div>
+
+            {/* USER PROFILE & LOGOUT CORNER */}
+            <div className="md-user-profile-box">
+              <div 
+                className="user-pill" 
+                onClick={() => setUserDropdown(!userDropdown)}
+              >
+                <div className="user-avatar">
+                  {currentUser.photoURL ? (
+                    <img src={currentUser.photoURL} alt="Avatar" />
+                  ) : (
+                    <span>{(currentUser.displayName || currentUser.email || 'G')[0].toUpperCase()}</span>
+                  )}
+                </div>
+                <div className="user-info-text">
+                  <span className="user-name">{currentUser.displayName || 'Giảng viên'}</span>
+                  <span className="user-email">{currentUser.email || (currentUser.isGuest ? 'Khách trải nghiệm' : '')}</span>
+                </div>
+                <span className="material-symbols-outlined dropdown-arrow">
+                  {userDropdown ? 'expand_less' : 'expand_more'}
+                </span>
+              </div>
+
+              {/* DROPDOWN MENU */}
+              {userDropdown && (
+                <div className="user-dropdown-menu">
+                  <div className="dropdown-header">
+                    <b>{currentUser.displayName || 'Giảng viên'}</b>
+                    <div className="small-email">{currentUser.email}</div>
+                    <div className="user-badge-tag">
+                      {currentUser.isGuest ? '⚡ Chế độ Khách' : '☁️ Đã kết nối Firebase Cloud'}
+                    </div>
+                  </div>
+                  <div className="dropdown-divider"></div>
+                  <button className="dropdown-item" onClick={() => { setActiveTab('dashboard'); setUserDropdown(false); }}>
+                    <span className="material-symbols-outlined">dataset</span>
+                    <span>Quản lý CSDL cá nhân</span>
+                  </button>
+                  <div className="dropdown-divider"></div>
+                  <button className="dropdown-item logout" onClick={handleSignOut}>
+                    <span className="material-symbols-outlined">logout</span>
+                    <span>Đăng xuất tài khoản</span>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
+
           <h1 className="md-hero-title">
             QUẢN LÝ SỔ ĐẦU BÀI & SOẠN GIÁO ÁN
           </h1>
           <p className="md-hero-sub">
-            Hệ thống phân bổ lịch dạy tự động & Soạn giáo án <b>Mẫu Phụ lục 10</b> đạt chuẩn quy định · Tác giả: <b>Trần Hữu Nhân</b>
+            Hệ thống phân bổ lịch dạy tự động & Soạn giáo án <b>Mẫu Phụ lục 10</b> đạt chuẩn quy định · Giảng viên: <b>{currentUser.displayName || 'Trần Hữu Nhân'}</b>
           </p>
 
           {/* MATERIAL 3 NAVIGATION SEGMENTED TABS */}
@@ -223,8 +364,8 @@ export default function MainAppShell() {
           <div className="head-info">
             <div className="step-badge">BƯỚC 3</div>
             <div>
-              <h2>TRUNG TÂM QUẢN LÝ DỮ LIỆU & CƠ SỞ DỮ LIỆU</h2>
-              <p>Xem toàn bộ Sổ đầu bài, Giáo án Phụ lục 10, cấu hình giảng viên và sao lưu CSDL.</p>
+              <h2>TRUNG TÂM QUẢN LÝ DỮ LIỆU CÁ NHÂN & CƠ SỞ DỮ LIỆU</h2>
+              <p>Dữ liệu được lưu trữ & đồng bộ riêng cho giảng viên: <b>{currentUser.email}</b></p>
             </div>
           </div>
           <div className="actions">
@@ -248,22 +389,22 @@ export default function MainAppShell() {
             <div className="md-kpi-card">
               <div className="kpi-icon green"><span className="material-symbols-outlined">event_note</span></div>
               <div className="kpi-data">
-                <div className="kpi-value">{stats.totalSchedules || schedulesList.length || 0}</div>
-                <div className="kpi-label">Phiên Sổ đầu bài đã lưu</div>
+                <div className="kpi-value">{schedulesList.length || stats.totalSchedules || 0}</div>
+                <div className="kpi-label">Phiên Sổ đầu bài cá nhân</div>
               </div>
             </div>
             <div className="md-kpi-card">
               <div className="kpi-icon purple"><span className="material-symbols-outlined">assignment</span></div>
               <div className="kpi-data">
-                <div className="kpi-value">{stats.totalLessonPlans || lessonPlansList.length || 0}</div>
-                <div className="kpi-label">Giáo án Phụ lục 10</div>
+                <div className="kpi-value">{lessonPlansList.length || stats.totalLessonPlans || 0}</div>
+                <div className="kpi-label">Giáo án Phụ lục 10 cá nhân</div>
               </div>
             </div>
             <div className="md-kpi-card">
-              <div className="kpi-icon orange"><span className="material-symbols-outlined">cloud_sync</span></div>
+              <div className="kpi-icon orange"><span className="material-symbols-outlined">cloud_done</span></div>
               <div className="kpi-data">
-                <div className="kpi-value">Sẵn sàng</div>
-                <div className="kpi-label">Đồng bộ Cloud & JSON</div>
+                <div className="kpi-value">Đã đồng bộ</div>
+                <div className="kpi-label">Firebase Cloud Firestore</div>
               </div>
             </div>
           </div>
@@ -272,7 +413,7 @@ export default function MainAppShell() {
           <div className="md-card">
             <h3 className="card-title">
               <span className="material-symbols-outlined">table_chart</span>
-              Danh sách Sổ đầu bài đã lưu
+              Danh sách Sổ đầu bài của bạn ({currentUser.email})
             </h3>
             <div className="table-responsive">
               <table className="md-table">
@@ -282,13 +423,13 @@ export default function MainAppShell() {
                     <th>Tên phiên làm việc</th>
                     <th>Môn học - Mã môn</th>
                     <th>Số buổi</th>
-                    <th>Ngày tạo</th>
+                    <th>Ngày cập nhật</th>
                   </tr>
                 </thead>
                 <tbody>
                   {schedulesList.length === 0 ? (
                     <tr>
-                      <td colSpan="5" className="empty-cell">Chưa có phiên Sổ đầu bài nào được lưu trên máy chủ.</td>
+                      <td colSpan="5" className="empty-cell">Chưa có phiên Sổ đầu bài nào được lưu cho tài khoản này.</td>
                     </tr>
                   ) : (
                     schedulesList.map((item, idx) => (
@@ -297,7 +438,7 @@ export default function MainAppShell() {
                         <td><b>{item.name || "Phiên làm việc"}</b></td>
                         <td>{item.course?.name || "—"} ({item.course?.code || "—"})</td>
                         <td>{Array.isArray(item.sessions) ? item.sessions.length : 0} buổi</td>
-                        <td>{item.createdAt ? new Date(item.createdAt).toLocaleDateString("vi-VN") : "—"}</td>
+                        <td>{item.updatedAt?.toDate ? item.updatedAt.toDate().toLocaleDateString("vi-VN") : (item.createdAt ? new Date(item.createdAt).toLocaleDateString("vi-VN") : "Hôm nay")}</td>
                       </tr>
                     ))
                   )}
@@ -309,7 +450,7 @@ export default function MainAppShell() {
           <div className="md-card" style={{ marginTop: "20px" }}>
             <h3 className="card-title">
               <span className="material-symbols-outlined">description</span>
-              Danh sách Giáo án Phụ lục 10 đã lưu
+              Danh sách Giáo án Phụ lục 10 của bạn ({currentUser.email})
             </h3>
             <div className="table-responsive">
               <table className="md-table">
@@ -325,7 +466,7 @@ export default function MainAppShell() {
                 <tbody>
                   {lessonPlansList.length === 0 ? (
                     <tr>
-                      <td colSpan="5" className="empty-cell">Chưa có giáo án Phụ lục 10 nào được lưu trên máy chủ.</td>
+                      <td colSpan="5" className="empty-cell">Chưa có giáo án Phụ lục 10 nào được lưu cho tài khoản này.</td>
                     </tr>
                   ) : (
                     lessonPlansList.map((item, idx) => (
@@ -345,7 +486,7 @@ export default function MainAppShell() {
         </div>
       </section>
 
-      {/* MATERIAL 3 STYLES */}
+      {/* MATERIAL 3 & USER PROFILE STYLES */}
       <style jsx>{`
         .md-shell {
           max-width: 1560px;
@@ -361,19 +502,16 @@ export default function MainAppShell() {
           margin-bottom: 20px;
           box-shadow: var(--md-shadow-3);
           position: relative;
-          overflow: hidden;
+          overflow: visible;
         }
 
-        .md-hero::after {
-          content: "";
-          position: absolute;
-          top: -50%;
-          right: -10%;
-          width: 350px;
-          height: 350px;
-          background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
-          border-radius: 50%;
-          pointer-events: none;
+        .md-hero-top-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 12px;
+          flex-wrap: wrap;
+          gap: 12px;
         }
 
         .md-hero-badge {
@@ -387,8 +525,147 @@ export default function MainAppShell() {
           border-radius: var(--md-radius-full);
           font-size: 13px;
           font-weight: 600;
-          margin-bottom: 12px;
           letter-spacing: 0.2px;
+        }
+
+        /* USER PROFILE CORNER PILL */
+        .md-user-profile-box {
+          position: relative;
+          z-index: 100;
+        }
+
+        .user-pill {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          background: rgba(0, 0, 0, 0.35);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          padding: 4px 12px 4px 5px;
+          border-radius: var(--md-radius-full);
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .user-pill:hover {
+          background: rgba(0, 0, 0, 0.5);
+          border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .user-avatar {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          background: #1d9bf0;
+          color: #ffffff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 800;
+          font-size: 14px;
+          overflow: hidden;
+        }
+
+        .user-avatar img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .user-info-text {
+          display: flex;
+          flex-direction: column;
+          line-height: 1.2;
+        }
+
+        .user-name {
+          font-size: 13px;
+          font-weight: 700;
+          color: #ffffff;
+        }
+
+        .user-email {
+          font-size: 11px;
+          color: rgba(255, 255, 255, 0.7);
+        }
+
+        .dropdown-arrow {
+          font-size: 18px;
+          opacity: 0.8;
+        }
+
+        .user-dropdown-menu {
+          position: absolute;
+          top: calc(100% + 8px);
+          right: 0;
+          width: 250px;
+          background: #000000;
+          border: 1px solid #2f3336;
+          border-radius: 14px;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+          padding: 8px 0;
+          animation: dropPop 0.2s ease-out;
+        }
+
+        @keyframes dropPop {
+          from { opacity: 0; transform: translateY(-6px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dropdown-header {
+          padding: 10px 16px;
+        }
+
+        .dropdown-header b {
+          font-size: 14px;
+          color: #ffffff;
+        }
+
+        .small-email {
+          font-size: 12px;
+          color: #71767b;
+          word-break: break-all;
+        }
+
+        .user-badge-tag {
+          margin-top: 6px;
+          font-size: 11px;
+          color: #1d9bf0;
+          font-weight: 600;
+        }
+
+        .dropdown-divider {
+          height: 1px;
+          background: #2f3336;
+          margin: 6px 0;
+        }
+
+        .dropdown-item {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 10px 16px;
+          background: transparent;
+          border: 0;
+          color: #e7e9ea;
+          font-size: 13.5px;
+          font-weight: 600;
+          text-align: left;
+          cursor: pointer;
+          transition: background 0.15s;
+        }
+
+        .dropdown-item:hover {
+          background: rgba(239, 243, 244, 0.1);
+        }
+
+        .dropdown-item.logout {
+          color: #f4212e;
+        }
+
+        .dropdown-item.logout:hover {
+          background: rgba(244, 33, 46, 0.1);
         }
 
         .md-hero-title {
@@ -442,7 +719,7 @@ export default function MainAppShell() {
 
         .md-server-status {
           position: absolute;
-          top: 24px;
+          bottom: 22px;
           right: 28px;
           display: flex;
           align-items: center;

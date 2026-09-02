@@ -1547,6 +1547,23 @@ function getCleanPaperClone(){
 }
 
 function exportWord(){
+  if (window.parent && window.parent !== window) {
+    try {
+      const lEl = document.getElementById('lesson');
+      const sEl = document.getElementById('subject');
+      window.parent.postMessage({
+        type: 'USER_SAVE_LESSON_PLAN',
+        payload: {
+          id: 'plan_' + Date.now(),
+          lessonTitle: lEl?.options[lEl?.selectedIndex]?.text || 'Giáo án',
+          courseName: sEl?.options[sEl?.selectedIndex]?.text || '',
+          periods: document.getElementById('periods')?.value || '4',
+          date: currentScheduleSession?.date || '',
+          htmlContent: document.getElementById('paper')?.innerHTML || ''
+        }
+      }, '*');
+    } catch(e){}
+  }
   const clone=getCleanPaperClone();
   if(!clone){alert("Hãy tạo giáo án trước.");return;}
 

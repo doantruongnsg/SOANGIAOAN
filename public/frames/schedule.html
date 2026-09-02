@@ -1672,6 +1672,21 @@ function updateSavedSessionInfo(){
   info.innerHTML=`<b>${esc(x.name||"Phiên làm việc")}</b>${when?` · lưu lúc ${esc(when)}`:""} · ${Number(x.state?.programSequence?.length||0)} mục chương trình.`;
 }
 function saveWorkSession(){
+  if (window.parent && window.parent !== window) {
+    try {
+      window.parent.postMessage({
+        type: 'USER_SAVE_SCHEDULE',
+        payload: {
+          id: activeWorkSessionId || ('sched_' + Date.now()),
+          name: sessionDefaultName(),
+          course: safeCloneData(course),
+          sessions: safeCloneData(currentSessions),
+          lessons: safeCloneData(lessons),
+          programSequence: safeCloneData(programSequence)
+        }
+      }, '*');
+    } catch(e){}
+  }
   if(!programSequence.length){ alert("Chưa có Chương trình môn học để lưu phiên."); return; }
 
   const store=readWorkSessions();
