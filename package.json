@@ -1,26 +1,21 @@
 {
-  "name": "quan-ly-so-dau-bai-soan-giao-an",
+  "name": "quan-ly-so-dau-bai-soan-giao-an-nextjs",
   "version": "2.0.0",
-  "description": "Hệ thống Quản lý Sổ đầu bài & Soạn giáo án Phụ lục 10 - Bách khoa Nam Sài Gòn",
-  "main": "server.js",
+  "description": "Hệ thống Quản lý Sổ đầu bài & Soạn giáo án Phụ lục 10 - Next.js Full Stack App",
+  "private": true,
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js",
-    "test": "node test/api.test.js"
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "lint": "next lint"
   },
   "dependencies": {
-    "express": "^4.21.2",
-    "cors": "^2.8.5",
-    "multer": "^1.4.5-lts.1",
+    "next": "^14.2.15",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "firebase": "^10.13.2",
     "mammoth": "^1.8.0"
   },
-  "keywords": [
-    "giao-an",
-    "so-dau-bai",
-    "phu-luc-10",
-    "giao-duc-nghe-nghiep",
-    "gemini-ai"
-  ],
-  "author": "Trần Hữu Nhân",
+  "author": "Trần Hữu Nhân - BKNSG",
   "license": "MIT"
 }

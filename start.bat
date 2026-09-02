@@ -1,9 +1,9 @@
 @echo off
 chcp 65001 > nul
-title Quan Ly So Dau Bai & Soan Giao An - BKNSG
+title Quan Ly So Dau Bai & Soan Giao An (Next.js) - BKNSG
 
 echo ======================================================================
-echo    HỆ THỐNG QUẢN LÝ SỔ ĐẦU BÀI & SOẠN GIÁO ÁN (FULL BACKEND)
+echo    HỆ THỐNG QUẢN LÝ SỔ ĐẦU BÀI & SOẠN GIÁO ÁN (NEXT.JS FULL STACK)
 echo    Trường Cao đẳng Bách khoa Nam Sài Gòn
 echo    Tác giả: Trần Hữu Nhân - Khoa CNTT-KTĐ
 echo ======================================================================
@@ -22,8 +22,8 @@ if not exist "node_modules" (
     call npm install
 )
 
-echo [OK] Đang khởi động máy chủ ứng dụng...
+echo [OK] Đang khởi động máy chủ Next.js (http://localhost:3000)...
 start "" http://localhost:3000
-node server.js
+call npm run dev
 
 pause
