@@ -1,4 +1,349 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lập Sổ đầu bài từ Chương trình môn học - By Hunha Hữu Nhân</title>
 
+<style>
+body{font-family:"Times New Roman",Times,serif;margin:0;background:#f3f6fa;color:#172033}
+header{background:#16469d;color:#fff;padding:17px 22px}
+header h1{margin:0 0 5px;font-size:22px}
+.wrap{max-width:1400px;margin:18px auto;padding:0 14px}
+.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:15px;box-shadow:0 3px 14px rgba(0,0,0,.07)}
+.section-title{font-size:18px;font-weight:800;color:#123d82;margin:0 0 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+label{font-weight:700;font-size:13px;display:block;margin-bottom:5px}
+input,select{font:inherit;padding:8px;border:1px solid #b8c2d0;border-radius:7px;width:100%;box-sizing:border-box}
+button{font:inherit;border:0;border-radius:8px;padding:10px 14px;font-weight:700;background:#16469d;color:#fff;cursor:pointer}
+button.export{background:#15803d}
+button.gray{background:#64748b}
+.notice{background:#ecfdf5;border:1px solid #86efac;color:#166534;padding:10px;border-radius:8px;margin-top:10px}
+.warning{background:#fff7ed;border:1px solid #fdba74;color:#9a3412;padding:10px;border-radius:8px;margin-top:10px}
+.filebox{border:2px dashed #9db2d0;border-radius:10px;padding:14px;background:#f8fbff}
+.file-status{margin-top:8px;font-size:13px;color:#475569}
+.week-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+.slot{border:1px solid #d9e1ec;border-radius:9px;padding:10px;background:#fafcff}
+.sheet-wrap{overflow:auto;border:1px solid #888}
+table.sheet{border-collapse:collapse;width:100%;min-width:1150px;table-layout:fixed;background:#fff;font-family:"Times New Roman",serif}
+.sheet th,.sheet td{border:1px solid #222;padding:5px 6px;vertical-align:middle}
+.sheet thead th{text-align:center;font-weight:bold}
+.sheet .stt{width:45px;text-align:center}.sheet .date{width:105px;text-align:center}.sheet .small{width:65px;text-align:center}
+.sheet .content{width:auto;vertical-align:top;white-space:normal;line-height:1.28}
+.sheet .absent{width:95px;text-align:center}.sheet .sign{width:120px;text-align:center}
+.lesson-title{font-weight:bold;margin:0 0 2px}.major{font-weight:bold;margin:2px 0}.sub{margin:1px 0 1px 18px}
+.kpi{border:1px solid #dde5ef;border-radius:9px;padding:10px}.kpi b{display:block;font-size:18px;margin-top:4px}.kpi .breakdown{font-size:13px;line-height:1.55;margin-top:7px;color:#334155}.pending{color:#b45309;font-weight:700}
+
+.exclusions{margin-top:12px}
+.exclusion-row{display:grid;grid-template-columns:160px 1fr 90px;gap:8px;align-items:end;margin-bottom:8px}
+.exclusion-list{margin-top:10px;border:1px solid #d9e1ec;border-radius:9px;overflow:hidden}
+.exclusion-item{display:grid;grid-template-columns:120px 1fr 90px;gap:8px;padding:8px 10px;border-bottom:1px solid #e5e7eb;align-items:center}
+.exclusion-item:last-child{border-bottom:0}
+.tag-holiday{display:inline-block;padding:2px 7px;border-radius:999px;background:#fee2e2;color:#b91c1c;font-size:12px;font-weight:700}
+.tag-school{display:inline-block;padding:2px 7px;border-radius:999px;background:#ede9fe;color:#6d28d9;font-size:12px;font-weight:700}
+@media(max-width:700px){.exclusion-row,.exclusion-item{grid-template-columns:1fr}}
+
+
+
+.schedule-card{
+  background:#fff;
+}
+.schedule-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:10px;
+}
+.schedule-head .section-title{margin:0}
+.schedule-sub{
+  color:#64748b;
+  font-size:12px;
+  margin-top:2px;
+}
+.schedule-controls{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:flex-end;
+  margin-bottom:10px;
+}
+.field-box{
+  border:1px solid #dbe4ef;
+  border-radius:9px;
+  background:#f8fbff;
+  padding:8px 10px;
+}
+.field-date{width:210px;flex:0 0 210px}
+.field-count{width:145px;flex:0 0 145px}
+.field-box label{
+  margin-bottom:5px;
+  color:#334155;
+  font-size:12px;
+}
+.field-box input,
+.field-box select{
+  background:#fff;
+  height:36px;
+  padding:6px 8px;
+}
+.week-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:6px;
+}
+.slot{
+  border:1px solid #dbe4ef;
+  border-radius:9px;
+  padding:8px 10px;
+  background:#fff;
+  box-shadow:none;
+  width:300px;
+  flex:0 0 300px;
+}
+.slot label{
+  color:#123d82;
+  margin:0 0 5px;
+  font-size:12px;
+}
+.slot-row{
+  display:grid;
+  grid-template-columns:170px 70px 44px;
+  gap:6px;
+  align-items:center;
+}
+.slot-row .weekday{
+  width:170px;
+  height:36px;
+}
+.slot-row .periods{
+  width:70px;
+  height:36px;
+  text-align:center;
+  font-weight:700;
+}
+.slot-period-label{
+  font-size:11px;
+  color:#64748b;
+  text-align:left;
+  white-space:nowrap;
+}
+.schedule-summary{
+  margin-top:8px;
+  border-radius:8px;
+  padding:8px 10px;
+  background:#eff6ff;
+  border:1px solid #bfdbfe;
+  color:#1e3a8a;
+  font-size:12px;
+  line-height:1.4;
+}
+.schedule-rule{
+  margin-top:7px;
+  border-radius:8px;
+  padding:8px 10px;
+  background:#f8fafc;
+  border:1px dashed #cbd5e1;
+  color:#475569;
+  font-size:12px;
+  line-height:1.4;
+}
+@media(max-width:700px){
+  .schedule-controls{display:grid;grid-template-columns:1fr 120px}
+  .field-date,.field-count{width:auto;flex:auto}
+  .slot{width:100%;flex:1 1 100%}
+  .slot-row{grid-template-columns:1fr 70px 44px}
+  .slot-row .weekday{width:100%}
+}
+
+.schedule-inline{
+  display:flex;
+  align-items:flex-end;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:8px;
+}
+.schedule-inline .field-box{
+  padding:7px 9px;
+  margin:0;
+}
+.schedule-inline .field-date{
+  width:225px;
+  flex:0 0 225px;
+}
+.schedule-inline .field-count{
+  width:155px;
+  flex:0 0 155px;
+}
+.schedule-inline #weeklySlots{
+  display:flex;
+  align-items:flex-end;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:0;
+}
+.schedule-inline .slot{
+  width:310px;
+  flex:0 0 310px;
+  padding:7px 9px;
+  margin:0;
+}
+.schedule-inline .slot-row{
+  display:grid;
+  grid-template-columns:170px 66px 30px;
+  gap:6px;
+  align-items:center;
+}
+.schedule-inline .slot-row .weekday{width:170px}
+.schedule-inline .slot-row .periods{width:66px}
+@media(max-width:1100px){
+  .schedule-inline{align-items:flex-end}
+}
+@media(max-width:700px){
+  .schedule-inline{display:grid;grid-template-columns:1fr}
+  .schedule-inline .field-date,
+  .schedule-inline .field-count,
+  .schedule-inline .slot{width:100%;flex:auto}
+  .schedule-inline #weeklySlots{display:grid;grid-template-columns:1fr;width:100%}
+  .schedule-inline .slot-row{grid-template-columns:1fr 66px 30px}
+  .schedule-inline .slot-row .weekday{width:100%}
+}
+
+
+html,body,button,input,select,textarea,option,label,table,th,td,div,span,p,h1,h2,h3,h4,h5,h6{
+  font-family:"Times New Roman",Times,serif!important;
+}
+
+</style>
+</head>
+<body>
+
+
+<div class="wrap" style="margin-top:0">
+
+<div class="card">
+<div class="section-title">1. Chọn loại môn và tải Chương trình môn học</div>
+<div style="margin-bottom:12px;padding:12px;border:1px solid #bfdbfe;background:#eff6ff;border-radius:9px">
+<label>Loại môn học</label><select id="courseMode" onchange="onCourseModeChange()" style="max-width:360px"><option value="">— Chọn loại môn —</option><option value="theory">Môn Lý thuyết</option><option value="practice">Môn Thực hành</option><option value="integrated">Môn Tích hợp</option></select>
+<div id="courseModeInfo" style="margin-top:7px;font-size:12px;color:#475569">Chọn loại môn trước khi tải chương trình.</div></div>
+<div class="filebox">
+<label>Chọn file chương trình môn học</label>
+<input id="programFile" type="file" accept=".docx,.txt,.md" onchange="readProgramFile(this.files[0])">
+<div class="file-status" id="fileStatus">Chưa chọn file. Demo đang dùng sẵn dữ liệu —.</div>
+</div>
+<div class="grid" style="margin-top:12px">
+<div class="kpi">Tên môn học<b id="courseName">Chưa tải chương trình môn học</b></div>
+<div class="kpi">Mã môn<b id="courseCode">—</b></div>
+<div class="kpi">Tổng giờ<b id="totalHours">—</b></div>
+<div class="kpi">Tổng số tiết<b id="converted">—</b><div id="convertedBreakdown" class="breakdown"></div></div>
+</div>
+<div class="notice" id="formulaInfo" style="display:none!important"><b>Quy tắc:</b> LT = giờ LT; TH = làm tròn lên (giờ TH × 60/45); KT = giờ KT.</div>
+</div>
+
+<div class="card" style="display:none!important">
+<div class="section-title">2. Kiểm tra quy đổi theo từng Bài / Kiểm tra / Thi</div>
+<div id="conversionPreview" style="overflow:auto">
+<div style="color:#64748b;font-size:13px">Tải Chương trình môn học để xem kết quả quy đổi.</div>
+</div>
+</div>
+
+<div class="card schedule-card">
+<div class="schedule-head">
+  <div>
+    <div class="section-title">3. Thiết lập lịch học trong tuần</div>
+    <div class="schedule-sub">Chọn ngày bắt đầu và cấu hình số tiết cố định cho từng buổi học trong tuần.</div>
+  </div>
+</div>
+
+<div class="schedule-inline">
+  <div class="field-box field-date">
+    <label>Ngày bắt đầu</label>
+    <input id="startDate" type="date" value="2026-07-07">
+  </div>
+  <div class="field-box field-count">
+    <label>Số buổi học / tuần</label>
+    <input id="weeklyCount" type="number" value="2" min="1" max="7" onchange="renderWeeklySlots()">
+  </div>
+  <div id="weeklySlots"></div>
+</div>
+<div id="weeklyCheck" class="schedule-summary"></div>
+<div class="schedule-rule"><b>Quy tắc nội dung:</b> mỗi buổi luôn hiển thị đầy đủ <b>Tên bài + đề mục đang học</b>. Trong cùng một buổi, phải trình bày theo đúng thứ tự <b>Tên bài → các đề mục của bài đó → mới sang bài kế tiếp</b>. Mỗi đề mục chỉ hiển thị một lần; chỉ khi cùng đề mục của cùng bài tiếp tục sang buổi sau mới ghi <b>(tiếp theo)</b>.<br>
+  <b>Quy tắc cố định theo thứ:</b> số tiết gắn với từng thứ trong tuần và được giữ nguyên suốt khóa.
+  Nếu một ngày học rơi vào kỳ nghỉ thì chỉ bỏ qua ngày đó; buổi kế tiếp vẫn dùng đúng số tiết của <b>thứ thực tế</b>.
+</div>
+
+<div class="exclusions">
+<div class="section-title" style="font-size:16px;margin-top:16px">Ngày nghỉ lễ / Kế hoạch nhà trường</div>
+<div class="exclusion-row" style="grid-template-columns:160px 160px 1fr 150px">
+<div>
+<label>Nghỉ từ ngày</label>
+<input id="excludeStartDate" type="text" inputmode="numeric" placeholder="dd/mm/yyyy" maxlength="10" oninput="formatDateInput(this);onExclusionDraftChange()">
+</div>
+<div>
+<label>Đến ngày</label>
+<input id="excludeEndDate" type="text" inputmode="numeric" placeholder="dd/mm/yyyy" maxlength="10" oninput="formatDateInput(this);onExclusionDraftChange()">
+</div>
+<div>
+<label>Lý do</label>
+<input id="excludeReason" type="text" placeholder="Ví dụ: Quốc khánh, nghỉ Tết, họp toàn trường..." oninput="onExclusionDraftChange()">
+</div>
+<div>
+<label>Loại</label>
+<select id="excludeType" onchange="onExclusionDraftChange()">
+<option value="holiday">Nghỉ lễ</option>
+<option value="school">Kế hoạch trường</option>
+</select>
+</div>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="gray" onclick="addExclusion()">THÊM NGÀY NGHỈ</button>
+<button class="gray" onclick="clearExclusions()">XÓA TẤT CẢ</button>
+</div>
+<div id="exclusionList" class="exclusion-list"></div>
+<div style="margin-top:7px;font-size:12px;color:#475569">
+<b>Khoảng ngày đang chọn có hiệu lực ngay.</b> Hệ thống tự bỏ qua toàn bộ ngày trong khoảng này khi chia lịch. Nút “THÊM NGÀY NGHỈ” chỉ dùng để lưu thêm nhiều đợt nghỉ.
+</div>
+</div>
+<div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+<button onclick="buildSchedule()">CHIA LỊCH</button>
+<button class="export" onclick="exportExcel()">XUẤT EXCEL</button>
+</div>
+<div style="margin-top:14px;border-top:1px solid #dbe4ef;padding-top:12px">
+  <div class="section-title" style="font-size:16px;margin-bottom:8px">Lưu / mở phiên làm việc</div>
+  <div style="display:grid;grid-template-columns:minmax(260px,1fr) auto auto auto;gap:8px;align-items:center">
+    <select id="savedSessionSelect" style="min-width:260px" onchange="updateSavedSessionInfo()"><option value="">— Chưa có phiên đã lưu —</option></select>
+    <button type="button" onclick="saveWorkSession()">LƯU PHIÊN</button>
+    <button type="button" class="gray" onclick="loadSelectedWorkSession()">MỞ PHIÊN</button>
+    <button type="button" class="gray" onclick="deleteSelectedWorkSession()">XÓA PHIÊN</button>
+  </div>
+  <div id="savedSessionInfo" style="margin-top:7px;font-size:12px;color:#475569">Phiên được lưu trên trình duyệt của máy này, gồm chương trình môn học, lịch học, ngày nghỉ và Sổ đầu bài. Phiên gần nhất sẽ tự khôi phục khi mở lại ứng dụng.</div>
+</div>
+</div>
+
+<div class="card">
+<div class="section-title">4. Sổ đầu bài</div>
+<div class="sheet-wrap">
+<table class="sheet" id="mainTable">
+<thead>
+<tr>
+<th rowspan="2" class="stt">STT</th>
+<th rowspan="2" class="date">NGÀY LÊN<br>LỚP</th>
+<th colspan="3">SỐ TIẾT</th>
+<th rowspan="2" class="content">TÓM TẮT NỘI DUNG BÀI DẠY, KIỂM TRA</th>
+<th rowspan="2" class="absent">SỐ HỌC SINH, SINH VIÊN VẮNG MẶT</th>
+<th rowspan="2" class="sign">CHỮ KÝ GIÁO VIÊN</th>
+</tr>
+<tr><th class="small">Lý thuyết</th><th class="small">Thực hành</th><th class="small">Kiểm tra</th></tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+<script>
 let course = {name:"",code:"",total:0,lt:0,th:0,kt:0};
 let lessons = [];
 let programSequence = []; // đúng thứ tự: Bài -> Kiểm tra -> Bài -> ... -> Thi
@@ -390,14 +735,13 @@ async function readProgramFile(file){
  try{
    let text="", htmlText="";
    if(file.name.toLowerCase().endsWith(".docx")){
-     if(typeof mammoth==="undefined") throw new Error("Không tải được bộ đọc DOCX. Hãy kiểm tra kết nối Internet.");
-     const buf=await file.arrayBuffer();
-
-     // Phải tạo bản sao vì ArrayBuffer có thể bị thư viện sử dụng.
-     const rawResult=await mammoth.extractRawText({arrayBuffer:buf.slice(0)});
-     const htmlResult=await mammoth.convertToHtml({arrayBuffer:buf.slice(0)});
-     text=rawResult.value;
-     htmlText=htmlResult.value;
+     const fd=new FormData();
+     fd.append("file",file);
+     const res=await fetch("/api/program/parse",{method:"POST",body:fd});
+     const data=await res.json();
+     if(!res.ok) throw new Error(data?.error||("Không đọc được DOCX: HTTP "+res.status));
+     text=data.text||"";
+     htmlText=data.html||"";
    }else{
      text=await file.text();
    }
@@ -610,7 +954,7 @@ function buildProgramUnits(){
  return units;
 }
 
-function esc(s){ return String(s||"").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m])); }
+function esc(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
 function fmt(d){return `${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}/${d.getFullYear()}`}
 function weekdayName(d){
  const names=["Chủ nhật","Thứ 2","Thứ 3","Thứ 4","Thứ 5","Thứ 6","Thứ 7"];
@@ -1279,123 +1623,6 @@ renderWeeklySlots();
 renderExclusions();
 document.getElementById("tbody").innerHTML="";
 restoreLastWorkSession();
-
-
-// Export ScheduleModule
-window.ScheduleModule = {
-  course,
-  lessons,
-  programSequence,
-  currentSessions,
-  courseMode,
-  courseModeLabel,
-  assessmentModeFromCourse,
-  onCourseModeChange,
-  conversionSummary,
-  convertedTotal,
-  updateCourseCards,
-  normalizeLines,
-  exactKey,
-  getExactCellLines,
-  parseCourseInfo,
-  parseDetailItems,
-  cellNumber,
-  parseProgramTable,
-  recalcAssessments,
-  readProgramFile,
-  renderConversionPreview,
-  renderWeeklySlots,
-  updateWeeklyCheck,
-  onExclusionDraftChange,
-  formatDateInput,
-  addExclusion,
-  removeExclusion,
-  clearExclusions,
-  vnDate,
-  renderExclusions,
-  isExcludedDate,
-  nextScheduledDates,
-  rawSessionItems,
-  displaySessionItems,
-  buildSchedule,
-  sendSessionToPlanner,
-  readWorkSessions,
-  writeWorkSessions,
-  safeCloneData,
-  collectWorkSessionState,
-  sessionDefaultName,
-  renderSavedSessionList,
-  updateSavedSessionInfo,
-  saveWorkSession,
-  autoSaveActiveWorkSession,
-  applyWorkSessionState,
-  loadWorkSessionById,
-  loadSelectedWorkSession,
-  deleteSelectedWorkSession,
-  restoreLastWorkSession,
-  exportExcel,
-  chiaLich: function() {
-    buildSchedule();
-  }
-};
-
-// Expose all handlers to global window for inline HTML onclick/onchange
-if (typeof window !== 'undefined') {
-  window.course = course;
-  window.lessons = lessons;
-  window.programSequence = programSequence;
-  window.currentSessions = currentSessions;
-  window.courseMode = courseMode;
-  window.courseModeLabel = courseModeLabel;
-  window.assessmentModeFromCourse = assessmentModeFromCourse;
-  window.onCourseModeChange = onCourseModeChange;
-  window.conversionSummary = conversionSummary;
-  window.convertedTotal = convertedTotal;
-  window.updateCourseCards = updateCourseCards;
-  window.normalizeLines = normalizeLines;
-  window.exactKey = exactKey;
-  window.getExactCellLines = getExactCellLines;
-  window.parseCourseInfo = parseCourseInfo;
-  window.parseDetailItems = parseDetailItems;
-  window.cellNumber = cellNumber;
-  window.parseProgramTable = parseProgramTable;
-  window.recalcAssessments = recalcAssessments;
-  window.readProgramFile = readProgramFile;
-  window.renderConversionPreview = renderConversionPreview;
-  window.renderWeeklySlots = renderWeeklySlots;
-  window.updateWeeklyCheck = updateWeeklyCheck;
-  window.onExclusionDraftChange = onExclusionDraftChange;
-  window.addExclusion = addExclusion;
-  window.removeExclusion = removeExclusion;
-  window.clearExclusions = clearExclusions;
-  window.formatDateInput = formatDateInput;
-  window.buildSchedule = buildSchedule;
-  window.chiaLich = buildSchedule;
-  window.exportExcel = exportExcel;
-  window.saveWorkSession = saveWorkSession;
-  window.loadSelectedWorkSession = loadSelectedWorkSession;
-  window.deleteSelectedWorkSession = deleteSelectedWorkSession;
-  window.restoreLastWorkSession = restoreLastWorkSession;
-  window.sendSessionToPlanner = sendSessionToPlanner;
-  window.openLessonPlan = sendSessionToPlanner;
-}
-
-function initSchedule() {
-  try {
-    if (typeof renderWeeklySlots === 'function') renderWeeklySlots();
-    if (typeof renderExclusions === 'function') renderExclusions();
-    if (typeof renderSavedSessionList === 'function') renderSavedSessionList();
-    if (typeof updateWeeklyCheck === 'function') updateWeeklyCheck();
-    if (typeof restoreLastWorkSession === 'function') restoreLastWorkSession();
-  } catch (err) {
-    console.warn("Schedule init error:", err);
-  }
-}
-
-if (typeof document !== 'undefined') {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initSchedule);
-  } else {
-    initSchedule();
-  }
-}
+</script>
+</body>
+</html>

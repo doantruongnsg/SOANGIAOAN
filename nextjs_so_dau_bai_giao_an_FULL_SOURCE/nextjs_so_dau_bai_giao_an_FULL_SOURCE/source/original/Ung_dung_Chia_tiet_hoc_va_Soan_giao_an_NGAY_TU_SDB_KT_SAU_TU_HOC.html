@@ -1,0 +1,3715 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quản lý Sổ đầu bài & Soạn giáo án</title>
+<style>
+body{margin:0;background:#eef3f9;font-family:"Times New Roman",Times,serif;color:#172033}
+.shell{max-width:1540px;margin:0 auto;padding:16px}
+.hero{background:#16469d;color:#fff;border-radius:14px;padding:18px 22px;margin-bottom:16px;box-shadow:0 8px 24px rgba(22,70,157,.18)}
+.hero h1{margin:0 0 6px;font-size:26px}
+.hero p{margin:0;opacity:.95}
+.steps{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.step-pill{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.32);padding:8px 12px;border-radius:999px;font-weight:700}
+.section{background:#fff;border-radius:14px;margin-bottom:18px;box-shadow:0 5px 20px rgba(0,0,0,.07);overflow:hidden}
+.section-head{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:14px 18px;background:#f8fbff;border-bottom:1px solid #d9e2ef}
+.section-head h2{margin:0;color:#123d82;font-size:20px}
+.section-head p{margin:4px 0 0;color:#64748b;font-size:13px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+button{font:inherit;border:0;border-radius:8px;padding:9px 12px;font-weight:700;cursor:pointer;background:#16469d;color:#fff}
+button.secondary{background:#64748b}
+iframe{width:100%;border:0;display:block;background:#fff}
+#scheduleFrame{height:2200px}
+#plannerFrame{height:2500px}
+.workflow-note{margin:12px 18px 16px;padding:11px 13px;border-radius:9px;background:#eff6ff;border:1px solid #93c5fd;color:#1e3a8a;font-size:14px}
+#transferStatus{display:none;margin:12px 18px;padding:12px;border-radius:9px;background:#ecfdf5;border:1px solid #86efac;color:#166534;font-weight:700}
+@media(max-width:900px){#scheduleFrame{height:2700px}#plannerFrame{height:2900px}}
+
+html,body,button,input,select,textarea,label,table,th,td,div,span,p,h1,h2,h3,h4,h5,h6{
+  font-family:"Times New Roman",Times,serif;
+}
+
+</style>
+</head>
+<body>
+<div class="shell">
+<div class="hero">
+  <h1>QUẢN LÝ SỔ ĐẦU BÀI & SOẠN GIÁO ÁN</h1>
+  <p>Được thiết kế bởi <b>Trần Hữu Nhân</b> - giảng viên khoa CNTT-KTĐ dưới sự hỗ trợ của AI</p>
+  <div class="steps"><div class="step-pill">BƯỚC 1 · Lập Sổ đầu bài</div><div class="step-pill">BƯỚC 2 · Soạn giáo án theo từng buổi</div></div>
+</div>
+
+<section class="section" id="step1">
+  <div class="section-head">
+    <div>
+      <h2>BƯỚC 1. LẬP SỔ ĐẦU BÀI</h2>
+      <p>Sau khi chia lịch, tại từng dòng Sổ đầu bài bấm “SOẠN GIÁO ÁN BUỔI NÀY”.</p>
+    </div>
+  </div>
+  <div class="workflow-note">
+    <b>Luồng mới:</b> Chương trình môn học → Sổ đầu bài → chọn đúng buổi dạy → hệ thống truyền môn, mã môn, ngày dạy, số tiết, LT/TH/KT và nội dung sang Bước 2.
+  </div>
+  <iframe id="scheduleFrame" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;vi&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;
+&lt;title&gt;Lập Sổ đầu bài từ Chương trình môn học - By Hunha Hữu Nhân&lt;/title&gt;
+&lt;script src=&quot;https://unpkg.com/mammoth@1.8.0/mammoth.browser.min.js&quot;&gt;&lt;/script&gt;
+&lt;style&gt;
+body{font-family:&quot;Times New Roman&quot;,Times,serif;margin:0;background:#f3f6fa;color:#172033}
+header{background:#16469d;color:#fff;padding:17px 22px}
+header h1{margin:0 0 5px;font-size:22px}
+.wrap{max-width:1400px;margin:18px auto;padding:0 14px}
+.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:15px;box-shadow:0 3px 14px rgba(0,0,0,.07)}
+.section-title{font-size:18px;font-weight:800;color:#123d82;margin:0 0 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+label{font-weight:700;font-size:13px;display:block;margin-bottom:5px}
+input,select{font:inherit;padding:8px;border:1px solid #b8c2d0;border-radius:7px;width:100%;box-sizing:border-box}
+button{font:inherit;border:0;border-radius:8px;padding:10px 14px;font-weight:700;background:#16469d;color:#fff;cursor:pointer}
+button.export{background:#15803d}
+button.gray{background:#64748b}
+.notice{background:#ecfdf5;border:1px solid #86efac;color:#166534;padding:10px;border-radius:8px;margin-top:10px}
+.warning{background:#fff7ed;border:1px solid #fdba74;color:#9a3412;padding:10px;border-radius:8px;margin-top:10px}
+.filebox{border:2px dashed #9db2d0;border-radius:10px;padding:14px;background:#f8fbff}
+.file-status{margin-top:8px;font-size:13px;color:#475569}
+.week-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+.slot{border:1px solid #d9e1ec;border-radius:9px;padding:10px;background:#fafcff}
+.sheet-wrap{overflow:auto;border:1px solid #888}
+table.sheet{border-collapse:collapse;width:100%;min-width:1150px;table-layout:fixed;background:#fff;font-family:&quot;Times New Roman&quot;,serif}
+.sheet th,.sheet td{border:1px solid #222;padding:5px 6px;vertical-align:middle}
+.sheet thead th{text-align:center;font-weight:bold}
+.sheet .stt{width:45px;text-align:center}.sheet .date{width:105px;text-align:center}.sheet .small{width:65px;text-align:center}
+.sheet .content{width:auto;vertical-align:top;white-space:normal;line-height:1.28}
+.sheet .absent{width:95px;text-align:center}.sheet .sign{width:120px;text-align:center}
+.lesson-title{font-weight:bold;margin:0 0 2px}.major{font-weight:bold;margin:2px 0}.sub{margin:1px 0 1px 18px}
+.kpi{border:1px solid #dde5ef;border-radius:9px;padding:10px}.kpi b{display:block;font-size:18px;margin-top:4px}.kpi .breakdown{font-size:13px;line-height:1.55;margin-top:7px;color:#334155}.pending{color:#b45309;font-weight:700}
+
+.exclusions{margin-top:12px}
+.exclusion-row{display:grid;grid-template-columns:160px 1fr 90px;gap:8px;align-items:end;margin-bottom:8px}
+.exclusion-list{margin-top:10px;border:1px solid #d9e1ec;border-radius:9px;overflow:hidden}
+.exclusion-item{display:grid;grid-template-columns:120px 1fr 90px;gap:8px;padding:8px 10px;border-bottom:1px solid #e5e7eb;align-items:center}
+.exclusion-item:last-child{border-bottom:0}
+.tag-holiday{display:inline-block;padding:2px 7px;border-radius:999px;background:#fee2e2;color:#b91c1c;font-size:12px;font-weight:700}
+.tag-school{display:inline-block;padding:2px 7px;border-radius:999px;background:#ede9fe;color:#6d28d9;font-size:12px;font-weight:700}
+@media(max-width:700px){.exclusion-row,.exclusion-item{grid-template-columns:1fr}}
+
+
+
+.schedule-card{
+  background:#fff;
+}
+.schedule-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:10px;
+}
+.schedule-head .section-title{margin:0}
+.schedule-sub{
+  color:#64748b;
+  font-size:12px;
+  margin-top:2px;
+}
+.schedule-controls{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:flex-end;
+  margin-bottom:10px;
+}
+.field-box{
+  border:1px solid #dbe4ef;
+  border-radius:9px;
+  background:#f8fbff;
+  padding:8px 10px;
+}
+.field-date{width:210px;flex:0 0 210px}
+.field-count{width:145px;flex:0 0 145px}
+.field-box label{
+  margin-bottom:5px;
+  color:#334155;
+  font-size:12px;
+}
+.field-box input,
+.field-box select{
+  background:#fff;
+  height:36px;
+  padding:6px 8px;
+}
+.week-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:6px;
+}
+.slot{
+  border:1px solid #dbe4ef;
+  border-radius:9px;
+  padding:8px 10px;
+  background:#fff;
+  box-shadow:none;
+  width:300px;
+  flex:0 0 300px;
+}
+.slot label{
+  color:#123d82;
+  margin:0 0 5px;
+  font-size:12px;
+}
+.slot-row{
+  display:grid;
+  grid-template-columns:170px 70px 44px;
+  gap:6px;
+  align-items:center;
+}
+.slot-row .weekday{
+  width:170px;
+  height:36px;
+}
+.slot-row .periods{
+  width:70px;
+  height:36px;
+  text-align:center;
+  font-weight:700;
+}
+.slot-period-label{
+  font-size:11px;
+  color:#64748b;
+  text-align:left;
+  white-space:nowrap;
+}
+.schedule-summary{
+  margin-top:8px;
+  border-radius:8px;
+  padding:8px 10px;
+  background:#eff6ff;
+  border:1px solid #bfdbfe;
+  color:#1e3a8a;
+  font-size:12px;
+  line-height:1.4;
+}
+.schedule-rule{
+  margin-top:7px;
+  border-radius:8px;
+  padding:8px 10px;
+  background:#f8fafc;
+  border:1px dashed #cbd5e1;
+  color:#475569;
+  font-size:12px;
+  line-height:1.4;
+}
+@media(max-width:700px){
+  .schedule-controls{display:grid;grid-template-columns:1fr 120px}
+  .field-date,.field-count{width:auto;flex:auto}
+  .slot{width:100%;flex:1 1 100%}
+  .slot-row{grid-template-columns:1fr 70px 44px}
+  .slot-row .weekday{width:100%}
+}
+
+.schedule-inline{
+  display:flex;
+  align-items:flex-end;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:8px;
+}
+.schedule-inline .field-box{
+  padding:7px 9px;
+  margin:0;
+}
+.schedule-inline .field-date{
+  width:225px;
+  flex:0 0 225px;
+}
+.schedule-inline .field-count{
+  width:155px;
+  flex:0 0 155px;
+}
+.schedule-inline #weeklySlots{
+  display:flex;
+  align-items:flex-end;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:0;
+}
+.schedule-inline .slot{
+  width:310px;
+  flex:0 0 310px;
+  padding:7px 9px;
+  margin:0;
+}
+.schedule-inline .slot-row{
+  display:grid;
+  grid-template-columns:170px 66px 30px;
+  gap:6px;
+  align-items:center;
+}
+.schedule-inline .slot-row .weekday{width:170px}
+.schedule-inline .slot-row .periods{width:66px}
+@media(max-width:1100px){
+  .schedule-inline{align-items:flex-end}
+}
+@media(max-width:700px){
+  .schedule-inline{display:grid;grid-template-columns:1fr}
+  .schedule-inline .field-date,
+  .schedule-inline .field-count,
+  .schedule-inline .slot{width:100%;flex:auto}
+  .schedule-inline #weeklySlots{display:grid;grid-template-columns:1fr;width:100%}
+  .schedule-inline .slot-row{grid-template-columns:1fr 66px 30px}
+  .schedule-inline .slot-row .weekday{width:100%}
+}
+
+
+html,body,button,input,select,textarea,option,label,table,th,td,div,span,p,h1,h2,h3,h4,h5,h6{
+  font-family:&quot;Times New Roman&quot;,Times,serif!important;
+}
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+
+&lt;div class=&quot;wrap&quot; style=&quot;margin-top:0&quot;&gt;
+
+&lt;div class=&quot;card&quot;&gt;
+&lt;div class=&quot;section-title&quot;&gt;1. Chọn loại môn và tải Chương trình môn học&lt;/div&gt;
+&lt;div style=&quot;margin-bottom:12px;padding:12px;border:1px solid #bfdbfe;background:#eff6ff;border-radius:9px&quot;&gt;
+&lt;label&gt;Loại môn học&lt;/label&gt;&lt;select id=&quot;courseMode&quot; onchange=&quot;onCourseModeChange()&quot; style=&quot;max-width:360px&quot;&gt;&lt;option value=&quot;&quot;&gt;— Chọn loại môn —&lt;/option&gt;&lt;option value=&quot;theory&quot;&gt;Môn Lý thuyết&lt;/option&gt;&lt;option value=&quot;practice&quot;&gt;Môn Thực hành&lt;/option&gt;&lt;option value=&quot;integrated&quot;&gt;Môn Tích hợp&lt;/option&gt;&lt;/select&gt;
+&lt;div id=&quot;courseModeInfo&quot; style=&quot;margin-top:7px;font-size:12px;color:#475569&quot;&gt;Chọn loại môn trước khi tải chương trình.&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;filebox&quot;&gt;
+&lt;label&gt;Chọn file chương trình môn học&lt;/label&gt;
+&lt;input id=&quot;programFile&quot; type=&quot;file&quot; accept=&quot;.docx,.txt,.md&quot; onchange=&quot;readProgramFile(this.files[0])&quot;&gt;
+&lt;div class=&quot;file-status&quot; id=&quot;fileStatus&quot;&gt;Chưa chọn file. Demo đang dùng sẵn dữ liệu —.&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;grid&quot; style=&quot;margin-top:12px&quot;&gt;
+&lt;div class=&quot;kpi&quot;&gt;Tên môn học&lt;b id=&quot;courseName&quot;&gt;Chưa tải chương trình môn học&lt;/b&gt;&lt;/div&gt;
+&lt;div class=&quot;kpi&quot;&gt;Mã môn&lt;b id=&quot;courseCode&quot;&gt;—&lt;/b&gt;&lt;/div&gt;
+&lt;div class=&quot;kpi&quot;&gt;Tổng giờ&lt;b id=&quot;totalHours&quot;&gt;—&lt;/b&gt;&lt;/div&gt;
+&lt;div class=&quot;kpi&quot;&gt;Tổng số tiết&lt;b id=&quot;converted&quot;&gt;—&lt;/b&gt;&lt;div id=&quot;convertedBreakdown&quot; class=&quot;breakdown&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;notice&quot; id=&quot;formulaInfo&quot; style=&quot;display:none!important&quot;&gt;&lt;b&gt;Quy tắc:&lt;/b&gt; LT = giờ LT; TH = làm tròn lên (giờ TH × 60/45); KT = giờ KT.&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;card&quot; style=&quot;display:none!important&quot;&gt;
+&lt;div class=&quot;section-title&quot;&gt;2. Kiểm tra quy đổi theo từng Bài / Kiểm tra / Thi&lt;/div&gt;
+&lt;div id=&quot;conversionPreview&quot; style=&quot;overflow:auto&quot;&gt;
+&lt;div style=&quot;color:#64748b;font-size:13px&quot;&gt;Tải Chương trình môn học để xem kết quả quy đổi.&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;card schedule-card&quot;&gt;
+&lt;div class=&quot;schedule-head&quot;&gt;
+  &lt;div&gt;
+    &lt;div class=&quot;section-title&quot;&gt;3. Thiết lập lịch học trong tuần&lt;/div&gt;
+    &lt;div class=&quot;schedule-sub&quot;&gt;Chọn ngày bắt đầu và cấu hình số tiết cố định cho từng buổi học trong tuần.&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;schedule-inline&quot;&gt;
+  &lt;div class=&quot;field-box field-date&quot;&gt;
+    &lt;label&gt;Ngày bắt đầu&lt;/label&gt;
+    &lt;input id=&quot;startDate&quot; type=&quot;date&quot; value=&quot;2026-07-07&quot;&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;field-box field-count&quot;&gt;
+    &lt;label&gt;Số buổi học / tuần&lt;/label&gt;
+    &lt;input id=&quot;weeklyCount&quot; type=&quot;number&quot; value=&quot;2&quot; min=&quot;1&quot; max=&quot;7&quot; onchange=&quot;renderWeeklySlots()&quot;&gt;
+  &lt;/div&gt;
+  &lt;div id=&quot;weeklySlots&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&quot;weeklyCheck&quot; class=&quot;schedule-summary&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;schedule-rule&quot;&gt;&lt;b&gt;Quy tắc nội dung:&lt;/b&gt; mỗi buổi luôn hiển thị đầy đủ &lt;b&gt;Tên bài + đề mục đang học&lt;/b&gt;. Trong cùng một buổi, phải trình bày theo đúng thứ tự &lt;b&gt;Tên bài → các đề mục của bài đó → mới sang bài kế tiếp&lt;/b&gt;. Mỗi đề mục chỉ hiển thị một lần; chỉ khi cùng đề mục của cùng bài tiếp tục sang buổi sau mới ghi &lt;b&gt;(tiếp theo)&lt;/b&gt;.&lt;br&gt;
+  &lt;b&gt;Quy tắc cố định theo thứ:&lt;/b&gt; số tiết gắn với từng thứ trong tuần và được giữ nguyên suốt khóa.
+  Nếu một ngày học rơi vào kỳ nghỉ thì chỉ bỏ qua ngày đó; buổi kế tiếp vẫn dùng đúng số tiết của &lt;b&gt;thứ thực tế&lt;/b&gt;.
+&lt;/div&gt;
+
+&lt;div class=&quot;exclusions&quot;&gt;
+&lt;div class=&quot;section-title&quot; style=&quot;font-size:16px;margin-top:16px&quot;&gt;Ngày nghỉ lễ / Kế hoạch nhà trường&lt;/div&gt;
+&lt;div class=&quot;exclusion-row&quot; style=&quot;grid-template-columns:160px 160px 1fr 150px&quot;&gt;
+&lt;div&gt;
+&lt;label&gt;Nghỉ từ ngày&lt;/label&gt;
+&lt;input id=&quot;excludeStartDate&quot; type=&quot;text&quot; inputmode=&quot;numeric&quot; placeholder=&quot;dd/mm/yyyy&quot; maxlength=&quot;10&quot; oninput=&quot;formatDateInput(this);onExclusionDraftChange()&quot;&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;label&gt;Đến ngày&lt;/label&gt;
+&lt;input id=&quot;excludeEndDate&quot; type=&quot;text&quot; inputmode=&quot;numeric&quot; placeholder=&quot;dd/mm/yyyy&quot; maxlength=&quot;10&quot; oninput=&quot;formatDateInput(this);onExclusionDraftChange()&quot;&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;label&gt;Lý do&lt;/label&gt;
+&lt;input id=&quot;excludeReason&quot; type=&quot;text&quot; placeholder=&quot;Ví dụ: Quốc khánh, nghỉ Tết, họp toàn trường...&quot; oninput=&quot;onExclusionDraftChange()&quot;&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;label&gt;Loại&lt;/label&gt;
+&lt;select id=&quot;excludeType&quot; onchange=&quot;onExclusionDraftChange()&quot;&gt;
+&lt;option value=&quot;holiday&quot;&gt;Nghỉ lễ&lt;/option&gt;
+&lt;option value=&quot;school&quot;&gt;Kế hoạch trường&lt;/option&gt;
+&lt;/select&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div style=&quot;display:flex;gap:8px;flex-wrap:wrap&quot;&gt;
+&lt;button class=&quot;gray&quot; onclick=&quot;addExclusion()&quot;&gt;THÊM NGÀY NGHỈ&lt;/button&gt;
+&lt;button class=&quot;gray&quot; onclick=&quot;clearExclusions()&quot;&gt;XÓA TẤT CẢ&lt;/button&gt;
+&lt;/div&gt;
+&lt;div id=&quot;exclusionList&quot; class=&quot;exclusion-list&quot;&gt;&lt;/div&gt;
+&lt;div style=&quot;margin-top:7px;font-size:12px;color:#475569&quot;&gt;
+&lt;b&gt;Khoảng ngày đang chọn có hiệu lực ngay.&lt;/b&gt; Hệ thống tự bỏ qua toàn bộ ngày trong khoảng này khi chia lịch. Nút “THÊM NGÀY NGHỈ” chỉ dùng để lưu thêm nhiều đợt nghỉ.
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div style=&quot;margin-top:12px;display:flex;gap:10px;flex-wrap:wrap&quot;&gt;
+&lt;button onclick=&quot;buildSchedule()&quot;&gt;CHIA LỊCH&lt;/button&gt;
+&lt;button class=&quot;export&quot; onclick=&quot;exportExcel()&quot;&gt;XUẤT EXCEL&lt;/button&gt;
+&lt;/div&gt;
+&lt;div style=&quot;margin-top:14px;border-top:1px solid #dbe4ef;padding-top:12px&quot;&gt;
+  &lt;div class=&quot;section-title&quot; style=&quot;font-size:16px;margin-bottom:8px&quot;&gt;Lưu / mở phiên làm việc&lt;/div&gt;
+  &lt;div style=&quot;display:grid;grid-template-columns:minmax(260px,1fr) auto auto auto;gap:8px;align-items:center&quot;&gt;
+    &lt;select id=&quot;savedSessionSelect&quot; style=&quot;min-width:260px&quot; onchange=&quot;updateSavedSessionInfo()&quot;&gt;&lt;option value=&quot;&quot;&gt;— Chưa có phiên đã lưu —&lt;/option&gt;&lt;/select&gt;
+    &lt;button type=&quot;button&quot; onclick=&quot;saveWorkSession()&quot;&gt;LƯU PHIÊN&lt;/button&gt;
+    &lt;button type=&quot;button&quot; class=&quot;gray&quot; onclick=&quot;loadSelectedWorkSession()&quot;&gt;MỞ PHIÊN&lt;/button&gt;
+    &lt;button type=&quot;button&quot; class=&quot;gray&quot; onclick=&quot;deleteSelectedWorkSession()&quot;&gt;XÓA PHIÊN&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div id=&quot;savedSessionInfo&quot; style=&quot;margin-top:7px;font-size:12px;color:#475569&quot;&gt;Phiên được lưu trên trình duyệt của máy này, gồm chương trình môn học, lịch học, ngày nghỉ và Sổ đầu bài. Phiên gần nhất sẽ tự khôi phục khi mở lại ứng dụng.&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;card&quot;&gt;
+&lt;div class=&quot;section-title&quot;&gt;4. Sổ đầu bài&lt;/div&gt;
+&lt;div class=&quot;sheet-wrap&quot;&gt;
+&lt;table class=&quot;sheet&quot; id=&quot;mainTable&quot;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th rowspan=&quot;2&quot; class=&quot;stt&quot;&gt;STT&lt;/th&gt;
+&lt;th rowspan=&quot;2&quot; class=&quot;date&quot;&gt;NGÀY LÊN&lt;br&gt;LỚP&lt;/th&gt;
+&lt;th colspan=&quot;3&quot;&gt;SỐ TIẾT&lt;/th&gt;
+&lt;th rowspan=&quot;2&quot; class=&quot;content&quot;&gt;TÓM TẮT NỘI DUNG BÀI DẠY, KIỂM TRA&lt;/th&gt;
+&lt;th rowspan=&quot;2&quot; class=&quot;absent&quot;&gt;SỐ HỌC SINH, SINH VIÊN VẮNG MẶT&lt;/th&gt;
+&lt;th rowspan=&quot;2&quot; class=&quot;sign&quot;&gt;CHỮ KÝ GIÁO VIÊN&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;&lt;th class=&quot;small&quot;&gt;Lý thuyết&lt;/th&gt;&lt;th class=&quot;small&quot;&gt;Thực hành&lt;/th&gt;&lt;th class=&quot;small&quot;&gt;Kiểm tra&lt;/th&gt;&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody id=&quot;tbody&quot;&gt;&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;script&gt;
+let course = {name:&quot;&quot;,code:&quot;&quot;,total:0,lt:0,th:0,kt:0};
+let lessons = [];
+let programSequence = []; // đúng thứ tự: Bài -&gt; Kiểm tra -&gt; Bài -&gt; ... -&gt; Thi
+let currentSessions = [];
+let courseMode=&quot;&quot;;
+function courseModeLabel(){return courseMode===&quot;theory&quot;?&quot;Môn Lý thuyết&quot;:courseMode===&quot;practice&quot;?&quot;Môn Thực hành&quot;:courseMode===&quot;integrated&quot;?&quot;Môn Tích hợp&quot;:&quot;&quot;;}
+function assessmentModeFromCourse(){return courseMode===&quot;theory&quot;?&quot;theory&quot;:&quot;practice&quot;;}
+function onCourseModeChange(){courseMode=document.getElementById(&quot;courseMode&quot;)?.value||&quot;&quot;;const i=document.getElementById(&quot;courseModeInfo&quot;);if(i)i.innerHTML=courseMode===&quot;theory&quot;?&quot;&lt;b&gt;Kiểm tra: Lý thuyết&lt;/b&gt; — hệ thống tự xử lý.&quot;:courseMode?&quot;&lt;b&gt;Kiểm tra: Thực hành&lt;/b&gt; — hệ thống tự xử lý. Môn Tích hợp vẫn tự chọn mẫu giáo án theo từng buổi LT/TH.&quot;:&quot;Chọn loại môn trước khi tải chương trình.&quot;;if(programSequence.length){recalcAssessments();updateCourseCards();}}
+
+function conversionSummary(){
+ const summary={lt:0,th:0,kt:0,total:0};
+
+ if(programSequence.length){
+   programSequence.forEach(x=&gt;{
+     if(x.kind===&quot;lesson&quot;){
+       summary.lt += Number(x.ltPeriods||0);
+       summary.th += Number(x.thPeriods||0);
+     }else if(x.kind===&quot;assessment&quot;){
+       summary.kt += Number(x.periodsKT||0);
+       summary.th += Number(x.periodsTH||0);
+     }
+   });
+   summary.total=summary.lt+summary.th+summary.kt;
+   return summary;
+ }
+
+ summary.lt=Number(course.lt||0);
+ summary.th=course.th ? Math.ceil(Number(course.th)*60/45) : 0;
+ summary.total=summary.lt+summary.th;
+ return summary;
+}
+
+function convertedTotal(){
+ return conversionSummary().total;
+}
+
+function updateCourseCards(){
+ const hasCourse=!!(course.name||course.code||course.total||course.lt||course.th||course.kt);
+ document.getElementById(&quot;courseName&quot;).textContent=course.name||&quot;Chưa tải chương trình môn học&quot;;
+ document.getElementById(&quot;courseCode&quot;).textContent=course.code||&quot;—&quot;;
+ document.getElementById(&quot;totalHours&quot;).textContent=hasCourse ? (course.total||0)+&quot; giờ&quot; : &quot;—&quot;;
+
+ const s=conversionSummary();
+ const convertedEl=document.getElementById(&quot;converted&quot;);
+ const breakdownEl=document.getElementById(&quot;convertedBreakdown&quot;);
+
+ if(!hasCourse){
+   convertedEl.textContent=&quot;—&quot;;
+   breakdownEl.innerHTML=&quot;&quot;;
+   document.getElementById(&quot;formulaInfo&quot;).innerHTML=
+     `&lt;b&gt;Quy tắc:&lt;/b&gt; LT của từng Bài = số giờ LT; TH của từng Bài = làm tròn lên (giờ TH × 60/45). Kiểm tra tự động tính như Thực hành.`;
+   return;
+ }
+
+ convertedEl.textContent=`${s.total} tiết`;
+ breakdownEl.innerHTML=
+   `Lý thuyết: &lt;b&gt;${s.lt} tiết&lt;/b&gt;&lt;br&gt;`+
+   `Thực hành: &lt;b&gt;${s.th} tiết&lt;/b&gt;&lt;br&gt;`+
+   `Kiểm tra: &lt;b&gt;${s.kt} tiết&lt;/b&gt;&lt;br&gt;`+
+   `Tổng: &lt;b&gt;${s.total} tiết&lt;/b&gt;`;
+
+ document.getElementById(&quot;formulaInfo&quot;).innerHTML=
+   `&lt;b&gt;Quy tắc đang áp dụng:&lt;/b&gt; quy đổi &lt;b&gt;riêng từng Bài&lt;/b&gt;. `+
+   `LT = giờ LT; TH = CEILING(giờ TH × 60/45). `+
+   `&lt;b&gt;Kiểm tra:&lt;/b&gt; CEILING(giờ KT × 60/45). Sau quy đổi, &lt;b&gt;1 tiết đưa vào cột Kiểm tra&lt;/b&gt;, số tiết còn lại đưa vào &lt;b&gt;Thực hành&lt;/b&gt;. `+
+   `&lt;b&gt;Thi kết thúc môn học không đưa vào Sổ đầu bài.&lt;/b&gt;`;
+}
+
+function normalizeLines(text){
+ // Chỉ tách dòng và bỏ khoảng trắng đầu/cuối.
+ // KHÔNG sửa câu chữ, dấu câu, số thứ tự hay nội dung nguồn.
+ return String(text||&quot;&quot;)
+   .replace(/\r\n/g,&quot;\n&quot;)
+   .replace(/\r/g,&quot;\n&quot;)
+   .split(&quot;\n&quot;)
+   .map(x=&gt;x.trim())
+   .filter(x=&gt;x.length&gt;0);
+}
+
+function exactKey(s){
+ // Chỉ dùng để so trùng; KHÔNG dùng làm nội dung hiển thị.
+ return String(s||&quot;&quot;).replace(/\s+/g,&quot; &quot;).trim().toLowerCase();
+}
+
+function getExactCellLines(cell){
+ if(!cell) return [];
+
+ // Mammoth thường chuyển từng dòng Word thành &lt;p&gt;/&lt;li&gt;.
+ // Ưu tiên đọc từng block để giữ nguyên câu chữ và dấu câu.
+ const blocks=[...cell.querySelectorAll(&quot;p,li&quot;)];
+ let lines=[];
+ if(blocks.length){
+   lines=blocks.map(el=&gt;(el.textContent||&quot;&quot;).trim()).filter(Boolean);
+ }else{
+   const raw=(cell.innerText||cell.textContent||&quot;&quot;)
+     .replace(/\r\n/g,&quot;\n&quot;)
+     .replace(/\r/g,&quot;\n&quot;);
+   lines=raw.split(&quot;\n&quot;).map(x=&gt;x.trim()).filter(Boolean);
+ }
+
+ const out=[];
+ const seen=new Set();
+ for(const line of lines){
+   const key=exactKey(line);
+   if(key &amp;&amp; !seen.has(key)){
+     seen.add(key);
+     out.push(line); // lưu nguyên văn
+   }
+ }
+ return out;
+}
+
+function parseCourseInfo(text){
+ const clean=text.replace(/\r/g,&quot; &quot;).replace(/[ \t]+/g,&quot; &quot;);
+ let m;
+ m=clean.match(/Tên môn học\s*:\s*([^\n]+)/i); if(m)course.name=m[1].trim();
+ m=clean.match(/Mã(?: số)? môn học\s*:\s*([A-Za-z0-9 _-]+)/i); if(m)course.code=m[1].trim();
+ m=clean.match(/Thời gian(?: thực hiện)? môn học\s*:\s*(\d+)\s*giờ/i); if(m)course.total=Number(m[1]);
+ m=clean.match(/Lý thuyết\s*:\s*(\d+)\s*giờ/i); if(m)course.lt=Number(m[1]);
+ m=clean.match(/Thực hành[^:]*:\s*(\d+)\s*giờ/i); if(m)course.th=Number(m[1]);
+ m=clean.match(/(?:Thi\s*\/?\s*)?Kiểm tra\s*:\s*0?(\d+)\s*giờ/i); if(m)course.kt=Number(m[1]);
+}
+
+function parseDetailItems(text){
+ let detail=String(text||&quot;&quot;);
+
+ const parts=detail.split(/2\.\s*Nội dung chi tiết\s*:/i);
+ if(parts.length&gt;1) detail=parts.slice(1).join(&quot; &quot;);
+
+ detail=detail.split(/\n\s*IV\.\s*/i)[0];
+
+ const lines=normalizeLines(detail);
+ const map={};
+ let currentNo=null;
+ let inContent=false;
+
+ function numbered(line){
+   // Nhận 1. / 1 / 1.1. / 1.1 nhưng lưu NGUYÊN VĂN dòng gốc.
+   const m=line.match(/^(\d+(?:\.\d+)*)\.?\s+(.+)$/);
+   return m ? {num:m[1], raw:line} : null;
+ }
+
+ for(const line of lines){
+   const lm=line.match(/^(Bài|Chương)\s*(\d+)\s*[:\-]\s*(.*)$/i);
+   if(lm){
+     currentNo=Number(lm[2]);
+     const titleRaw=line.replace(/\s*Thời gian\s*[:\-].*$/i,&quot;&quot;).trim();
+     if(!map[currentNo]) map[currentNo]={title:titleRaw,items:[]};
+     else if(!map[currentNo].title) map[currentNo].title=titleRaw;
+     inContent=false;
+     continue;
+   }
+
+   if(currentNo===null) continue;
+
+   if(/^2\.\s*Nội dung\s*:?\s*$/i.test(line) || /^Nội dung\s*:?\s*$/i.test(line)){
+     inContent=true;
+     continue;
+   }
+   if(/^1\.\s*Mục tiêu\s*:?\s*$/i.test(line) || /^Mục tiêu\s*:?\s*$/i.test(line)){
+     inContent=false;
+     continue;
+   }
+
+   if(inContent){
+     const it=numbered(line);
+     if(!it) continue;
+
+     const body=it.raw.replace(/^(\d+(?:\.\d+)*)\.?\s+/,&quot;&quot;);
+     if(/^(Mục tiêu|Nội dung)$/i.test(body.trim())) continue;
+
+     const depth=(it.num.match(/\./g)||[]).length;
+     const key=exactKey(it.raw);
+     if(!map[currentNo].items.some(x=&gt;exactKey(x[1])===key)){
+       map[currentNo].items.push([depth&gt;=1?&quot;sub&quot;:&quot;major&quot;, it.raw]);
+     }
+   }
+ }
+
+ return map;
+}
+
+function cellNumber(td){
+ const s=(td?.textContent||&quot;&quot;).replace(/[^\d.,-]/g,&quot;&quot;).replace(&quot;,&quot;,&quot;.&quot;).trim();
+ const n=Number(s);
+ return Number.isFinite(n)?n:0;
+}
+
+function parseProgramTable(htmlText, detailMap){
+ const holder=document.createElement(&quot;div&quot;);
+ holder.innerHTML=htmlText;
+ const tables=[...holder.querySelectorAll(&quot;table&quot;)];
+ let table=null;
+
+ for(const t of tables){
+   const txt=t.textContent||&quot;&quot;;
+   if(/Tên chương|Tên các bài|Tên bài/i.test(txt) &amp;&amp; /Lý thuyết/i.test(txt) &amp;&amp; /Thực hành/i.test(txt)){
+     table=t; break;
+   }
+ }
+ if(!table) return [];
+
+ const rows=[...table.querySelectorAll(&quot;tr&quot;)];
+ const sequence=[];
+ const seenLessons=new Set();
+
+ // Thu toàn bộ đề mục NGUYÊN VĂN từ chính bảng phân phối.
+ const tableItemsByLesson={};
+ let currentLessonNo=null;
+
+ for(const row of rows){
+   const cells=[...row.querySelectorAll(&quot;td,th&quot;)];
+   if(cells.length&lt;2) continue;
+
+   const lines=getExactCellLines(cells[1]);
+   if(!lines.length) continue;
+
+   for(let li=0; li&lt;lines.length; li++){
+     const raw=lines[li];
+
+     const lm=raw.match(/^(Bài|Chương)\s*(\d+)\s*[:\-]\s*(.+)$/i);
+     if(lm){
+       currentLessonNo=Number(lm[2]);
+       if(!tableItemsByLesson[currentLessonNo]) tableItemsByLesson[currentLessonNo]=[];
+       continue;
+     }
+
+     if(currentLessonNo!==null){
+       const im=raw.match(/^(\d+(?:\.\d+)*)\.?\s+(.+)$/);
+       if(im){
+         const key=exactKey(raw);
+         if(!tableItemsByLesson[currentLessonNo].some(x=&gt;exactKey(x[1])===key)){
+           const depth=(im[1].match(/\./g)||[]).length;
+           tableItemsByLesson[currentLessonNo].push([depth&gt;=1?&quot;sub&quot;:&quot;major&quot;, raw]);
+         }
+       }
+     }
+   }
+ }
+
+ for(const row of rows){
+   const cells=[...row.querySelectorAll(&quot;td,th&quot;)];
+   if(cells.length&lt;2) continue;
+
+   const lines=getExactCellLines(cells[1]);
+   const name=lines[0] || (cells[1].textContent||&quot;&quot;).trim();
+
+   const lm=name.match(/^(Bài|Chương)\s*(\d+)\s*[:\-]\s*(.+)$/i);
+   if(lm){
+     const no=Number(lm[2]);
+     if(seenLessons.has(no)) continue;
+     seenLessons.add(no);
+
+     const ltHours=cellNumber(cells[3]);
+     const thHours=cellNumber(cells[4]);
+
+     // Tên bài lưu nguyên văn từ nguồn.
+     const title=name.trim();
+
+     const mergedItems=[];
+     const allSources=[
+       ...((detailMap[no]&amp;&amp;detailMap[no].items)||[]),
+       ...(tableItemsByLesson[no]||[])
+     ];
+
+     for(const it of allSources){
+       if(!it || !it[1]) continue;
+       const key=exactKey(it[1]);
+       if(!mergedItems.some(x=&gt;exactKey(x[1])===key)){
+         mergedItems.push([it[0], it[1]]); // lưu nguyên văn
+       }
+     }
+
+     sequence.push({
+       kind:&quot;lesson&quot;,
+       no,
+       title,
+       ltHours,
+       thHours,
+       ltPeriods:Math.ceil(ltHours),
+       thPeriods:Math.ceil(thHours*60/45),
+       items:mergedItems,
+       itemCount:mergedItems.length
+     });
+     continue;
+   }
+
+   if(/^(Kiểm tra|Thi)/i.test(name)){
+     if(/^Thi\s+kết\s+thúc\s+môn/i.test(name)) continue;
+
+     const ktLt=cellNumber(cells[5]);
+     const ktTh=cellNumber(cells[6]);
+     const thiLt=cellNumber(cells[7]);
+     const thiTh=cellNumber(cells[8]);
+
+     const hoursLT=ktLt+thiLt;
+     const hoursTH=ktTh+thiTh;
+     const rawHours=(hoursLT+hoursTH) || cellNumber(cells[2]) || 1;
+     const autoPeriods=Math.ceil(rawHours*60/45);
+
+     if(autoPeriods&gt;0){
+       sequence.push({
+         kind:&quot;assessment&quot;,
+         title:name.trim(), // nguyên văn
+         rawHours,
+         assessmentType:&quot;Thực hành&quot;,
+         periodsLT:0,
+         periodsKT:1,
+         periodsTH:Math.max(0,autoPeriods-1),
+         periods:autoPeriods
+       });
+     }
+   }
+ }
+
+ return sequence;
+}
+
+function recalcAssessments(){
+ programSequence.forEach(x=&gt;{
+   if(x.kind!==&quot;assessment&quot;)return;
+   const mode=assessmentModeFromCourse();
+   x.assessmentMode=mode;
+   x.assessmentType=mode===&quot;theory&quot;?&quot;Lý thuyết&quot;:&quot;Thực hành&quot;;
+
+   if(mode===&quot;theory&quot;){
+     // Môn Lý thuyết: 1 giờ kiểm tra = 1 tiết Kiểm tra.
+     const n=Math.max(0,Math.ceil(Number(x.rawHours||0)));
+     x.periodsLT=0;
+     x.periodsTH=0;
+     x.periodsKT=n;
+     x.periods=n;
+   }else{
+     // Môn Thực hành/Tích hợp: quy đổi tổng số tiết kiểm tra theo giờ thực hành.
+     // Sau quy đổi, giữ đúng 01 tiết ở cột Kiểm tra; phần còn lại đưa sang cột Thực hành.
+     // Ví dụ 1 giờ -&gt; 2 tiết = 1 TH + 1 KT.
+     const n=Math.max(0,Math.ceil(Number(x.rawHours||0)*60/45));
+     x.periodsLT=0;
+     x.periodsKT=n&gt;0?1:0;
+     x.periodsTH=Math.max(0,n-x.periodsKT);
+     x.periods=n;
+   }
+ });
+}
+function renderConversionPreview(){
+ const box=document.getElementById(&quot;conversionPreview&quot;);
+ if(!programSequence.length){
+   box.innerHTML=&#x27;&lt;div style=&quot;color:#64748b;font-size:13px&quot;&gt;Chưa có dữ liệu để kiểm tra.&lt;/div&gt;&#x27;;
+   return;
+ }
+ let rows=&quot;&quot;;
+ programSequence.forEach(x=&gt;{
+   if(x.kind===&quot;lesson&quot;){
+     rows+=`&lt;tr&gt;
+       &lt;td&gt;&lt;b&gt;${esc(x.title)}&lt;/b&gt;&lt;/td&gt;
+       &lt;td style=&quot;text-align:center&quot;&gt;${x.ltHours}&lt;/td&gt;
+       &lt;td style=&quot;text-align:center&quot;&gt;${x.thHours}&lt;/td&gt;
+       &lt;td&gt;&lt;b&gt;${x.ltPeriods} LT + ${x.thPeriods} TH = ${x.ltPeriods+x.thPeriods} tiết&lt;/b&gt;&lt;/td&gt;
+     &lt;/tr&gt;`;
+   }else{
+     rows+=`&lt;tr&gt;
+       &lt;td&gt;&lt;b&gt;${esc(x.title)} (Thực hành)&lt;/b&gt;&lt;/td&gt;
+       &lt;td style=&quot;text-align:center&quot;&gt;—&lt;/td&gt;
+       &lt;td style=&quot;text-align:center&quot;&gt;${x.rawHours} giờ&lt;/td&gt;
+       &lt;td&gt;&lt;b&gt;${x.rawHours} giờ KT × 60/45 → ${x.periods} tiết; phân bổ: ${x.periodsKT||0} KT + ${x.periodsTH||0} TH&lt;/b&gt;&lt;/td&gt;
+     &lt;/tr&gt;`;
+   }
+ });
+ box.innerHTML=`&lt;table style=&quot;width:100%;border-collapse:collapse&quot;&gt;
+ &lt;thead&gt;&lt;tr&gt;
+ &lt;th style=&quot;border-bottom:1px solid #ddd;padding:7px;text-align:left&quot;&gt;Bài / Mốc&lt;/th&gt;
+ &lt;th style=&quot;border-bottom:1px solid #ddd;padding:7px&quot;&gt;LT giờ&lt;/th&gt;
+ &lt;th style=&quot;border-bottom:1px solid #ddd;padding:7px&quot;&gt;TH giờ&lt;/th&gt;
+ &lt;th style=&quot;border-bottom:1px solid #ddd;padding:7px;text-align:left&quot;&gt;Sau quy đổi&lt;/th&gt;
+ &lt;/tr&gt;&lt;/thead&gt;
+ &lt;tbody&gt;${rows}&lt;/tbody&gt;
+ &lt;tfoot&gt;&lt;tr&gt;&lt;td colspan=&quot;3&quot; style=&quot;padding:8px;text-align:right&quot;&gt;&lt;b&gt;TỔNG SAU QUY ĐỔI&lt;/b&gt;&lt;/td&gt;
+ &lt;td style=&quot;padding:8px&quot;&gt;&lt;b&gt;${conversionSummary().total} tiết&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tfoot&gt;
+ &lt;/table&gt;`;
+}
+
+async function readProgramFile(file){
+ if(!file)return;
+ courseMode=document.getElementById(&quot;courseMode&quot;)?.value||courseMode||&quot;&quot;;
+ if(!courseMode){alert(&quot;Vui lòng chọn Loại môn học trước khi tải Chương trình môn học.&quot;);document.getElementById(&quot;programFile&quot;).value=&quot;&quot;;return;}
+ const status=document.getElementById(&quot;fileStatus&quot;);
+ status.textContent=&quot;Đang đọc: &quot;+file.name+&quot; ...&quot;;
+
+ try{
+   let text=&quot;&quot;, htmlText=&quot;&quot;;
+   if(file.name.toLowerCase().endsWith(&quot;.docx&quot;)){
+     if(typeof mammoth===&quot;undefined&quot;) throw new Error(&quot;Không tải được bộ đọc DOCX. Hãy kiểm tra kết nối Internet.&quot;);
+     const buf=await file.arrayBuffer();
+
+     // Phải tạo bản sao vì ArrayBuffer có thể bị thư viện sử dụng.
+     const rawResult=await mammoth.extractRawText({arrayBuffer:buf.slice(0)});
+     const htmlResult=await mammoth.convertToHtml({arrayBuffer:buf.slice(0)});
+     text=rawResult.value;
+     htmlText=htmlResult.value;
+   }else{
+     text=await file.text();
+   }
+
+   // Xóa sạch dữ liệu cũ. Khi tải một môn mới, tách khỏi phiên đang mở trước đó
+   // để không vô tình ghi đè dữ liệu của môn khác.
+   activeWorkSessionId=&quot;&quot;;
+   lessons=[];
+   programSequence=[];
+   course={name:&quot;&quot;,code:&quot;&quot;,total:0,lt:0,th:0,kt:0};
+   document.getElementById(&quot;tbody&quot;).innerHTML=&quot;&quot;;
+
+   parseCourseInfo(text);
+   const detailMap=parseDetailItems(text);
+
+   if(htmlText){
+     programSequence=parseProgramTable(htmlText,detailMap);
+   }
+
+   // Fallback chỉ dành cho file text/md: đọc các Bài từ phần chi tiết,
+   // không dùng dữ liệu môn trước.
+   if(!programSequence.length &amp;&amp; Object.keys(detailMap).length){
+     for(const [noStr,d] of Object.entries(detailMap)){
+       const no=Number(noStr);
+       programSequence.push({
+         kind:&quot;lesson&quot;,no,
+         title:`Bài ${no}: ${d.title||&quot;&quot;}`,
+         ltHours:0,thHours:0,ltPeriods:0,thPeriods:0,items:d.items||[]
+       });
+     }
+   }
+
+   lessons=programSequence.filter(x=&gt;x.kind===&quot;lesson&quot;);
+   recalcAssessments();
+
+   // Kiểm tra toàn bộ đề mục sau khi parse để phát hiện thiếu dữ liệu.
+   const missingLessons=lessons.filter(x=&gt;(x.items||[]).length===0);
+   const totalDetectedItems=lessons.reduce((s,x)=&gt;s+(x.items||[]).length,0);
+
+   if(programSequence.length){
+     status.innerHTML=`&lt;b&gt;Đã đọc:&lt;/b&gt; ${file.name} · ${lessons.length} Bài/Chương · ${programSequence.filter(x=&gt;x.kind===&quot;assessment&quot;).length} mốc Kiểm tra. Thi kết thúc môn đã được loại. Dữ liệu cũ đã được xóa.`+
+       (missingLessons.length
+        ? `&lt;br&gt;&lt;span style=&quot;color:#b45309&quot;&gt;&lt;b&gt;Cảnh báo:&lt;/b&gt; ${missingLessons.length} Bài/Chương chưa nhận diện được đề mục; cần kiểm tra file gốc.&lt;/span&gt;`
+        : `&lt;br&gt;&lt;span style=&quot;color:#166534&quot;&gt;&lt;b&gt;Đã kiểm tra:&lt;/b&gt; tất cả Bài/Chương đều có dữ liệu đề mục nhận diện được · Tổng ${totalDetectedItems} đề mục.&lt;/span&gt;`);
+   }else{
+     status.innerHTML=`&lt;b&gt;Chưa nhận diện được bảng phân phối thời gian.&lt;/b&gt; Hệ thống không sử dụng dữ liệu cũ.`;
+   }
+
+   updateCourseCards();
+   renderConversionPreview();
+   updateWeeklyCheck();
+ }catch(e){
+   lessons=[];
+   programSequence=[];
+   status.textContent=&quot;Không đọc được file: &quot;+e.message;
+   document.getElementById(&quot;tbody&quot;).innerHTML=&quot;&quot;;
+   renderConversionPreview();
+ }
+}
+
+function renderWeeklySlots(){
+ const n=Math.max(1,Math.min(7,Number(document.getElementById(&quot;weeklyCount&quot;).value)||1));
+ const box=document.getElementById(&quot;weeklySlots&quot;);
+ const old=[...box.querySelectorAll(&quot;.slot&quot;)].map(s=&gt;({
+   day:s.querySelector(&quot;.weekday&quot;)?.value,
+   periods:s.querySelector(&quot;.periods&quot;)?.value
+ }));
+ box.innerHTML=&quot;&quot;;
+ const defaultDays=[2,4,6,1,3,5,0];
+ for(let i=0;i&lt;n;i++){
+   const div=document.createElement(&quot;div&quot;);div.className=&quot;slot&quot;;
+   div.innerHTML=`&lt;label&gt;Buổi ${i+1}&lt;/label&gt;
+   &lt;div class=&quot;slot-row&quot;&gt;
+     &lt;select class=&quot;weekday&quot; onchange=&quot;updateWeeklyCheck()&quot;&gt;
+       &lt;option value=&quot;1&quot;&gt;Thứ 2&lt;/option&gt;&lt;option value=&quot;2&quot;&gt;Thứ 3&lt;/option&gt;&lt;option value=&quot;3&quot;&gt;Thứ 4&lt;/option&gt;
+       &lt;option value=&quot;4&quot;&gt;Thứ 5&lt;/option&gt;&lt;option value=&quot;5&quot;&gt;Thứ 6&lt;/option&gt;&lt;option value=&quot;6&quot;&gt;Thứ 7&lt;/option&gt;&lt;option value=&quot;0&quot;&gt;Chủ nhật&lt;/option&gt;
+     &lt;/select&gt;
+     &lt;input class=&quot;periods&quot; type=&quot;number&quot; min=&quot;1&quot; max=&quot;10&quot; value=&quot;${old[i]?.periods||5}&quot; oninput=&quot;updateWeeklyCheck()&quot;&gt;
+     &lt;span class=&quot;slot-period-label&quot;&gt;tiết&lt;/span&gt;
+   &lt;/div&gt;`;
+   box.appendChild(div);
+   div.querySelector(&quot;.weekday&quot;).value=old[i]?.day ?? defaultDays[i];
+ }
+ updateWeeklyCheck();
+}
+
+function updateWeeklyCheck(){
+ const slots=[...document.querySelectorAll(&quot;.slot&quot;)];
+ const total=slots.reduce((s,x)=&gt;s+(Number(x.querySelector(&quot;.periods&quot;).value)||0),0);
+ const target=(course.total||course.lt||course.th||course.kt) ? `&lt;b&gt;${convertedTotal()} tiết&lt;/b&gt;` : `&lt;b&gt;tổng số tiết của môn sau khi tải file&lt;/b&gt;`;
+
+ const names={&quot;0&quot;:&quot;Chủ nhật&quot;,&quot;1&quot;:&quot;Thứ 2&quot;,&quot;2&quot;:&quot;Thứ 3&quot;,&quot;3&quot;:&quot;Thứ 4&quot;,&quot;4&quot;:&quot;Thứ 5&quot;,&quot;5&quot;:&quot;Thứ 6&quot;,&quot;6&quot;:&quot;Thứ 7&quot;};
+ const detail=slots.map(x=&gt;{
+   const day=x.querySelector(&quot;.weekday&quot;).value;
+   const p=Number(x.querySelector(&quot;.periods&quot;).value)||0;
+   return `&lt;b&gt;${names[day]}: ${p} tiết&lt;/b&gt;`;
+ }).join(&quot; · &quot;);
+
+ document.getElementById(&quot;weeklyCheck&quot;).innerHTML=
+   `&lt;b&gt;${slots.length} buổi/tuần&lt;/b&gt; · &lt;b&gt;${total} tiết/tuần&lt;/b&gt;&lt;br&gt;`+
+   `${detail}&lt;br&gt;`+
+   `&lt;span style=&quot;color:#475569&quot;&gt;Lặp cấu hình này đến khi đủ ${target}. Ngày nghỉ chỉ bị bỏ qua, không chuyển số tiết sang ngày khác.&lt;/span&gt;`;
+}
+
+function balancedTypes(lt,th){
+ const total=lt+th, out=[]; let usedLT=0, usedTH=0;
+ if(total&lt;=0) return out;
+
+ // Rải LT đều trong phần LT+TH, không dồn toàn bộ LT lên đầu.
+ for(let i=0;i&lt;total;i++){
+   const shouldLT=Math.round((i+1)*lt/total);
+   if(usedLT&lt;lt &amp;&amp; shouldLT&gt;usedLT){
+     out.push(&quot;LT&quot;); usedLT++;
+   }else if(usedTH&lt;th){
+     out.push(&quot;TH&quot;); usedTH++;
+   }else{
+     out.push(&quot;LT&quot;); usedLT++;
+   }
+ }
+ return out;
+}
+
+function lessonToUnits(item){
+ const types=balancedTypes(item.ltPeriods,item.thPeriods);
+ const allItems=item.items||[];
+ const n=types.length;
+ if(!n) return [];
+
+ // NGUYÊN TẮC BẮT BUỘC: không được bỏ sót bất kỳ đề mục nào.
+ // - Nếu số đề mục >= số tiết: chia TOÀN BỘ đề mục thành các nhóm liên tiếp,
+ //   giữ nguyên thứ tự và gán hết vào các tiết. Một tiết có thể chứa nhiều đề mục.
+ // - Nếu số đề mục < số tiết: cho phép một đề mục kéo dài nhiều tiết;
+ //   khi sang buổi khác giao diện mới ghi &quot;(tiếp theo)&quot;.
+ const perUnit=Array.from({length:n},()=&gt;[]);
+
+ if(allItems.length&gt;=n){
+   const counts=distributeItemCounts(allItems.length,n);
+   let cursor=0;
+   counts.forEach((count,ui)=&gt;{
+     for(let j=0;j&lt;count;j++){
+       const src=allItems[cursor++];
+       if(Array.isArray(src)) perUnit[ui].push([src[0],src[1],false]);
+       else perUnit[ui].push([&quot;major&quot;,String(src||&quot;&quot;),false]);
+     }
+   });
+ }else if(allItems.length){
+   for(let i=0;i&lt;n;i++){
+     const itemIndex=Math.min(allItems.length-1,Math.floor(i*allItems.length/n));
+     const src=allItems[itemIndex];
+     const continued=i&gt;0 &amp;&amp; Math.min(allItems.length-1,Math.floor((i-1)*allItems.length/n))===itemIndex;
+     if(Array.isArray(src)) perUnit[i].push([src[0],src[1],continued]);
+     else perUnit[i].push([&quot;major&quot;,String(src||&quot;&quot;),continued]);
+   }
+ }
+
+ return types.map((type,i)=&gt;({
+   type,
+   lesson:item.title,
+   items:perUnit[i]
+ }));
+}
+
+function distributeItemCounts(total,parts){
+ const base=Math.floor(total/parts);
+ const rem=total%parts;
+ return Array.from({length:parts},(_,i)=&gt;base+(i&lt;rem?1:0));
+}
+
+function assessmentToUnits(item){
+ const units=[];
+ const label=`${item.title}`;
+ const mode=item.assessmentMode||assessmentModeFromCourse();
+ const thCount=Math.max(0,Number(item.periodsTH||0));
+ const ktCount=Math.max(0,Number(item.periodsKT||0));
+
+ // Phần tiết quy đổi dư của kiểm tra Thực hành/Tích hợp được tính vào cột TH,
+ // nhưng KHÔNG mang nhãn &quot;Kiểm tra&quot; để tránh lặp chữ Kiểm tra trên Sổ đầu bài.
+ for(let i=0;i&lt;thCount;i++){
+   units.push({
+     type:&quot;TH&quot;,
+     assessmentMode:mode,
+     assessmentType:item.assessmentType||&quot;Thực hành&quot;,
+     assessmentSupport:true,
+     lesson:&quot;&quot;,
+     items:[]
+   });
+ }
+
+ // Chỉ phần giữ lại ở cột Kiểm tra mới hiển thị rõ mốc Kiểm tra.
+ for(let i=0;i&lt;ktCount;i++){
+   units.push({
+     type:&quot;KT&quot;,
+     assessmentMode:mode,
+     assessmentType:item.assessmentType||(mode===&quot;theory&quot;?&quot;Lý thuyết&quot;:&quot;Thực hành&quot;),
+     assessmentIndex:i+1,
+     assessmentCount:ktCount,
+     lesson:label,
+     items:[]
+   });
+ }
+ return units;
+}
+
+function buildProgramUnits(){
+ const units=[];
+ programSequence.forEach(item=&gt;{
+   if(item.kind===&quot;lesson&quot;) units.push(...lessonToUnits(item));
+   else if(item.kind===&quot;assessment&quot;) units.push(...assessmentToUnits(item));
+ });
+ return units;
+}
+
+function esc(s){return s.replace(/[&amp;&lt;&gt;&quot;&#x27;]/g,m=&gt;({&quot;&amp;&quot;:&quot;&amp;amp;&quot;,&quot;&lt;&quot;:&quot;&amp;lt;&quot;,&quot;&gt;&quot;:&quot;&amp;gt;&quot;,&#x27;&quot;&#x27;:&quot;&amp;quot;&quot;,&quot;&#x27;&quot;:&quot;&amp;#039;&quot;}[m]))}
+function fmt(d){return `${String(d.getDate()).padStart(2,&quot;0&quot;)}/${String(d.getMonth()+1).padStart(2,&quot;0&quot;)}/${d.getFullYear()}`}
+function weekdayName(d){
+ const names=[&quot;Chủ nhật&quot;,&quot;Thứ 2&quot;,&quot;Thứ 3&quot;,&quot;Thứ 4&quot;,&quot;Thứ 5&quot;,&quot;Thứ 6&quot;,&quot;Thứ 7&quot;];
+ return names[d.getDay()];
+}
+
+
+let exclusions=[];
+
+function dateKey(d){
+ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,&quot;0&quot;)}-${String(d.getDate()).padStart(2,&quot;0&quot;)}`;
+}
+
+
+function refreshScheduleAfterCalendarChange(){
+  // Chỉ tự chia lại khi đã có dữ liệu chương trình và ngày bắt đầu.
+  if(programSequence.length &amp;&amp; document.getElementById(&quot;startDate&quot;).value){
+    buildSchedule();
+  }
+}
+
+
+
+function formatDateInput(el){
+ let v=el.value.replace(/\D/g,&quot;&quot;).slice(0,8);
+ if(v.length&gt;4) v=v.slice(0,2)+&quot;/&quot;+v.slice(2,4)+&quot;/&quot;+v.slice(4);
+ else if(v.length&gt;2) v=v.slice(0,2)+&quot;/&quot;+v.slice(2);
+ el.value=v;
+}
+
+function displayDateToISO(v){
+ const m=(v||&quot;&quot;).match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+ if(!m) return &quot;&quot;;
+ const d=Number(m[1]), mo=Number(m[2]), y=Number(m[3]);
+ const dt=new Date(y,mo-1,d);
+ if(dt.getFullYear()!==y || dt.getMonth()!==mo-1 || dt.getDate()!==d) return &quot;&quot;;
+ return `${String(y).padStart(4,&quot;0&quot;)}-${String(mo).padStart(2,&quot;0&quot;)}-${String(d).padStart(2,&quot;0&quot;)}`;
+}
+
+function getDraftExclusion(){
+ const startText=document.getElementById(&quot;excludeStartDate&quot;).value.trim();
+ const endText=document.getElementById(&quot;excludeEndDate&quot;).value.trim() || startText;
+ if(!startText) return null;
+
+ const start=displayDateToISO(startText);
+ const end=displayDateToISO(endText);
+ const reason=document.getElementById(&quot;excludeReason&quot;).value.trim();
+ const type=document.getElementById(&quot;excludeType&quot;).value;
+
+ if(!start || !end) return {invalid:true,startText,endText};
+ if(end &lt; start) return {invalid:true,start,end};
+ return {start,end,reason:reason||&quot;Ngày nghỉ&quot;,type,draft:true};
+}
+
+function getActiveExclusions(){
+ const active=[...exclusions];
+ const draft=getDraftExclusion();
+ if(draft &amp;&amp; !draft.invalid){
+   const duplicate=active.some(x=&gt;x.start===draft.start &amp;&amp; x.end===draft.end);
+   if(!duplicate) active.push(draft);
+ }
+ return active;
+}
+
+function onExclusionDraftChange(){
+ const draft=getDraftExclusion();
+ const endInput=document.getElementById(&quot;excludeEndDate&quot;);
+
+ if(draft &amp;&amp; draft.invalid){
+   endInput.setCustomValidity(&quot;Ngày không hợp lệ. Nhập theo định dạng dd/mm/yyyy và bảo đảm ngày kết thúc không trước ngày bắt đầu.&quot;);
+ }else{
+   endInput.setCustomValidity(&quot;&quot;);
+ }
+
+ if(programSequence.length &amp;&amp; document.getElementById(&quot;startDate&quot;).value &amp;&amp; draft &amp;&amp; !draft.invalid){
+   buildSchedule();
+ }
+}
+
+function addExclusion(){
+ const draft=getDraftExclusion();
+ if(!draft){
+   alert(&quot;Vui lòng nhập ngày bắt đầu nghỉ theo định dạng dd/mm/yyyy.&quot;);
+   return;
+ }
+ if(draft.invalid){
+   alert(&quot;Khoảng ngày nghỉ không hợp lệ. Vui lòng nhập theo định dạng dd/mm/yyyy và kiểm tra ngày bắt đầu/kết thúc.&quot;);
+   return;
+ }
+
+ const {start,end,reason,type}=draft;
+ exclusions.push({start,end,reason,type});
+ exclusions.sort((a,b)=&gt;a.start.localeCompare(b.start));
+
+ document.getElementById(&quot;excludeStartDate&quot;).value=&quot;&quot;;
+ document.getElementById(&quot;excludeEndDate&quot;).value=&quot;&quot;;
+ document.getElementById(&quot;excludeReason&quot;).value=&quot;&quot;;
+ renderExclusions();
+ refreshScheduleAfterCalendarChange();
+}
+
+function removeExclusion(index){
+ exclusions.splice(index,1);
+ renderExclusions();
+ refreshScheduleAfterCalendarChange();
+}
+
+function clearExclusions(){
+ exclusions=[];
+ renderExclusions();
+ refreshScheduleAfterCalendarChange();
+}
+
+function vnDate(s){
+ return s.split(&quot;-&quot;).reverse().join(&quot;/&quot;);
+}
+
+function renderExclusions(){
+ const box=document.getElementById(&quot;exclusionList&quot;);
+ if(!exclusions.length){
+   box.innerHTML=&#x27;&lt;div style=&quot;padding:9px 10px;color:#64748b;font-size:13px&quot;&gt;Chưa khai báo thời gian nghỉ.&lt;/div&gt;&#x27;;
+   return;
+ }
+ box.innerHTML=exclusions.map((x,i)=&gt;{
+   const tag=x.type===&quot;holiday&quot;
+      ? &#x27;&lt;span class=&quot;tag-holiday&quot;&gt;Nghỉ lễ&lt;/span&gt;&#x27;
+      : &#x27;&lt;span class=&quot;tag-school&quot;&gt;Kế hoạch trường&lt;/span&gt;&#x27;;
+   const range=x.start===x.end ? vnDate(x.start) : `${vnDate(x.start)} → ${vnDate(x.end)}`;
+   return `&lt;div class=&quot;exclusion-item&quot;&gt;
+     &lt;div&gt;&lt;b&gt;${range}&lt;/b&gt;&lt;/div&gt;
+     &lt;div&gt;${tag} ${esc(x.reason)}&lt;/div&gt;
+     &lt;div&gt;&lt;button class=&quot;gray&quot; onclick=&quot;removeExclusion(${i})&quot;&gt;Xóa&lt;/button&gt;&lt;/div&gt;
+   &lt;/div&gt;`;
+ }).join(&quot;&quot;);
+}
+
+function isExcludedDate(d){
+ const key=dateKey(d);
+ return getActiveExclusions().some(x=&gt;key&gt;=x.start &amp;&amp; key&lt;=x.end);
+}
+
+function nextScheduledDates(start, slots, needed){
+ // Map cố định: thứ nào học bao nhiêu tiết thì giữ nguyên suốt khóa.
+ const weekdayPeriods=new Map();
+ slots.forEach(s=&gt;weekdayPeriods.set(Number(s.day), Number(s.periods)));
+
+ let dates=[];
+ let d=new Date(start);
+ let guard=0;
+
+ while(dates.length&lt;needed &amp;&amp; guard&lt;3000){
+   const wd=d.getDay();
+
+   // Chỉ xếp lịch nếu đúng một thứ đã khai báo và ngày đó không nằm trong kỳ nghỉ.
+   if(weekdayPeriods.has(wd) &amp;&amp; !isExcludedDate(d)){
+     dates.push({
+       date:new Date(d),
+       weekday:wd,
+       periods:weekdayPeriods.get(wd)
+     });
+   }
+
+   // Ngày nghỉ chỉ bị bỏ qua. Không chuyển &quot;quota tiết&quot; của ngày nghỉ sang ngày kế tiếp.
+   d.setDate(d.getDate()+1);
+   guard++;
+ }
+ return dates;
+}
+
+
+function rawSessionItems(session){
+  const out=[];
+  (session?.units||[]).forEach(u=&gt;{
+    (u.items||[]).forEach(it=&gt;{
+      const txt=Array.isArray(it)?String(it[1]||&quot;&quot;).trim():String(it||&quot;&quot;).trim();
+      if(txt &amp;&amp; !out.includes(txt)) out.push(txt);
+    });
+  });
+  return out;
+}
+
+function displaySessionItems(sessionIndex){
+  const session=currentSessions[sessionIndex];
+  const current=rawSessionItems(session);
+  const previous=sessionIndex&gt;0 ? rawSessionItems(currentSessions[sessionIndex-1]) : [];
+
+  return current.map(txt=&gt;({
+    raw:txt,
+    display:previous.includes(txt) ? `${txt} (tiếp theo)` : txt
+  }));
+}
+
+function buildSchedule(){
+ if(!programSequence.length){
+   alert(&quot;Chưa có dữ liệu Chương trình môn học để chia lịch.&quot;);
+   return;
+ }
+ recalcAssessments();
+
+ const units=buildProgramUnits();
+ if(!units.length){
+   alert(&quot;Chưa có số tiết hợp lệ. Vui lòng kiểm tra bảng phân phối thời gian trong Chương trình môn học.&quot;);
+   return;
+ }
+
+ const slots=[...document.querySelectorAll(&quot;.slot&quot;)].map(s=&gt;({
+   day:Number(s.querySelector(&quot;.weekday&quot;).value),
+   periods:Number(s.querySelector(&quot;.periods&quot;).value)||0
+ })).filter(x=&gt;x.periods&gt;0);
+
+ if(!slots.length){
+   alert(&quot;Vui lòng khai báo ít nhất 1 buổi học trong tuần.&quot;);
+   return;
+ }
+
+ const unique=new Set(slots.map(x=&gt;x.day));
+ if(unique.size!==slots.length){
+   alert(&quot;Các buổi trong tuần không được chọn trùng cùng một thứ.&quot;);
+   return;
+ }
+
+ const weeklyPeriods=slots.reduce((s,x)=&gt;s+x.periods,0);
+ const estimatedWeeks=Math.ceil(units.length/Math.max(1,weeklyPeriods));
+ const needed=estimatedWeeks*slots.length+slots.length+10;
+
+ const startValue=document.getElementById(&quot;startDate&quot;).value;
+ if(!startValue){
+   alert(&quot;Vui lòng chọn ngày bắt đầu.&quot;);
+   return;
+ }
+ const start=new Date(startValue+&quot;T00:00:00&quot;);
+ const dates=nextScheduledDates(start,slots,needed);
+
+ // Kiểm tra an toàn: số tiết của mỗi ngày phải đúng cấu hình của chính thứ đó.
+ const weekdayConfig=new Map(slots.map(s=&gt;[Number(s.day),Number(s.periods)]));
+ for(const x of dates){
+   const expected=weekdayConfig.get(x.date.getDay());
+   if(expected!==x.periods){
+     alert(&quot;Lỗi cấu hình lịch: số tiết của ngày &quot;+fmt(x.date)+&quot; không khớp với thứ trong tuần.&quot;);
+     return;
+   }
+ }
+
+ const sessions=[];
+ let cursor=0,di=0;
+ while(cursor&lt;units.length &amp;&amp; di&lt;dates.length){
+   const cap=dates[di].periods;
+   sessions.push({
+     date:dates[di].date,
+     units:units.slice(cursor,Math.min(cursor+cap,units.length))
+   });
+   cursor+=cap;
+   di++;
+ }
+
+ currentSessions=sessions;
+ const tb=document.getElementById(&quot;tbody&quot;);
+ tb.innerHTML=&quot;&quot;;
+
+ sessions.forEach((s,si)=&gt;{
+   const c={LT:0,TH:0,KT:0};
+   s.units.forEach(x=&gt;c[x.type]++);
+
+   let content=&quot;&quot;;
+
+   // Nhóm đúng theo thứ tự xuất hiện:
+   // TÊN BÀI -&gt; các đề mục của chính bài đó -&gt; rồi mới sang BÀI kế tiếp.
+   const previousSession = si&gt;0 ? currentSessions[si-1] : null;
+
+   // Các đề mục đã xuất hiện ở buổi trước, lưu theo từng tên bài.
+   const prevItemsByLesson = new Map();
+   if(previousSession){
+     (previousSession.units||[]).forEach(u=&gt;{
+       if(!prevItemsByLesson.has(u.lesson)) prevItemsByLesson.set(u.lesson,new Set());
+       (u.items||[]).forEach(it=&gt;{
+         const txt=Array.isArray(it)?String(it[1]||&quot;&quot;).trim():String(it||&quot;&quot;).trim();
+         if(txt) prevItemsByLesson.get(u.lesson).add(txt);
+       });
+     });
+   }
+
+   const orderedLessons=[];
+   (s.units||[]).forEach(u=&gt;{
+     if(u.lesson &amp;&amp; !orderedLessons.includes(u.lesson)) orderedLessons.push(u.lesson);
+   });
+
+   orderedLessons.forEach(lessonName=&gt;{
+     content+=`&lt;div class=&quot;lesson-title&quot;&gt;${esc(lessonName)}&lt;/div&gt;`;
+
+     const shownThisLesson=new Set();
+
+     (s.units||[]).filter(u=&gt;u.lesson===lessonName).forEach(u=&gt;{
+       (u.items||[]).forEach(it=&gt;{
+         const txt=Array.isArray(it)?String(it[1]||&quot;&quot;).trim():String(it||&quot;&quot;).trim();
+         const cls=Array.isArray(it)?(it[0]||&quot;major&quot;):&quot;major&quot;;
+         if(!txt) return;
+
+         // Trong cùng một buổi, cùng một đề mục của cùng một bài chỉ hiện 1 lần.
+         if(shownThisLesson.has(txt)) return;
+         shownThisLesson.add(txt);
+
+         // Chỉ ghi &quot;(tiếp theo)&quot; nếu đúng đề mục của đúng bài đã xuất hiện ở buổi trước.
+         const continued = prevItemsByLesson.get(lessonName)?.has(txt) || false;
+         const displayTxt = continued ? `${txt} (tiếp theo)` : txt;
+
+         content+=`&lt;div class=&quot;${cls}&quot;&gt;${esc(displayTxt)}&lt;/div&gt;`;
+       });
+     });
+   });
+
+   const tr=document.createElement(&quot;tr&quot;);
+   tr.innerHTML=`&lt;td class=&quot;stt&quot;&gt;${si+1}&lt;/td&gt;
+   &lt;td class=&quot;date&quot;&gt;${fmt(s.date)}&lt;br&gt;&lt;span style=&quot;font-size:11px;color:#64748b&quot;&gt;${weekdayName(s.date)}&lt;/span&gt;&lt;/td&gt;
+   &lt;td class=&quot;small&quot;&gt;${c.LT||0}&lt;/td&gt;
+   &lt;td class=&quot;small&quot;&gt;${c.TH||0}&lt;/td&gt;
+   &lt;td class=&quot;small&quot;&gt;${c.KT||0}&lt;/td&gt;
+   &lt;td class=&quot;content&quot;&gt;${content}
+   &lt;div style=&quot;margin-top:8px&quot;&gt;
+     &lt;button type=&quot;button&quot; onclick=&quot;sendSessionToPlanner(${si})&quot; style=&quot;padding:6px 9px;font-size:12px;background:#7c3aed&quot;&gt;SOẠN GIÁO ÁN BUỔI NÀY&lt;/button&gt;
+   &lt;/div&gt;
+   &lt;/td&gt;
+   &lt;td class=&quot;absent&quot;&gt;&lt;/td&gt;
+   &lt;td class=&quot;sign&quot;&gt;&lt;/td&gt;`;
+   tb.appendChild(tr);
+ });
+ autoSaveActiveWorkSession();
+}
+
+
+function sendSessionToPlanner(index){
+ const s=currentSessions[index];
+ if(!s){ alert(&quot;Không tìm thấy buổi học.&quot;); return; }
+
+ // &quot;Tên bài học trước&quot; lấy đúng từ TT ngay trước trong Sổ đầu bài.
+ // TT 1 không có bài học trước.
+ let previousLesson=&quot;&quot;;
+ let previousLessonTitle=&quot;&quot;;
+ let previousLessonItems=[];
+ if(index&gt;0 &amp;&amp; currentSessions[index-1]){
+   const prev=currentSessions[index-1];
+   const prevLessons=[...new Set((prev.units||[]).map(u=&gt;u.lesson).filter(Boolean))];
+   previousLessonTitle=prevLessons.join(&quot; + &quot;);
+
+   // Lấy toàn bộ đề mục/tiểu mục thực sự đã dạy ở TT liền trước.
+   previousLessonItems=displaySessionItems(index-1).map(x=&gt;x.display);
+
+   // Chuỗi dùng cho trường Tên bài học trước: Tên bài + toàn bộ đề mục đã dạy hôm đó.
+   previousLesson = previousLessonTitle;
+   if(previousLessonItems.length){
+     previousLesson += &quot;\n&quot; + previousLessonItems.join(&quot;\n&quot;);
+   }
+ }
+
+ const counts={LT:0,TH:0,KT:0};
+ s.units.forEach(u=&gt;counts[u.type]=(counts[u.type]||0)+1);
+
+ const lessons=[...new Set(s.units.map(u=&gt;u.lesson).filter(Boolean))];
+
+ // Giữ nguyên cấu trúc hiển thị của Sổ đầu bài:
+ // Tên bài -&gt; các đề mục của bài đó -&gt; rồi mới sang bài kế tiếp.
+ const lessonGroups=[];
+ const prevSession=index&gt;0 ? currentSessions[index-1] : null;
+ const prevByLesson=new Map();
+
+ if(prevSession){
+   (prevSession.units||[]).forEach(u=&gt;{
+     if(!prevByLesson.has(u.lesson)) prevByLesson.set(u.lesson,new Set());
+     (u.items||[]).forEach(it=&gt;{
+       const txt=Array.isArray(it)?String(it[1]||&quot;&quot;).trim():String(it||&quot;&quot;).trim();
+       if(txt) prevByLesson.get(u.lesson).add(txt);
+     });
+   });
+ }
+
+ lessons.forEach(lessonName=&gt;{
+   const groupItems=[];
+   const seen=new Set();
+
+   (s.units||[]).filter(u=&gt;u.lesson===lessonName).forEach(u=&gt;{
+     (u.items||[]).forEach(it=&gt;{
+       const txt=Array.isArray(it)?String(it[1]||&quot;&quot;).trim():String(it||&quot;&quot;).trim();
+       if(!txt || seen.has(txt)) return;
+       seen.add(txt);
+
+       // Chỉ ghi &quot;(tiếp theo)&quot; nếu đúng đề mục của đúng bài đã có ở buổi trước.
+       const continued=prevByLesson.get(lessonName)?.has(txt) || false;
+       groupItems.push(continued ? `${txt} (tiếp theo)` : txt);
+     });
+   });
+
+   lessonGroups.push({
+     lesson:lessonName,
+     items:groupItems
+   });
+ });
+
+ const items=[];
+ const orderedLessons=[...new Set((s.units||[]).map(u=&gt;u.lesson).filter(Boolean))];
+ orderedLessons.forEach(lessonName=&gt;{
+   const seen=new Set();
+   (s.units||[]).filter(u=&gt;u.lesson===lessonName).forEach(u=&gt;{
+     (u.items||[]).forEach(it=&gt;{
+       const txt=Array.isArray(it)?String(it[1]||&quot;&quot;).trim():String(it||&quot;&quot;).trim();
+       if(!txt || seen.has(txt)) return;
+       seen.add(txt);
+       const continued=prevByLesson.get(lessonName)?.has(txt) || false;
+       items.push(continued ? `${txt} (tiếp theo)` : txt);
+     });
+   });
+ });
+
+ // An toàn dữ liệu: nếu là buổi thuộc một Bài mà chưa có đề mục,
+ // lấy đề mục tương ứng trực tiếp từ chương trình để không truyền buổi rỗng sang Bước 2.
+ if(!items.length){
+   const lessonNames=[...new Set((s.units||[]).map(u=&gt;u.lesson).filter(Boolean))];
+   lessonNames.forEach(name=&gt;{
+     const lessonObj=programSequence.find(x=&gt;x.kind===&quot;lesson&quot; &amp;&amp; x.title===name);
+     if(lessonObj &amp;&amp; lessonObj.items &amp;&amp; lessonObj.items.length){
+       const first=lessonObj.items[0];
+       const txt=Array.isArray(first)?first[1]:String(first||&quot;&quot;);
+       if(txt &amp;&amp; !items.includes(txt)) items.push(txt);
+     }
+   });
+ }
+
+ const payload={
+   source:&quot;so-dau-bai&quot;,
+   courseMode:courseMode,
+   courseModeLabel:courseModeLabel(),
+   assessmentType:(counts.KT||0)&gt;0?(assessmentModeFromCourse()===&quot;theory&quot;?&quot;Lý thuyết&quot;:&quot;Thực hành&quot;):&quot;&quot;,
+   courseName:course.name||&quot;&quot;,
+   courseCode:course.code||&quot;&quot;,
+   date:fmt(s.date),
+   weekday:weekdayName(s.date),
+   periods:s.units.length,
+   lt:counts.LT||0,
+   th:counts.TH||0,
+   kt:counts.KT||0,
+   lessons,
+   lessonGroups,
+   items,
+   previousLesson,
+   previousLessonTitle,
+   previousLessonItems,
+   scheduleTT:index+1,
+
+   // Gửi toàn bộ chương trình môn học đã đọc ở Bước 1 sang Bước 2 để xem lại.
+   fullCourse:{
+     name:course.name||&quot;&quot;,
+     code:course.code||&quot;&quot;,
+     total:Number(course.total||0),
+     lt:Number(course.lt||0),
+     th:Number(course.th||0),
+     kt:Number(course.kt||0)
+   },
+   fullProgram:programSequence.map(x=&gt;JSON.parse(JSON.stringify(x))),
+
+   summaryText:lessons.join(&quot; | &quot;) + (items.length ? &quot; | &quot; + items.join(&quot; | &quot;) : &quot;&quot;)
+ };
+
+ parent.postMessage({type:&quot;OPEN_LESSON_PLAN_FROM_SCHEDULE&quot;,payload},&quot;*&quot;);
+}
+const WORK_SESSION_STORE=&quot;so_dau_bai_work_sessions_v1&quot;;
+const WORK_SESSION_LAST=&quot;so_dau_bai_last_session_v1&quot;;
+let activeWorkSessionId=&quot;&quot;;
+
+function readWorkSessions(){
+  try{
+    const raw=localStorage.getItem(WORK_SESSION_STORE);
+    const obj=raw?JSON.parse(raw):{};
+    return obj &amp;&amp; typeof obj===&quot;object&quot; ? obj : {};
+  }catch(e){ return {}; }
+}
+function writeWorkSessions(obj){
+  localStorage.setItem(WORK_SESSION_STORE,JSON.stringify(obj));
+}
+function safeCloneData(v){
+  return JSON.parse(JSON.stringify(v));
+}
+function collectWorkSessionState(){
+  const slots=[...document.querySelectorAll(&quot;.slot&quot;)].map(s=&gt;({
+    day:Number(s.querySelector(&quot;.weekday&quot;).value),
+    periods:Number(s.querySelector(&quot;.periods&quot;).value)||0
+  }));
+  return {
+    version:2,
+    courseMode:courseMode,
+    course:safeCloneData(course),
+    programSequence:safeCloneData(programSequence),
+    startDate:document.getElementById(&quot;startDate&quot;).value||&quot;&quot;,
+    weeklyCount:Number(document.getElementById(&quot;weeklyCount&quot;).value)||slots.length||1,
+    weeklySlots:slots,
+    exclusions:safeCloneData(exclusions),
+    savedAt:new Date().toISOString()
+  };
+}
+function sessionDefaultName(){
+  const code=String(course.code||&quot;&quot;).trim();
+  const name=String(course.name||&quot;&quot;).trim();
+  return [code,name,courseModeLabel()].filter(Boolean).join(&quot; - &quot;) || &quot;Phiên làm việc&quot;;
+}
+function renderSavedSessionList(){
+  const sel=document.getElementById(&quot;savedSessionSelect&quot;);
+  if(!sel) return;
+  const store=readWorkSessions();
+  const entries=Object.entries(store).sort((a,b)=&gt;String(b[1].savedAt||&quot;&quot;).localeCompare(String(a[1].savedAt||&quot;&quot;)));
+  sel.innerHTML=entries.length ? entries.map(([id,x])=&gt;`&lt;option value=&quot;${esc(id)}&quot;&gt;${esc(x.name||&quot;Phiên làm việc&quot;)}&lt;/option&gt;`).join(&quot;&quot;) : `&lt;option value=&quot;&quot;&gt;— Chưa có phiên đã lưu —&lt;/option&gt;`;
+  if(activeWorkSessionId &amp;&amp; store[activeWorkSessionId]) sel.value=activeWorkSessionId;
+  updateSavedSessionInfo();
+}
+function updateSavedSessionInfo(){
+  const sel=document.getElementById(&quot;savedSessionSelect&quot;);
+  const info=document.getElementById(&quot;savedSessionInfo&quot;);
+  if(!sel||!info) return;
+  const store=readWorkSessions();
+  const x=store[sel.value];
+  if(!x){
+    info.textContent=&quot;Phiên được lưu trên trình duyệt của máy này, gồm chương trình môn học, lịch học, ngày nghỉ và Sổ đầu bài. Phiên gần nhất sẽ tự khôi phục khi mở lại ứng dụng.&quot;;
+    return;
+  }
+  const dt=x.savedAt?new Date(x.savedAt):null;
+  const when=dt &amp;&amp; !isNaN(dt) ? dt.toLocaleString(&quot;vi-VN&quot;) : &quot;&quot;;
+  info.innerHTML=`&lt;b&gt;${esc(x.name||&quot;Phiên làm việc&quot;)}&lt;/b&gt;${when?` · lưu lúc ${esc(when)}`:&quot;&quot;} · ${Number(x.state?.programSequence?.length||0)} mục chương trình.`;
+}
+function saveWorkSession(){
+  if(!programSequence.length){ alert(&quot;Chưa có Chương trình môn học để lưu phiên.&quot;); return; }
+
+  const store=readWorkSessions();
+  const cleanName=sessionDefaultName();
+  const currentCode=String(course.code||&quot;&quot;).trim().toLowerCase();
+  const currentName=String(course.name||&quot;&quot;).trim().toLowerCase();
+
+  // Nếu phiên đang mở đúng môn hiện tại thì cập nhật chính phiên đó.
+  let id=&quot;&quot;;
+  if(activeWorkSessionId &amp;&amp; store[activeWorkSessionId]){
+    const activeCourse=store[activeWorkSessionId]?.state?.course||{};
+    const activeCode=String(activeCourse.code||&quot;&quot;).trim().toLowerCase();
+    const activeName=String(activeCourse.name||&quot;&quot;).trim().toLowerCase();
+    if((currentCode &amp;&amp; activeCode===currentCode) || (!currentCode &amp;&amp; currentName &amp;&amp; activeName===currentName)){
+      id=activeWorkSessionId;
+    }
+  }
+
+  // Nếu chưa có phiên đang mở đúng môn, tìm phiên đã lưu của chính môn này để cập nhật,
+  // tránh tạo nhiều phiên trùng tên khi người dùng làm việc với nhiều môn.
+  if(!id){
+    const found=Object.entries(store).find(([sid,x])=&gt;{
+      const c=x?.state?.course||{};
+      const code=String(c.code||&quot;&quot;).trim().toLowerCase();
+      const name=String(c.name||&quot;&quot;).trim().toLowerCase();
+      return (currentCode &amp;&amp; code===currentCode) || (!currentCode &amp;&amp; currentName &amp;&amp; name===currentName);
+    });
+    if(found) id=found[0];
+  }
+
+  if(!id) id=&quot;ws_&quot;+Date.now()+&quot;_&quot;+Math.random().toString(36).slice(2,7);
+
+  store[id]={name:cleanName,savedAt:new Date().toISOString(),state:collectWorkSessionState()};
+  store[id].state.savedAt=store[id].savedAt;
+  writeWorkSessions(store);
+  activeWorkSessionId=id;
+  localStorage.setItem(WORK_SESSION_LAST,id);
+  renderSavedSessionList();
+  alert(&quot;Đã lưu phiên làm việc: &quot;+cleanName);
+}
+function autoSaveActiveWorkSession(){
+  if(!activeWorkSessionId || !programSequence.length) return;
+  const store=readWorkSessions();
+  if(!store[activeWorkSessionId]) return;
+  store[activeWorkSessionId].savedAt=new Date().toISOString();
+  store[activeWorkSessionId].state=collectWorkSessionState();
+  store[activeWorkSessionId].state.savedAt=store[activeWorkSessionId].savedAt;
+  writeWorkSessions(store);
+  localStorage.setItem(WORK_SESSION_LAST,activeWorkSessionId);
+  renderSavedSessionList();
+}
+function applyWorkSessionState(state){
+  if(!state || !Array.isArray(state.programSequence)) throw new Error(&quot;Dữ liệu phiên không hợp lệ.&quot;);
+  courseMode=state.courseMode||&quot;&quot;; const modeEl=document.getElementById(&quot;courseMode&quot;);if(modeEl)modeEl.value=courseMode; onCourseModeChange();
+  course=safeCloneData(state.course||{name:&quot;&quot;,code:&quot;&quot;,total:0,lt:0,th:0,kt:0});
+  programSequence=safeCloneData(state.programSequence||[]);
+  lessons=programSequence.filter(x=&gt;x.kind===&quot;lesson&quot;);
+  exclusions=safeCloneData(state.exclusions||[]);
+
+  document.getElementById(&quot;startDate&quot;).value=state.startDate||&quot;&quot;;
+  document.getElementById(&quot;weeklyCount&quot;).value=String(Math.max(1,Math.min(7,Number(state.weeklyCount)||1)));
+  renderWeeklySlots();
+
+  const slots=[...document.querySelectorAll(&quot;.slot&quot;)];
+  (state.weeklySlots||[]).forEach((x,i)=&gt;{
+    if(!slots[i]) return;
+    slots[i].querySelector(&quot;.weekday&quot;).value=String(x.day);
+    slots[i].querySelector(&quot;.periods&quot;).value=String(x.periods);
+  });
+
+  document.getElementById(&quot;excludeStartDate&quot;).value=&quot;&quot;;
+  document.getElementById(&quot;excludeEndDate&quot;).value=&quot;&quot;;
+  document.getElementById(&quot;excludeReason&quot;).value=&quot;&quot;;
+  renderExclusions();
+  updateCourseCards();
+  renderConversionPreview();
+  updateWeeklyCheck();
+  document.getElementById(&quot;fileStatus&quot;).innerHTML=`&lt;b&gt;Đã khôi phục phiên đã lưu.&lt;/b&gt; Không cần tải lại file chương trình môn học.`;
+  if(programSequence.length &amp;&amp; state.startDate) buildSchedule();
+}
+function loadWorkSessionById(id,quiet=false){
+  const store=readWorkSessions();
+  const item=store[id];
+  if(!item) return false;
+  try{
+    activeWorkSessionId=id;
+    applyWorkSessionState(item.state);
+    localStorage.setItem(WORK_SESSION_LAST,id);
+    renderSavedSessionList();
+    if(!quiet) alert(&quot;Đã mở phiên: &quot;+(item.name||&quot;Phiên làm việc&quot;));
+    return true;
+  }catch(e){
+    if(!quiet) alert(&quot;Không mở được phiên: &quot;+e.message);
+    return false;
+  }
+}
+function loadSelectedWorkSession(){
+  const id=document.getElementById(&quot;savedSessionSelect&quot;)?.value||&quot;&quot;;
+  if(!id){ alert(&quot;Chưa có phiên để mở.&quot;); return; }
+  loadWorkSessionById(id,false);
+}
+function deleteSelectedWorkSession(){
+  const sel=document.getElementById(&quot;savedSessionSelect&quot;);
+  const id=sel?.value||&quot;&quot;;
+  if(!id){ alert(&quot;Chưa có phiên để xóa.&quot;); return; }
+  const store=readWorkSessions();
+  const item=store[id];
+  if(!confirm(`Xóa phiên &quot;${item?.name||&quot;Phiên làm việc&quot;}&quot;?`)) return;
+  delete store[id];
+  writeWorkSessions(store);
+  if(activeWorkSessionId===id) activeWorkSessionId=&quot;&quot;;
+  if(localStorage.getItem(WORK_SESSION_LAST)===id) localStorage.removeItem(WORK_SESSION_LAST);
+  renderSavedSessionList();
+}
+function restoreLastWorkSession(){
+  renderSavedSessionList();
+  const id=localStorage.getItem(WORK_SESSION_LAST)||&quot;&quot;;
+  if(id) loadWorkSessionById(id,true);
+}
+
+function exportExcel(){
+ const table=document.getElementById(&quot;mainTable&quot;).outerHTML;
+ const css=`&lt;style&gt;table{border-collapse:collapse;width:100%;font-family:&quot;Times New Roman&quot;;font-size:12pt}th,td{border:1px solid #000;padding:5px;vertical-align:middle}th{text-align:center;font-weight:bold}.stt,.date,.small,.absent,.sign{text-align:center}.content{vertical-align:top}.lesson-title,.major{font-weight:bold}.sub{margin-left:18px}
+.exclusions{margin-top:12px}
+.exclusion-row{display:grid;grid-template-columns:160px 1fr 90px;gap:8px;align-items:end;margin-bottom:8px}
+.exclusion-list{margin-top:10px;border:1px solid #d9e1ec;border-radius:9px;overflow:hidden}
+.exclusion-item{display:grid;grid-template-columns:120px 1fr 90px;gap:8px;padding:8px 10px;border-bottom:1px solid #e5e7eb;align-items:center}
+.exclusion-item:last-child{border-bottom:0}
+.tag-holiday{display:inline-block;padding:2px 7px;border-radius:999px;background:#fee2e2;color:#b91c1c;font-size:12px;font-weight:700}
+.tag-school{display:inline-block;padding:2px 7px;border-radius:999px;background:#ede9fe;color:#6d28d9;font-size:12px;font-weight:700}
+@media(max-width:700px){.exclusion-row,.exclusion-item{grid-template-columns:1fr}}
+
+&lt;/style&gt;`;
+ const xls=`&lt;html xmlns:o=&quot;urn:schemas-microsoft-com:office:office&quot; xmlns:x=&quot;urn:schemas-microsoft-com:office:excel&quot; xmlns=&quot;http://www.w3.org/TR/REC-html40&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;${css}&lt;/head&gt;&lt;body&gt;${table}&lt;/body&gt;&lt;/html&gt;`;
+ const blob=new Blob([&quot;\ufeff&quot;,xls],{type:&quot;application/vnd.ms-excel;charset=utf-8&quot;});
+ const a=document.createElement(&quot;a&quot;);a.href=URL.createObjectURL(blob);a.download=&quot;So_dau_bai_&quot;+(course.code||&quot;mon_hoc&quot;)+&quot;.xls&quot;;document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+updateCourseCards();
+renderConversionPreview();
+renderWeeklySlots();
+renderExclusions();
+document.getElementById(&quot;tbody&quot;).innerHTML=&quot;&quot;;
+restoreLastWorkSession();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;"></iframe>
+</section>
+
+<section class="section" id="step2">
+  <div class="section-head">
+    <div>
+      <h2>BƯỚC 2. SOẠN GIÁO ÁN TỪ SỔ ĐẦU BÀI</h2>
+      <p>Bước 2 để trống hoàn toàn cho đến khi Bước 1 tải chương trình, chia lịch và chọn một buổi học. Khi đó Môn học – Mã môn, Bài/Chương, Loại giáo án, Số tiết và Tổng thời gian được truyền/tính trực tiếp từ đúng buổi trong Sổ đầu bài và bị khóa, không cho chọn lại.</p>
+    </div>
+    <div class="actions"><button class="secondary" onclick="document.getElementById('step1').scrollIntoView({behavior:'smooth'})">↑ Quay lại Sổ đầu bài</button></div>
+  </div>
+  <div id="transferStatus"></div>
+  <iframe id="plannerFrame" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;vi&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;utf-8&quot; /&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot; /&gt;
+  &lt;title&gt;Soạn Giáo Án - Bách khoa Nam Sài Gòn&lt;/title&gt;
+  &lt;style&gt;
+    :root{
+      --bg:#f4f7fb;--card:#fff;--text:#1f2937;--muted:#667085;--line:#dbe2ea;
+      --primary:#1f4fa3;--primary2:#173e80;--ok:#117a45;--warn:#b26a00;--danger:#b42318;
+      --soft:#eef4ff;--shadow:0 10px 30px rgba(31,79,163,.08)
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:&quot;Times New Roman&quot;,Times,serif;background:var(--bg);color:var(--text)}
+
+@page{size:A4 portrait;margin:20mm 15mm 20mm 20mm}
+.paper{
+  width:210mm;
+  min-height:297mm;
+  margin:0 auto;
+  padding:20mm 15mm 20mm 20mm;
+  background:#fff;
+  box-sizing:border-box;
+  border:1px solid #cfd6df;
+  box-shadow:0 5px 18px rgba(0,0,0,.06);
+  overflow:visible;
+}
+.paper *{box-sizing:border-box}
+.paper table{max-width:100%;table-layout:fixed}
+.paper td,.paper th{word-break:normal;overflow-wrap:anywhere}
+@media print{
+  @page{size:A4 portrait;margin:20mm 15mm 20mm 20mm}
+  html,body{width:210mm;background:#fff}
+  .paper{
+    width:auto;
+    min-height:auto;
+    margin:0;
+    padding:0;
+    border:0;
+    box-shadow:none;
+  }
+  .paper table{page-break-inside:auto}
+  .paper tr{page-break-inside:avoid;page-break-after:auto}
+  .paper thead{display:table-header-group}
+  .paper tfoot{display:table-footer-group}
+}
+    button,input,select,textarea{font:inherit}
+    .app{max-width:1500px;margin:auto;padding:18px}
+    .topbar{display:flex;gap:14px;align-items:center;justify-content:space-between;margin-bottom:16px}
+    .brand h1{margin:0;font-size:30px;color:var(--primary)}
+    .brand p{margin:5px 0 0;color:var(--muted)}
+    .toolbar{display:flex;flex-wrap:wrap;gap:8px}
+    .btn{border:1px solid var(--line);background:#fff;padding:9px 13px;border-radius:10px;cursor:pointer}
+    .btn:hover{filter:brightness(.98)}
+    .btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .btn.primary:hover{background:var(--primary2)}
+    .btn.danger{color:var(--danger);border-color:#f2c7c3}
+    .grid{display:grid;grid-template-columns:420px 1fr;gap:16px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+    .card h2{margin:0;padding:14px 16px;border-bottom:1px solid var(--line);font-size:20px}
+    .panel{padding:14px 16px}
+    label{display:block;font-weight:bold;margin:10px 0 6px}
+    select,input,textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px;background:#fff}
+    textarea{min-height:86px;resize:vertical}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .hint{font-size:13px;color:var(--muted);margin-top:5px}
+    .status{padding:9px 11px;border-radius:9px;background:#f7f9fc;margin-top:10px;border:1px solid var(--line)}
+    .status.ok{background:#ecfdf3;color:var(--ok);border-color:#b7ebca}
+    .status.warn{background:#fff8e8;color:var(--warn);border-color:#f5d791}
+    .status.bad{background:#fff1f0;color:var(--danger);border-color:#f1b5b0}
+    .programs{max-height:230px;overflow:auto;border:1px solid var(--line);border-radius:10px;margin-top:8px}
+    .program{padding:9px 10px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px;align-items:center}
+    .program:last-child{border-bottom:0}
+    .program small{color:var(--muted)}
+    .program-actions{display:flex;gap:5px}
+    .mini{font-size:12px;padding:5px 8px;border-radius:7px}
+    .preview-wrap{padding:16px;overflow:auto}
+    .paper{background:#fff;margin:auto}
+    .paper[contenteditable=&quot;true&quot;]{outline:none}
+    .ga-title{text-align:center;font-weight:bold;font-size:14pt;margin:6px 0}
+    .meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px}
+    .meta div{min-height:28px}
+    table.ga{width:100%;border-collapse:collapse;margin-top:12px;border:1.2px solid #111}
+table.ga{table-layout:fixed}
+table.ga th:nth-child(1),table.ga td:nth-child(1){width:5%}
+table.ga th:nth-child(2),table.ga td:nth-child(2){width:41%}
+table.ga th:nth-child(3),table.ga td:nth-child(3){width:22%}
+table.ga th:nth-child(4),table.ga td:nth-child(4){width:22%}
+table.ga th:nth-child(5),table.ga td:nth-child(5){width:10%}
+    table.ga th,table.ga td{border:1.2px solid #111;padding:5px;vertical-align:top;font-size:12pt;line-height:1.22;color:#000;background:#fff}
+    table.ga th{text-align:center}
+    table.ga td.time{width:10%;text-align:center}
+    table.ga td.tt{width:5%;text-align:center}
+    .editable{min-height:28px}
+    .activity{width:22%}
+.ai-tools{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.ai-btn{font-size:11px;padding:4px 7px;border-radius:7px;border:1px solid var(--line);background:#f8fafc;cursor:pointer}
+.ai-btn:hover{background:#eef4ff}
+.ai-loading{opacity:.6;pointer-events:none}
+    .content{width:41%}
+    .time-input{width:66px;padding:5px;text-align:center}
+    .sum{font-weight:bold}
+    .section-title{font-weight:bold;margin:10px 0 5px;font-size:12pt}
+    .footer-sign{display:grid;grid-template-columns:1fr 1fr;text-align:center;margin-top:28px}
+.top-template{width:100%;border-collapse:collapse;margin-bottom:0}
+.top-template td{border:1px dashed #999;padding:6px 8px;vertical-align:middle}
+.top-template .logo-cell{width:28%;height:76px}
+.top-template .appendix-cell{text-align:center;height:76px;line-height:1.2}
+.top-template .appendix-title{font-weight:bold;font-size:16px}
+.top-template .appendix-note{font-style:italic;font-size:14px}
+.meta-template{width:93%;margin:0 auto;border-collapse:collapse}
+.meta-template td{border:1px dashed #999;padding:6px 8px;vertical-align:top}
+.meta-template .left-meta{width:40%;font-weight:bold}
+.meta-template .right-meta{width:60%;line-height:1.2}
+.lesson-heading{margin-top:16px;font-size:12pt;line-height:1.2}
+.lesson-main-title{font-weight:bold}
+.lesson-outline{margin:4px 0 0 46px;padding-left:22px;font-weight:bold}
+.lesson-outline li{padding-left:4px;margin:2px 0}.exact-outline{margin:4px 0 0 46px;font-weight:bold}.exact-outline-item{margin:2px 0}
+.lesson-group{margin-top:3px}
+.lesson-group-title{font-weight:bold;margin-top:3px}
+.lesson-group .exact-outline-item{margin-left:20px;font-weight:bold;line-height:1.25}
+    .hidden{display:none!important}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:99}
+    .modal-box{background:#fff;width:min(920px,96vw);max-height:90vh;overflow:auto;border-radius:14px;border:1px solid var(--line)}
+    .modal-head{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;border-bottom:1px solid var(--line)}
+    .modal-body{padding:16px}
+    .checklist{max-height:240px;overflow:auto;border:1px solid var(--line);border-radius:9px;padding:8px}
+    .checkitem{display:flex;gap:8px;align-items:flex-start;margin:5px 0}
+    .checkitem input{width:auto;margin-top:4px}
+    .pill{display:inline-block;padding:3px 8px;border-radius:999px;background:var(--soft);color:var(--primary);font-size:12px}
+    .note{background:#fffceb;border:1px solid #f2df91;padding:10px;border-radius:9px;font-size:13px}
+    @media(max-width:1000px){.grid{grid-template-columns:1fr}.topbar{align-items:flex-start;flex-direction:column}.preview-wrap{overflow:auto}}
+    @media print{
+      body{background:#fff}.topbar,.left,.no-print{display:none!important}.grid{display:block}.card{border:0;box-shadow:none}.preview-wrap{padding:0}
+      .app{max-width:none;padding:0}
+    }
+  
+html,body,button,input,select,textarea,option,label,table,th,td,div,span,p,h1,h2,h3,h4,h5,h6{
+  font-family:&quot;Times New Roman&quot;,Times,serif!important;
+}
+
+&lt;/style&gt;
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class=&quot;app&quot;&gt;
+  &lt;div class=&quot;topbar&quot;&gt;
+    &lt;div class=&quot;brand&quot;&gt;
+      &lt;h1&gt;SOẠN GIÁO ÁN&lt;/h1&gt;
+      &lt;p&gt;Chế độ bám sát Skill Soạn Giáo Án • Đúng mẫu • Đúng chương trình • Đúng thời gian • Nội dung chi tiết&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;toolbar&quot;&gt;
+      &lt;button class=&quot;btn&quot; id=&quot;btnBackup&quot;&gt;Sao lưu dữ liệu&lt;/button&gt;
+      &lt;button class=&quot;btn&quot; id=&quot;btnRestore&quot;&gt;Khôi phục&lt;/button&gt;
+      &lt;button class=&quot;btn&quot; onclick=&quot;window.print()&quot; title=&quot;In qua trình duyệt; nếu thấy header/footer hãy tắt Headers and footers trong hộp thoại in&quot;&gt;In&lt;/button&gt;
+      &lt;button class=&quot;btn primary&quot; id=&quot;btnExportWord&quot;&gt;Xuất Word&lt;/button&gt;
+      &lt;button class=&quot;btn primary&quot; id=&quot;btnExportPdf&quot; title=&quot;Xuất PDF A4 sạch, không có header/footer của trình duyệt&quot;&gt;Xuất PDF&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;grid&quot;&gt;
+    &lt;div class=&quot;left&quot;&gt;
+      &lt;div class=&quot;card&quot; id=&quot;scheduleImportCard&quot;&gt;
+        &lt;h2&gt;0. Nội dung nhận từ Sổ đầu bài&lt;/h2&gt;
+        &lt;div class=&quot;panel&quot;&gt;
+          &lt;div id=&quot;scheduleImportInfo&quot; class=&quot;status&quot;&gt;Chưa chọn buổi học từ Bước 1.&lt;/div&gt;
+          &lt;div class=&quot;hint&quot;&gt;Tại Sổ đầu bài, bấm &lt;b&gt;SOẠN GIÁO ÁN BUỔI NÀY&lt;/b&gt;. Hệ thống sẽ tự lấy môn học, ngày dạy, số tiết và nội dung của đúng buổi đó để chuẩn bị giáo án.&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;card&quot; style=&quot;margin-top:16px&quot;&gt;
+        &lt;h2&gt;1. Chọn nội dung soạn&lt;/h2&gt;
+        &lt;div class=&quot;panel&quot;&gt;
+          &lt;label&gt;Môn học – Mã môn &lt;span style=&quot;color:#b42318&quot;&gt;(chỉ xuất hiện sau khi chọn buổi ở Bước 1)&lt;/span&gt;&lt;/label&gt;
+          &lt;select id=&quot;subject&quot;&gt;&lt;/select&gt;
+
+          &lt;label&gt;Loại giáo án &lt;span style=&quot;color:#b42318&quot;&gt;(tự xác định từ Sổ đầu bài)&lt;/span&gt;&lt;/label&gt;
+          &lt;select id=&quot;type&quot;&gt;
+            &lt;option value=&quot;theory&quot;&gt;Giáo án Lý thuyết&lt;/option&gt;
+            &lt;option value=&quot;practice&quot;&gt;Giáo án Thực hành&lt;/option&gt;
+            &lt;option value=&quot;integrated&quot; selected&gt;Giáo án Tích hợp&lt;/option&gt;
+          &lt;/select&gt;
+
+          &lt;label&gt;Bài / Chương &lt;span style=&quot;color:#b42318&quot;&gt;(lấy từ Sổ đầu bài Bước 1)&lt;/span&gt;&lt;/label&gt;
+          &lt;select id=&quot;lesson&quot;&gt;&lt;/select&gt;
+
+          &lt;label&gt;Nội dung chính&lt;/label&gt;
+          &lt;select id=&quot;section&quot;&gt;&lt;/select&gt;
+
+          &lt;label&gt;Tiểu mục&lt;/label&gt;
+          &lt;div id=&quot;subitems&quot; class=&quot;checklist&quot;&gt;&lt;/div&gt;
+
+          &lt;div class=&quot;row2&quot;&gt;
+            &lt;div&gt;
+              &lt;label&gt;Số tiết &lt;span style=&quot;color:#b42318&quot;&gt;(lấy từ Sổ đầu bài Bước 1)&lt;/span&gt;&lt;/label&gt;
+              &lt;select id=&quot;periods&quot;&gt;&lt;/select&gt;
+            &lt;/div&gt;
+            &lt;div&gt;
+              &lt;label&gt;Tổng thời gian &lt;span style=&quot;color:#b42318&quot;&gt;(tính từ Sổ đầu bài Bước 1)&lt;/span&gt;&lt;/label&gt;
+              &lt;input id=&quot;totalMinutes&quot; readonly&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+
+          &lt;label&gt;Giáo án số&lt;/label&gt;
+          &lt;input id=&quot;gaNumber&quot; placeholder=&quot;Ví dụ: 01&quot;&gt;
+
+          &lt;label&gt;Tên bài học trước &lt;span style=&quot;color:#b42318&quot;&gt;(lấy từ TT liền trước của Sổ đầu bài)&lt;/span&gt;&lt;/label&gt;
+          &lt;textarea id=&quot;prevLesson&quot; placeholder=&quot;TT 1: để trống&quot; readonly style=&quot;min-height:72px&quot;&gt;&lt;/textarea&gt;
+
+          &lt;div class=&quot;toolbar&quot; style=&quot;margin-top:14px&quot;&gt;
+            &lt;button class=&quot;btn primary&quot; id=&quot;btnGenerate&quot;&gt;Tạo giáo án&lt;/button&gt;
+            &lt;button class=&quot;btn&quot; id=&quot;btnCheck&quot;&gt;Kiểm tra thời gian&lt;/button&gt;
+            &lt;button class=&quot;btn&quot; id=&quot;btnAddRow&quot;&gt;Thêm dòng hoạt động&lt;/button&gt;
+          &lt;/div&gt;
+          &lt;div id=&quot;timeStatus&quot; class=&quot;status&quot;&gt;Chưa kiểm tra thời gian.&lt;/div&gt;
+          &lt;div class=&quot;note&quot; style=&quot;margin-top:10px&quot;&gt;
+            &lt;b&gt;Kiểm soát theo Skill:&lt;/b&gt; đúng môn/mã môn → đúng loại giáo án → đúng bài/đề mục → 1 tiết = 45 phút → tổng thời gian chính xác → ưu tiên 5–12 phút → hạn chế 15 phút → nội dung chi tiết → hoạt động GV/SV ngắn gọn và tương ứng.
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;card&quot; style=&quot;margin-top:16px&quot;&gt;
+        &lt;h2&gt;2. Xem toàn bộ chương trình môn học&lt;/h2&gt;
+        &lt;div class=&quot;panel&quot;&gt;
+          &lt;div id=&quot;fullProgramHeader&quot; class=&quot;status&quot;&gt;Chưa nhận chương trình môn học từ Bước 1.&lt;/div&gt;
+          &lt;div class=&quot;toolbar&quot; style=&quot;margin-top:10px&quot;&gt;
+            &lt;button class=&quot;btn&quot; id=&quot;btnToggleFullProgram&quot; disabled&gt;Xem toàn bộ chương trình&lt;/button&gt;
+          &lt;/div&gt;
+          &lt;div id=&quot;fullProgramViewer&quot; class=&quot;hidden&quot; style=&quot;margin-top:10px;max-height:520px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff&quot;&gt;&lt;/div&gt;
+          &lt;div class=&quot;hint&quot;&gt;Chương trình ở đây chỉ để xem lại. Mọi dữ liệu môn học được lấy từ file đã tải tại Bước 1, không tải hoặc tạo chương trình mới tại Bước 2.&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;card&quot; style=&quot;margin-top:16px&quot;&gt;
+        &lt;h2&gt;3. Cài đặt AI&lt;/h2&gt;
+        &lt;div class=&quot;panel&quot;&gt;
+          &lt;label&gt;Google/Gemini API Key&lt;/label&gt;
+          &lt;input id=&quot;apiKey&quot; type=&quot;password&quot; placeholder=&quot;AIza... hoặc API key từ Google AI Studio&quot;&gt;
+          &lt;div class=&quot;row2&quot;&gt;
+            &lt;div&gt;
+              &lt;label&gt;Model&lt;/label&gt;
+              &lt;select id=&quot;aiModel&quot;&gt;
+                &lt;option value=&quot;gemini-3.7-flash&quot; selected&gt;gemini-3.7-flash (khuyến nghị)&lt;/option&gt;
+                &lt;option value=&quot;gemini-3.6-flash&quot;&gt;gemini-3.6-flash&lt;/option&gt;
+                &lt;option value=&quot;gemini-3.5-flash&quot;&gt;gemini-3.5-flash&lt;/option&gt;
+                &lt;option value=&quot;gemini-3.5-flash-lite&quot;&gt;gemini-3.5-flash-lite&lt;/option&gt;
+              &lt;/select&gt;
+            &lt;/div&gt;
+            &lt;div&gt;
+              &lt;label&gt;Lưu khóa trên máy&lt;/label&gt;
+              &lt;select id=&quot;saveKey&quot;&gt;
+                &lt;option value=&quot;yes&quot; selected&gt;Có&lt;/option&gt;
+                &lt;option value=&quot;no&quot;&gt;Không&lt;/option&gt;
+              &lt;/select&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;toolbar&quot; style=&quot;margin-top:12px&quot;&gt;
+            &lt;button class=&quot;btn&quot; id=&quot;btnSaveAI&quot;&gt;Lưu cài đặt AI&lt;/button&gt;
+            &lt;button class=&quot;btn&quot; id=&quot;btnTestAI&quot;&gt;Kiểm tra kết nối Gemini&lt;/button&gt;
+            &lt;button class=&quot;btn&quot; id=&quot;btnRefreshModels&quot;&gt;Tải danh sách model&lt;/button&gt;
+            &lt;button class=&quot;btn primary&quot; id=&quot;btnAIWhole&quot;&gt;Gemini hoàn thiện toàn bộ giáo án&lt;/button&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;hint&quot;&gt;Gemini API key được dùng trực tiếp từ trình duyệt theo yêu cầu của người dùng. Cách này tiện nhưng không an toàn nếu chia sẻ file hoặc máy.&lt;/div&gt;
+          &lt;div id=&quot;aiStatus&quot; class=&quot;status&quot;&gt;Gemini chưa được cấu hình.&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;card&quot; style=&quot;margin-top:16px&quot;&gt;
+        &lt;h2&gt;4. Mẫu giáo án&lt;/h2&gt;
+        &lt;div class=&quot;panel&quot;&gt;
+          &lt;div class=&quot;note&quot;&gt;Ứng dụng sử dụng đúng 3 logic mẫu độc lập: Lý thuyết / Thực hành / Tích hợp; không trộn cấu trúc. Khi cập nhật mẫu mới, cần giữ nguyên tên mục, thứ tự mục, bảng biểu và logic tổ chức dạy học theo mẫu người dùng cung cấp.&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;card&quot;&gt;
+      &lt;h2&gt;Xem trước và chỉnh sửa trực tiếp &lt;span class=&quot;pill&quot;&gt;A4 dọc · 210 × 297 mm&lt;/span&gt;&lt;/h2&gt;
+      &lt;div class=&quot;preview-wrap&quot;&gt;
+        &lt;div id=&quot;paper&quot; class=&quot;paper&quot; contenteditable=&quot;false&quot;&gt;
+          &lt;div style=&quot;text-align:center;color:#667085;padding:80px 20px&quot;&gt;
+            Chọn môn học, loại giáo án, bài và số tiết rồi bấm &lt;b&gt;Tạo giáo án&lt;/b&gt;.
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div id=&quot;modal&quot; class=&quot;modal hidden&quot;&gt;
+  &lt;div class=&quot;modal-box&quot;&gt;
+    &lt;div class=&quot;modal-head&quot;&gt;
+      &lt;b id=&quot;modalTitle&quot;&gt;Thông tin&lt;/b&gt;
+      &lt;button class=&quot;btn mini&quot; id=&quot;modalClose&quot;&gt;Đóng&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;modal-body&quot; id=&quot;modalBody&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;input id=&quot;restoreFile&quot; type=&quot;file&quot; class=&quot;hidden&quot; accept=&quot;.json&quot;&gt;
+
+&lt;script&gt;
+const DEFAULT_PROGRAMS = [
+  {
+    code:&quot;MH18&quot;, name:&quot;Kỹ thuật xử lý phim và kỹ xảo điện ảnh&quot;, totalHours:75, version:&quot;2026&quot;,
+    lessons:[
+      {title:&quot;Bài 1: Một số chức năng cơ bản của phần mềm Adobe Premiere&quot;, hours:3, sections:[
+        {title:&quot;1. Khởi tạo Project&quot;, items:[&quot;1.1. Tạo một Project mới&quot;,&quot;1.2. Import Video vào Project&quot;]},
+        {title:&quot;2. Một số thiết lập cho khu vực Preview và Timeline&quot;, items:[
+          &quot;2.1. Hiển thị khung an toàn và thiết lập tùy chọn hiển thị&quot;,&quot;2.2. Thêm Track&quot;,&quot;2.3. Loại bỏ các Track rỗng&quot;,
+          &quot;2.4. Mở rộng khung hình cho Video&quot;,&quot;2.5. Điều chỉnh độ lớn của khung hình cho Video&quot;,
+          &quot;2.6. Quay Video bằng một độ cho trước&quot;,&quot;2.7. Chèn nhiều Video vào một màn hình&quot;
+        ]}
+      ]},
+      {title:&quot;Bài 2: Phương pháp biên tập Video&quot;, hours:5, sections:[
+        {title:&quot;1. Biên tập Track trên thanh Timeline&quot;,items:[&quot;1.1. Loại bỏ liên kết giữa Video và Audio&quot;,&quot;1.2. Không cho phép Video hiển thị trong khu vực Preview&quot;,&quot;1.3. Khóa và mở khóa cho một Track&quot;]},
+        {title:&quot;2. Làm việc với các Tool của Workplace&quot;,items:[&quot;2.1. Công cụ Selection Tool&quot;,&quot;2.2. Cắt Video thành từng đoạn bằng Razor Tool&quot;,&quot;2.3. Công cụ Hand Tool&quot;,&quot;2.4. Công cụ Zoom Tool&quot;]},
+        {title:&quot;3. Một số công cụ biên tập nâng cao&quot;,items:[&quot;3.1. In Point và Out Point&quot;,&quot;3.2. Chèn một đoạn Video vào Timeline&quot;,&quot;3.3. Tạo màu nền cho Video bằng Color Matte&quot;,&quot;3.4. Lệnh Opacity&quot;,&quot;3.5. Tăng, giảm tốc độ trình chiếu&quot;,&quot;3.6. Thay đổi số khung hình trên giây&quot;,&quot;3.7. Nhóm các đối tượng&quot;,&quot;3.8. Liên kết Audio và Video&quot;,&quot;3.9. Thêm một Sequence mới&quot;,&quot;3.10. Dừng hình&quot;]}
+      ]},
+      {title:&quot;Bài 3: Kỹ xảo và hiệu ứng&quot;,hours:12,sections:[
+        {title:&quot;1. Một số hiệu ứng căn bản&quot;,items:[&quot;1.1. Phóng lớn một nhân vật trong Video&quot;,&quot;1.2. Hiệu ứng Tint&quot;,&quot;1.3. Hiệu ứng Brightness &amp; Contrast&quot;,&quot;1.4. Hiệu ứng Black &amp; White&quot;]},
+        {title:&quot;2. Hiệu ứng ánh sáng&quot;,items:[&quot;2.1. Hiệu ứng Light Factory&quot;,&quot;2.2. Hiệu ứng Lightning&quot;,&quot;2.3. Hiệu ứng Lighting Effects&quot;]},
+        {title:&quot;3. Một số hiệu ứng nâng cao&quot;,items:[&quot;3.2. Xử lý nhiễu bằng hiệu ứng Neat Video&quot;,&quot;3.3. Khử nhiễu nhanh bằng hiệu ứng Video Denoise&quot;]},
+        {title:&quot;4. Một số hiệu ứng về màu sắc&quot;,items:[&quot;4.1. Cân bằng thông số màu bằng hiệu ứng Color Balance&quot;,&quot;4.2. Thay đổi màu cho Video bằng hiệu ứng Change Color&quot;]},
+        {title:&quot;5. Hiệu ứng chuyển cảnh&quot;,items:[&quot;5.1. Chuyển tiếp giữa hai đoạn Video khác nhau&quot;,&quot;5.2. Hiệu ứng Zoom&quot;,&quot;5.3. Hiệu ứng Hollywood FX 5&quot;]},
+        {title:&quot;6. Làm việc với Keyframe&quot;,items:[&quot;6.1. Cho hình ảnh hiển thị trong Video&quot;,&quot;6.2. Lồng ghép các đoạn phim&quot;,&quot;6.3. Điều khiển hiệu ứng bằng Keyframe&quot;]}
+      ]},
+      {title:&quot;Bài 4: Chèn văn bản vào Video&quot;,hours:7,sections:[
+        {title:&quot;1. Thiết kế các kiểu chữ cơ bản&quot;,items:[&quot;1.1. Tạo một đối tượng văn bản&quot;,&quot;1.2. Chỉnh sửa nội dung văn bản&quot;,&quot;1.3. Điều chỉnh màu sắc cho font chữ&quot;,&quot;1.4. Xây dựng chất liệu nền cho font chữ&quot;,&quot;1.5. Tạo bóng cho font chữ&quot;]},
+        {title:&quot;2. Một số công cụ soạn thảo khác&quot;,items:[&quot;2.1. Vertical Type Tool&quot;,&quot;2.2. Công cụ Path Type Tool&quot;,&quot;2.3. Tạo Style riêng&quot;,&quot;2.4. Tạo tiêu đề chuyển động&quot;,&quot;2.5. Xử lý các kiểu chữ trên thanh Timeline&quot;]},
+        {title:&quot;3. Một số ứng dụng của tiêu đề&quot;,items:[&quot;3.1. Tạo một tiêu đề ẩn - hiện&quot;,&quot;3.2. Nhúng hiệu ứng vào văn bản&quot;,&quot;3.3. Xây dựng một đoạn phim giới thiệu&quot;,&quot;3.4. Xây dựng một đoạn kết cho phim&quot;]}
+      ]},
+      {title:&quot;Bài 5: Phương pháp biên tập âm thanh trong Adobe Premiere&quot;,hours:7,sections:[
+        {title:&quot;1. Tìm hiểu một số chức năng của Audio&quot;,items:[&quot;1.1. Audio Track&quot;,&quot;1.2. Vô hiệu hóa một Track Audio&quot;,&quot;1.3. Khóa và mở khóa một Track Audio&quot;,&quot;1.4. Xóa Track Audio&quot;,&quot;1.5. Thêm Track Audio&quot;,&quot;1.6. Đóng mở Audio Mixer&quot;]},
+        {title:&quot;2. Một số chức năng nâng cao của Audio trong Adobe Premiere&quot;,items:[&quot;2.1. Xóa âm thanh trong một Video&quot;,&quot;2.2. Thêm nhạc vào Video&quot;,&quot;2.3. Giảm âm lượng cho tập tin Audio&quot;,&quot;2.4. Tăng giảm tốc độ cho tập tin Audio&quot;,&quot;2.5. Làm việc với Keyframe&quot;,&quot;2.6. Điều khiển Keyframe trên thanh Timeline&quot;,&quot;2.7. Xóa một đoạn Audio trong Video&quot;,&quot;2.8. Phương pháp thu âm cho Video&quot;]},
+        {title:&quot;3. Áp dụng hiệu ứng cho Audio&quot;,items:[&quot;3.1. Hiệu ứng Channel Volume&quot;,&quot;3.2. Tăng - giảm âm thanh Bass&quot;,&quot;3.3. Hiệu ứng chuyển tiếp cho Audio&quot;]}
+      ]},
+      {title:&quot;Bài 6: Phương pháp xuất phim trong Adobe Premiere&quot;,hours:6,sections:[
+        {title:&quot;1. Xuất phim ra định dạng AVI&quot;,items:[&quot;1.1. Xuất phim theo Microsoft AVI&quot;,&quot;1.2. Xuất phim theo Uncompressed Microsoft AVI&quot;]},
+        {title:&quot;2. Xuất phim theo định dạng MPG&quot;,items:[&quot;2.1. Xuất phim theo chuẩn VCD&quot;,&quot;2.2. Xuất phim theo chuẩn SVCD&quot;]},
+        {title:&quot;3. Xuất tập tin theo một số định dạng khác&quot;,items:[&quot;3.1. Xuất phim theo định dạng MOV của QuickTime&quot;,&quot;3.2. Xuất phim theo chuẩn Flash&quot;,&quot;3.3. Xuất phim theo chuẩn DVD&quot;]}
+      ]},
+      {title:&quot;Bài 7: Tạo kỹ xảo bằng Adobe After Effect&quot;,hours:31,sections:[
+        {title:&quot;Nội dung&quot;,items:[&quot;1. Tạo một project&quot;,&quot;2. Hiệu ứng Blur &amp; Shappen&quot;,&quot;3. Hiệu ứng Channel&quot;,&quot;4. Hiệu ứng Color Correction&quot;,&quot;5. Hiệu ứng Dirstort&quot;,&quot;6. Hiệu ứng Gennerate&quot;,&quot;7. Hiệu ứng Keying&quot;,&quot;8. Hiệu ứng Matte and Noise&quot;,&quot;9. Hiệu ứng Perfective&quot;,&quot;10. Hiệu ứng Simulation&quot;]}
+      ]}
+    ]
+  },
+  {
+    code:&quot;MH28&quot;,name:&quot;Ứng dụng AI trong thiết kế&quot;,totalHours:45,version:&quot;2026&quot;,
+    lessons:[
+      {title:&quot;Bài 1: Tổng quan và làm quen với công cụ AI&quot;,hours:8,sections:[
+        {title:&quot;1. Khái niệm trí tuệ nhân tạo và ứng dụng trong thiết kế đồ họa&quot;,items:[]},
+        {title:&quot;2. Giới thiệu các công cụ AI&quot;,items:[]},
+        {title:&quot;3. Lợi ích và hạn chế của AI&quot;,items:[]}
+      ]},
+      {title:&quot;Bài 2: Nguyên lý AI và thiết kế ấn phẩm quảng cáo&quot;,hours:7,sections:[
+        {title:&quot;1. Công nghệ text-to-image và generative AI&quot;,items:[&quot;1.1. Quy trình&quot;,&quot;1.2. Vai trò của dữ liệu huấn luyện trong chất lượng đầu ra&quot;]},
+        {title:&quot;2. Prompt engineering&quot;,items:[&quot;2.1. Cấu trúc câu lệnh&quot;,&quot;2.2. Mẹo tối ưu&quot;]}
+      ]},
+      {title:&quot;Bài 3: Ứng dụng AI trong UI/UX và thiết kế giao diện&quot;,hours:6,sections:[
+        {title:&quot;1. Ứng dụng AI trong thiết kế wireframe và mockup UI/UX&quot;,items:[]},
+        {title:&quot;2. Lựa chọn công cụ AI phù hợp&quot;,items:[]}
+      ]},
+      {title:&quot;Bài 4: Typography và tích hợp AI với phần mềm thiết kế&quot;,hours:7,sections:[
+        {title:&quot;1. AI trong thiết kế typography&quot;,items:[]},{title:&quot;2. Chuyển đổi tệp dữ liệu&quot;,items:[]}
+      ]},
+      {title:&quot;Bài 5: Xu hướng, đạo đức AI và chiến dịch truyền thông&quot;,hours:6,sections:[
+        {title:&quot;1. Xu hướng AI trong thiết kế (AR/VR, tự động hóa)&quot;,items:[]},{title:&quot;2. Đạo đức AI&quot;,items:[]},{title:&quot;3. Phân tích chiến dịch truyền thông thực tế&quot;,items:[]}
+      ]},
+      {title:&quot;Bài 6: Ứng dụng AI trong thực tiễn&quot;,hours:7,sections:[
+        {title:&quot;1. Lập kế hoạch cho dự án thiết kế cá nhân&quot;,items:[]},{title:&quot;2. Thực hiện sản phẩm thiết kế ứng dụng AI&quot;,items:[]},{title:&quot;3. Xây dựng portfolio cá nhân&quot;,items:[]},{title:&quot;4. Trình bày và phản biện sản phẩm&quot;,items:[]}
+      ]}
+    ]
+  },
+  {
+    code:&quot;MH31&quot;,name:&quot;Ứng dụng thiết kế sản phẩm đồ họa trên Canva&quot;,totalHours:45,version:&quot;2026&quot;,
+    lessons:[
+      {title:&quot;Chương 1: Giới thiệu và Cơ bản về Canva&quot;,hours:6,sections:[
+        {title:&quot;1.1. Hướng dẫn tải và cài đặt Canva&quot;,items:[]},{title:&quot;1.2. Khám phá giao diện và các thành phần chính&quot;,items:[]},{title:&quot;1.3. Hướng dẫn tạo dự án mới&quot;,items:[]},{title:&quot;1.4. Quản lý và lưu trữ dự án&quot;,items:[]}
+      ]},
+      {title:&quot;Chương 2: Cơ bản về Thiết kế Đồ họa trên phần mềm Canva&quot;,hours:17,sections:[
+        {title:&quot;2.1. Các loại nền và kích thước&quot;,items:[]},{title:&quot;2.2. Thêm và Dựng hình ảnh&quot;,items:[]},{title:&quot;2.3. Sử dụng Text và Font&quot;,items:[]},{title:&quot;2.4. Sử dụng Màu sắc&quot;,items:[]},{title:&quot;2.5. Hiệu ứng và Lớp&quot;,items:[]}
+      ]},
+      {title:&quot;Chương 3: Thiết kế sản phẩm cụ thể&quot;,hours:17,sections:[
+        {title:&quot;3.1. Tạo Poster&quot;,items:[]},{title:&quot;3.2. Tạo Banner&quot;,items:[]},{title:&quot;3.3. Tạo Brochure&quot;,items:[]},{title:&quot;3.4. Tạo Thẻ Tên&quot;,items:[]},{title:&quot;3.5. Tạo Thẻ Gửi quà&quot;,items:[]}
+      ]},
+      {title:&quot;Chương 4: Tổng kết và ôn tập&quot;,hours:5,sections:[
+        {title:&quot;4.1. Tổng kết&quot;,items:[]},{title:&quot;4.2. Ôn tập&quot;,items:[]}
+      ]}
+    ]
+  },
+  {
+    code:&quot;MH14&quot;,name:&quot;Thiết kế giao diện người dùng UI/UX&quot;,totalHours:45,version:&quot;2026&quot;,
+    lessons:[
+      {title:&quot;Bài 1: Tổng quan về UI/UX và Figma&quot;,hours:8,sections:[
+        {title:&quot;1. Giới thiệu và vai trò của UI/UX trong thiết kế đồ họa số&quot;,items:[]},{title:&quot;2. So sánh UI với UX&quot;,items:[]},{title:&quot;3. Làm quen với Figma&quot;,items:[]}
+      ]},
+      {title:&quot;Bài 2: Nguyên tắc thiết kế giao diện người dùng (UI)&quot;,hours:6,sections:[
+        {title:&quot;1. Bố cục và hệ thống lưới (grid system)&quot;,items:[&quot;1.1. Nguyên tắc bố cục&quot;,&quot;1.2. Khoảng cách và căn chỉnh trong thiết kế giao diện&quot;]},
+        {title:&quot;2. Màu sắc, typography và hệ thống thiết kế&quot;,items:[&quot;2.1. Màu sắc trong UI&quot;,&quot;2.2. Typography&quot;,&quot;2.3. Hệ thống thiết kế - Xây dựng các thành phần cơ bản&quot;]}
+      ]},
+      {title:&quot;Bài 3: UI Components &amp; Patterns&quot;,hours:6,sections:[
+        {title:&quot;1. UI Components&quot;,items:[]},{title:&quot;2. UI Patterns&quot;,items:[]}
+      ]},
+      {title:&quot;Bài 4: Nghiên cứu người dùng và Phân loại nhóm người dùng&quot;,hours:5,sections:[
+        {title:&quot;1. Quy trình nghiên cứu người dùng&quot;,items:[]},{title:&quot;2. Phân loại người dùng&quot;,items:[]},{title:&quot;3. Lập bảng phân nhóm người dùng&quot;,items:[]}
+      ]},
+      {title:&quot;Bài 5: Tạo Personas và Hành trình người dùng&quot;,hours:5,sections:[
+        {title:&quot;1. Xây dựng hồ sơ người dùng đại diện&quot;,items:[]},{title:&quot;2. Vẽ bản đồ hành trình trải nghiệm người dùng&quot;,items:[]}
+      ]},
+      {title:&quot;Bài 6: Tạo wireframe và prototype với Figma&quot;,hours:5,sections:[
+        {title:&quot;1. Wireframe, Mockup, Prototype&quot;,items:[]},{title:&quot;2. Kỹ thuật liên kết màn hình trong Figma (prototype mode)&quot;,items:[]},{title:&quot;3. Thử nghiệm kịch bản người dùng&quot;,items:[]}
+      ]},
+      {title:&quot;Bài 7: Dự án thiết kế UI/UX&quot;,hours:8,sections:[
+        {title:&quot;1. Phác thảo giao diện và wireframe&quot;,items:[]},{title:&quot;2. Thiết kế giao diện hoàn chỉnh và prototype&quot;,items:[]},{title:&quot;3. Thử nghiệm người dùng và cải tiến thiết kế&quot;,items:[]}
+      ]}
+    ]
+  }
+];
+
+let db;
+let programs=[];
+const $=s=&gt;document.querySelector(s);
+const $$=s=&gt;[...document.querySelectorAll(s)];
+
+function openDB(){
+  return new Promise((resolve,reject)=&gt;{
+    const req=indexedDB.open(&quot;giaoAnDB&quot;,1);
+    req.onupgradeneeded=e=&gt;{
+      const d=e.target.result;
+      if(!d.objectStoreNames.contains(&quot;programs&quot;)) d.createObjectStore(&quot;programs&quot;,{keyPath:&quot;id&quot;,autoIncrement:true});
+    };
+    req.onsuccess=e=&gt;{db=e.target.result;resolve(db)};
+    req.onerror=()=&gt;reject(req.error);
+  });
+}
+function tx(store,mode=&quot;readonly&quot;){return db.transaction(store,mode).objectStore(store)}
+function getAll(){return new Promise((res,rej)=&gt;{const r=tx(&quot;programs&quot;).getAll();r.onsuccess=()=&gt;res(r.result);r.onerror=()=&gt;rej(r.error)})}
+function addProgram(p){return new Promise((res,rej)=&gt;{const r=tx(&quot;programs&quot;,&quot;readwrite&quot;).add(p);r.onsuccess=()=&gt;res(r.result);r.onerror=()=&gt;rej(r.error)})}
+function putProgram(p){return new Promise((res,rej)=&gt;{const r=tx(&quot;programs&quot;,&quot;readwrite&quot;).put(p);r.onsuccess=()=&gt;res(r.result);r.onerror=()=&gt;rej(r.error)})}
+function deleteProgram(id){return new Promise((res,rej)=&gt;{const r=tx(&quot;programs&quot;,&quot;readwrite&quot;).delete(id);r.onsuccess=()=&gt;res();r.onerror=()=&gt;rej(r.error)})}
+async function ensureDefaults(){
+  let all=await getAll();
+  if(all.length===0){for(const p of DEFAULT_PROGRAMS) await addProgram(structuredClone(p));all=await getAll()}
+  programs=all;
+}
+function fillPeriods(){
+  $(&quot;#periods&quot;).innerHTML=Array.from({length:12},(_,i)=&gt;`&lt;option value=&quot;${i+1}&quot;&gt;${i+1} tiết&lt;/option&gt;`).join(&quot;&quot;);
+  $(&quot;#periods&quot;).value=&quot;4&quot;; updateMinutes()
+}
+function updateMinutes(){
+  const locked=Number($(&quot;#totalMinutes&quot;).dataset.fromSchedule)||0;
+  if(locked&gt;0){
+    $(&quot;#totalMinutes&quot;).value=locked+&quot; phút&quot;;
+    return;
+  }
+  const v=Number($(&quot;#periods&quot;).value)||0;
+  $(&quot;#totalMinutes&quot;).value=v&gt;0 ? (v*45)+&quot; phút&quot; : &quot;—&quot;;
+}
+function renderSubjects(){
+  const cur=$(&quot;#subject&quot;).value;
+  $(&quot;#subject&quot;).innerHTML=programs.map(p=&gt;`&lt;option value=&quot;${p.id}&quot;&gt;${p.name} – ${p.code}${p.version?` (${p.version})`:&quot;&quot;}&lt;/option&gt;`).join(&quot;&quot;);
+  if(programs.some(p=&gt;String(p.id)===cur)) $(&quot;#subject&quot;).value=cur;
+  renderLessons();
+  // #programList đã được bỏ khỏi Bước 2; chỉ render nếu phần tử thực sự tồn tại.
+  if($(&quot;#programList&quot;)) renderProgramList();
+}
+function currentProgram(){return programs.find(p=&gt;String(p.id)===$(&quot;#subject&quot;).value)}
+function renderLessons(){
+  const p=currentProgram(); $(&quot;#lesson&quot;).innerHTML=(p?.lessons||[]).map((l,i)=&gt;`&lt;option value=&quot;${i}&quot;&gt;${l.title}&lt;/option&gt;`).join(&quot;&quot;);
+  renderSections()
+}
+function currentLesson(){const p=currentProgram();return p?.lessons?.[Number($(&quot;#lesson&quot;).value)]}
+function renderSections(){
+  const l=currentLesson();$(&quot;#section&quot;).innerHTML=(l?.sections||[]).map((s,i)=&gt;`&lt;option value=&quot;${i}&quot;&gt;${s.title}&lt;/option&gt;`).join(&quot;&quot;);
+  renderSubitems()
+}
+function currentSection(){return currentLesson()?.sections?.[Number($(&quot;#section&quot;).value)]}
+function renderSubitems(){
+  const s=currentSection();const items=s?.items||[];
+  $(&quot;#subitems&quot;).innerHTML=items.length?items.map((x,i)=&gt;`&lt;label class=&quot;checkitem&quot;&gt;&lt;input type=&quot;checkbox&quot; class=&quot;subcheck&quot; value=&quot;${i}&quot; checked&gt;&lt;span&gt;${x}&lt;/span&gt;&lt;/label&gt;`).join(&quot;&quot;):`&lt;div class=&quot;hint&quot;&gt;Không có tiểu mục; sẽ sử dụng nội dung chính.&lt;/div&gt;`
+}
+function selectedContent(){
+  const s=currentSection();if(!s)return[];
+  const checked=$$(&quot;.subcheck:checked&quot;).map(x=&gt;s.items[Number(x.value)]);
+  return checked.length?checked:[s.title]
+}
+function renderProgramList(){
+  const box=$(&quot;#programList&quot;);
+  if(!box) return;
+  box.innerHTML=programs.map(p=&gt;`&lt;div class=&quot;program&quot;&gt;
+    &lt;div&gt;&lt;b&gt;${p.code}&lt;/b&gt; – ${p.name}&lt;br&gt;&lt;small&gt;${p.totalHours||&quot;?&quot;} giờ • ${p.lessons?.length||0} bài/chương • ${p.version||&quot;không phiên bản&quot;}&lt;/small&gt;&lt;/div&gt;
+    &lt;div class=&quot;program-actions&quot;&gt;
+      &lt;button class=&quot;btn mini&quot; onclick=&quot;viewProgram(${p.id})&quot;&gt;Xem&lt;/button&gt;
+      &lt;button class=&quot;btn mini danger&quot; onclick=&quot;removeProgram(${p.id})&quot;&gt;Xóa&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;`).join(&quot;&quot;)
+}
+window.removeProgram=async id=&gt;{
+  if(!confirm(&quot;Xóa chương trình này khỏi dữ liệu trình duyệt?&quot;))return;
+  await deleteProgram(id);programs=await getAll();renderSubjects()
+}
+window.viewProgram=id=&gt;{
+  const p=programs.find(x=&gt;x.id===id);showModal(`${p.code} – ${p.name}`,`&lt;pre style=&quot;white-space:pre-wrap&quot;&gt;${escapeHtml(JSON.stringify(p,null,2))}&lt;/pre&gt;`)
+}
+function showModal(t,b){$(&quot;#modalTitle&quot;).textContent=t;$(&quot;#modalBody&quot;).innerHTML=b;$(&quot;#modal&quot;).classList.remove(&quot;hidden&quot;)}
+function closeModal(){$(&quot;#modal&quot;).classList.add(&quot;hidden&quot;)}
+function escapeHtml(s){return String(s).replace(/[&amp;&lt;&gt;&quot;&#x27;]/g,m=&gt;({&quot;&amp;&quot;:&quot;&amp;amp;&quot;,&quot;&lt;&quot;:&quot;&amp;lt;&quot;,&quot;&gt;&quot;:&quot;&amp;gt;&quot;,&#x27;&quot;&#x27;:&quot;&amp;quot;&quot;,&quot;&#x27;&quot;:&quot;&amp;#039;&quot;}[m]))}
+
+function distribute(total,n){
+  if(n&lt;=0)return[];
+  const base=Math.floor(total/n), arr=Array(n).fill(base);
+  for(let i=0;i&lt;total-base*n;i++)arr[i]++;
+  return arr
+}
+function activityRows(type,items,total){
+  // Theo Skill:
+  // - 01 tiết = 45 phút.
+  // - Tổng toàn bộ hoạt động phải đúng tuyệt đối.
+  // - Ưu tiên 5–12 phút; hạn chế tối đa 15 phút; không hoạt động nào &gt;15 phút.
+  // - Đúng logic riêng của từng mẫu giáo án.
+  // - Cột NỘI DUNG chi tiết; cột hoạt động GV/SV ngắn gọn.
+  const rows=[];
+
+  function push(title, content, gv, sv, time){
+    rows.push({title,content,gv,sv,time});
+  }
+
+  const contentItems = items.length ? items : [currentSection()?.title || &quot;Nội dung bài học&quot;];
+
+  // Phân bổ khung thời gian trước theo đúng cấu trúc của từng loại.
+  // Tổng truyền vào đây là phần II (không bao gồm Ổn định lớp).
+  let fixed = {};
+  if(type===&quot;theory&quot;){
+    fixed = {lead:5, end:8, self:5};
+    const remain = total-fixed.lead-fixed.end-fixed.self;
+    push(&quot;1. Dẫn nhập&quot;,
+      &quot;Gợi mở từ kiến thức hoặc tình huống thực tế có liên quan trực tiếp đến nội dung bài; nêu vấn đề cần giải quyết và mục tiêu học tập để người học xác định trọng tâm.&quot;,
+      &quot;Nêu vấn đề; đặt câu hỏi.&quot;,&quot;Lắng nghe; trả lời.&quot;,fixed.lead);
+
+    const perItem = distribute(remain, contentItems.length);
+    contentItems.forEach((x,idx)=&gt;{
+      const block=perItem[idx];
+      const subTimes = splitPreferred(block, 4);
+      push(`2.${idx+1}. ${x} – Khái niệm, bản chất và vai trò`,
+        `Làm rõ ${x}: nêu khái niệm/thuật ngữ cốt lõi, bản chất, đặc điểm nhận biết, mục đích và vai trò trong phạm vi bài học. Chỉ ra khi nào cần áp dụng và mối liên hệ với nội dung trước/sau.`,
+        &quot;Giải thích; trình chiếu; minh họa.&quot;,&quot;Lắng nghe; ghi chép; phân tích.&quot;,subTimes[0]);
+      push(`2.${idx+1}. ${x} – Nguyên tắc, thành phần và cách sử dụng`,
+        `Phân tích các nguyên tắc, thành phần hoặc quy tắc sử dụng của ${x}; nêu điều kiện áp dụng, trình tự thực hiện ở mức lý thuyết và các điểm cần kiểm soát để tránh sai lệch.`,
+        &quot;Giải thích; minh họa.&quot;,&quot;Quan sát; ghi chép; trả lời.&quot;,subTimes[1]);
+      push(`2.${idx+1}. ${x} – Ví dụ, so sánh và lỗi nhận thức`,
+        `Trình bày ví dụ minh họa gắn với ${x}; so sánh trường hợp đúng/sai hoặc phù hợp/không phù hợp; chỉ ra lỗi nhận thức thường gặp, nguyên nhân và cách nhận biết.`,
+        &quot;Minh họa; đặt câu hỏi.&quot;,&quot;Phân tích; thảo luận; trả lời.&quot;,subTimes[2]);
+      push(`2.${idx+1}. ${x} – Vận dụng nhanh`,
+        `Giao câu hỏi/tình huống ngắn yêu cầu người học lựa chọn, giải thích hoặc áp dụng ${x}; đối chiếu đáp án theo tiêu chí chính xác, hợp lý và phù hợp bối cảnh.`,
+        &quot;Giao nhiệm vụ; nhận xét.&quot;,&quot;Vận dụng; báo cáo; sửa lỗi.&quot;,subTimes[3]);
+    });
+
+    push(&quot;3. Củng cố kiến thức và kết thúc bài&quot;,
+      &quot;Hệ thống hóa các điểm cốt lõi; kiểm tra nhanh mức độ đạt mục tiêu; nhấn mạnh lỗi dễ nhầm và cách khắc phục; liên hệ nội dung với nhiệm vụ học tập tiếp theo.&quot;,
+      &quot;Tổng kết; kiểm tra; nhận xét.&quot;,&quot;Trả lời; hệ thống hóa.&quot;,fixed.end);
+    push(&quot;4. Hướng dẫn tự học&quot;,
+      &quot;Ôn lại nội dung trọng tâm; hoàn thành bài tập/vận dụng liên quan; chuẩn bị tài liệu, dữ liệu hoặc kiến thức cho bài tiếp theo.&quot;,
+      &quot;Giao nhiệm vụ.&quot;,&quot;Ghi nhận nhiệm vụ.&quot;,fixed.self);
+
+  }else if(type===&quot;practice&quot;){
+    fixed = {lead:5, initial:15, end:10, self:5};
+    const remain = total-fixed.lead-fixed.initial-fixed.end-fixed.self;
+    push(&quot;1. Dẫn nhập&quot;,
+      &quot;Nêu nhiệm vụ thực hành, sản phẩm/kết quả cần đạt, yêu cầu kỹ thuật, tiêu chí đánh giá và các điều kiện an toàn/chuẩn bị trước khi thao tác.&quot;,
+      &quot;Nêu yêu cầu.&quot;,&quot;Lắng nghe; xác định nhiệm vụ.&quot;,fixed.lead);
+    push(&quot;2. Hướng dẫn ban đầu&quot;,
+      &quot;Giới thiệu dữ liệu/tệp/môi trường cần chuẩn bị; mô tả quy trình tổng quát; thao tác mẫu các bước trọng tâm; chỉ ra kết quả mong đợi, lỗi thường gặp, nguyên nhân và cách khắc phục trước khi luyện tập.&quot;,
+      &quot;Thao tác mẫu; hướng dẫn.&quot;,&quot;Quan sát; ghi chép.&quot;,fixed.initial);
+
+    const perItem = distribute(remain, contentItems.length);
+    contentItems.forEach((x,idx)=&gt;{
+      const subTimes = splitPreferred(perItem[idx], 4);
+      push(`3.${idx+1}. ${x} – Chuẩn bị và thao tác bước đầu`,
+        `Mục tiêu thao tác: thực hiện đúng phần ${x}. Chuẩn bị công cụ/dữ liệu cần thiết; xác định điều kiện đầu vào; thực hiện các bước đầu theo đúng thứ tự; kiểm tra trạng thái sau mỗi thao tác.`,
+        &quot;Quan sát; hướng dẫn.&quot;,&quot;Thao tác; kiểm tra.&quot;,subTimes[0]);
+      push(`3.${idx+1}. ${x} – Luyện tập theo quy trình`,
+        `Tiếp tục thực hiện ${x} theo quy trình; chú ý thông số, thứ tự thao tác và kết quả trung gian. Đối chiếu với mẫu/yêu cầu để phát hiện sai khác ngay trong quá trình làm.`,
+        &quot;Theo dõi; hỗ trợ.&quot;,&quot;Thực hành; đối chiếu.&quot;,subTimes[1]);
+      push(`3.${idx+1}. ${x} – Sửa lỗi và hoàn thiện`,
+        `Kiểm tra lỗi thường gặp của ${x}; xác định nguyên nhân; thực hiện cách sửa phù hợp; hoàn thiện kết quả theo yêu cầu kỹ thuật và thẩm mỹ của bài.`,
+        &quot;Kiểm tra; sửa lỗi.&quot;,&quot;Sửa lỗi; hoàn thiện.&quot;,subTimes[2]);
+      push(`3.${idx+1}. ${x} – Kiểm tra sản phẩm`,
+        `Tự kiểm tra kết quả theo tiêu chí: đúng quy trình, đúng yêu cầu kỹ thuật, đầy đủ thành phần, không phát sinh lỗi; lưu/hoàn thiện sản phẩm đúng quy định và báo cáo kết quả.`,
+        &quot;Đánh giá; nhận xét.&quot;,&quot;Tự kiểm tra; báo cáo.&quot;,subTimes[3]);
+    });
+
+    push(&quot;4. Hướng dẫn kết thúc&quot;,
+      &quot;Nhận xét kết quả rèn luyện; đối chiếu sản phẩm với tiêu chí; tổng hợp lỗi phổ biến, nguyên nhân và cách khắc phục; biểu dương thao tác đúng và nhắc yêu cầu cần cải thiện.&quot;,
+      &quot;Nhận xét; tổng kết.&quot;,&quot;Lắng nghe; sửa lỗi.&quot;,fixed.end);
+    push(&quot;5. Hướng dẫn tự rèn luyện&quot;,
+      &quot;Tiếp tục luyện tập với dữ liệu/tình huống tương đương; tự đánh giá sản phẩm theo tiêu chí đã học và chuẩn bị nội dung thực hành tiếp theo.&quot;,
+      &quot;Giao nhiệm vụ.&quot;,&quot;Ghi nhận nhiệm vụ.&quot;,fixed.self);
+
+  }else{
+    fixed = {lead:5, intro:10, end:10, self:5};
+    const remain = total-fixed.lead-fixed.intro-fixed.end-fixed.self;
+    push(&quot;1. Dẫn nhập&quot;,
+      &quot;Tạo tình huống thực tế gắn trực tiếp với nội dung; nêu vấn đề cần giải quyết, mục tiêu kiến thức – kỹ năng – năng lực và sản phẩm/kết quả người học cần đạt.&quot;,
+      &quot;Nêu vấn đề; đặt câu hỏi.&quot;,&quot;Lắng nghe; trả lời.&quot;,fixed.lead);
+    push(&quot;2. Giới thiệu chủ đề&quot;,
+      &quot;Giới thiệu nội dung chủ đề cần giải quyết; làm rõ yêu cầu kỹ thuật, tiêu chuẩn kiến thức – kỹ năng, dữ liệu/công cụ cần chuẩn bị và tiêu chí đánh giá kết quả.&quot;,
+      &quot;Giải thích; minh họa.&quot;,&quot;Quan sát; ghi chép.&quot;,fixed.intro);
+
+    const perItem = distribute(remain, contentItems.length);
+    contentItems.forEach((x,idx)=&gt;{
+      const subTimes = splitPreferred(perItem[idx], 5);
+      push(`3.${idx+1}. ${x} – Hình thành kiến thức`,
+        `Làm rõ kiến thức trực tiếp phục vụ ${x}: khái niệm, mục đích, đặc điểm, nguyên tắc/điều kiện áp dụng và mối liên hệ với nhiệm vụ thực hành. Nêu ví dụ ngắn để người học nhận biết đúng yêu cầu.`,
+        &quot;Giải thích; trình chiếu.&quot;,&quot;Lắng nghe; ghi chép.&quot;,subTimes[0]);
+      push(`3.${idx+1}. ${x} – Minh họa và thao tác mẫu`,
+        `Giảng viên minh họa quy trình ${x} theo từng bước: chuẩn bị dữ liệu/công cụ, thao tác chính, thông số cần chú ý, kết quả mong đợi và cách kiểm tra sau thao tác.`,
+        &quot;Minh họa; thao tác mẫu.&quot;,&quot;Quan sát; phân tích.&quot;,subTimes[1]);
+      push(`3.${idx+1}. ${x} – Thực hành có hướng dẫn`,
+        `Người học thực hiện ${x} theo từng bước; sau mỗi mốc thao tác tự đối chiếu kết quả. Giảng viên quan sát và hỗ trợ khi xuất hiện sai lệch về quy trình, công cụ hoặc kết quả.`,
+        &quot;Quan sát; hướng dẫn.&quot;,&quot;Thực hành; kiểm tra.&quot;,subTimes[2]);
+      push(`3.${idx+1}. ${x} – Thực hành độc lập và hoàn thiện`,
+        `Tự thực hiện lại/hoàn thiện ${x} trên dữ liệu được giao; bảo đảm đúng quy trình, đúng yêu cầu kỹ thuật và phù hợp tiêu chí sản phẩm; lưu kết quả theo quy định.`,
+        &quot;Kiểm tra; hỗ trợ.&quot;,&quot;Thực hành; hoàn thiện sản phẩm.&quot;,subTimes[3]);
+      push(`3.${idx+1}. ${x} – Kiểm tra, sửa lỗi và đánh giá`,
+        `Đối chiếu sản phẩm với tiêu chí; xác định lỗi thường gặp, nguyên nhân và cách khắc phục; sửa lỗi trực tiếp trên sản phẩm; báo cáo kết quả và rút kinh nghiệm thao tác.`,
+        &quot;Kiểm tra; nhận xét; sửa lỗi.&quot;,&quot;Báo cáo; sửa lỗi; tự đánh giá.&quot;,subTimes[4]);
+    });
+
+    push(&quot;4. Kết thúc vấn đề&quot;,
+      &quot;Củng cố kiến thức và kỹ năng vừa hình thành; nhận xét sản phẩm; nhấn mạnh lỗi phổ biến, cách khắc phục và tiêu chí cần duy trì khi thực hiện độc lập.&quot;,
+      &quot;Tổng kết; nhận xét.&quot;,&quot;Hệ thống hóa; sửa lỗi.&quot;,fixed.end);
+    push(&quot;5. Hướng dẫn tự học&quot;,
+      &quot;Ôn lại kiến thức; tiếp tục hoàn thiện sản phẩm hoặc thực hiện bài tập mở rộng; chuẩn bị dữ liệu, công cụ và nội dung cho bài tiếp theo.&quot;,
+      &quot;Giao nhiệm vụ.&quot;,&quot;Ghi nhận nhiệm vụ.&quot;,fixed.self);
+  }
+
+  return normalizeRows(rows,total);
+}
+
+function splitPreferred(total, desiredParts){
+  if(total&lt;=0) return Array(desiredParts).fill(0);
+  let parts=Math.max(1,desiredParts);
+  // tăng số phần cho đến khi mỗi phần &lt;=12 phút
+  while(Math.ceil(total/parts)&gt;12) parts++;
+  // giảm nếu tạo phần &lt;5 phút mà vẫn có thể giữ &lt;=15
+  while(parts&gt;1){
+    const cand=distribute(total,parts-1);
+    if(Math.min(...cand)&gt;=5 &amp;&amp; Math.max(...cand)&lt;=15) parts--;
+    else break;
+  }
+  const arr=distribute(total,parts);
+  // trả về đúng số phần mong muốn bằng cách gộp/chia thông minh nếu cần
+  if(arr.length===desiredParts) return arr;
+  if(arr.length&lt;desiredParts){
+    const out=[...arr];
+    while(out.length&lt;desiredParts){
+      const i=out.indexOf(Math.max(...out));
+      const v=out.splice(i,1)[0];
+      out.splice(i,0,Math.floor(v/2),Math.ceil(v/2));
+    }
+    return out;
+  }
+  // nếu nhiều hơn desiredParts, gom các phần dư vào các phần cuối nhưng không vượt 15;
+  // trường hợp không thể, activityRows sẽ được normalizeRows tách tiếp thành dòng riêng.
+  const out=Array(desiredParts).fill(0);
+  arr.forEach((v,i)=&gt;out[i%desiredParts]+=v);
+  return out;
+}
+
+function normalizeRows(rows,target){
+  // Tự động chia mọi dòng &gt;15 thành các giai đoạn có ý nghĩa;
+  // ưu tiên vùng 5–12 phút, hạn chế 13–15.
+  const result=[];
+  rows.forEach(r=&gt;{
+    if(r.time&lt;=15){ result.push(r); return; }
+    let parts=Math.ceil(r.time/12);
+    let times=distribute(r.time,parts);
+    while(parts&gt;1 &amp;&amp; Math.min(...times)&lt;5){
+      const cand=distribute(r.time,parts-1);
+      if(Math.max(...cand)&lt;=15){parts--;times=cand}else break;
+    }
+    const labels=[&quot;Chuẩn bị&quot;,&quot;Triển khai&quot;,&quot;Luyện tập&quot;,&quot;Kiểm tra&quot;,&quot;Hoàn thiện&quot;,&quot;Củng cố&quot;,&quot;Vận dụng&quot;];
+    times.forEach((t,i)=&gt;{
+      result.push({
+        title:`${r.title} – ${labels[i]||(&quot;Giai đoạn &quot;+(i+1))} (${i+1}/${times.length})`,
+        content:`${r.content} ${i===0?&quot;Tập trung xác định yêu cầu và thực hiện bước đầu.&quot;:i===times.length-1?&quot;Tập trung kiểm tra, hoàn thiện và xử lý sai sót.&quot;:&quot;Tiếp tục theo đúng quy trình và kiểm tra kết quả trung gian.&quot;}`,
+        gv:i===0?r.gv:(i===times.length-1?&quot;Kiểm tra; nhận xét; sửa lỗi.&quot;:&quot;Quan sát; hướng dẫn.&quot;),
+        sv:i===0?r.sv:(i===times.length-1?&quot;Hoàn thiện; tự kiểm tra; sửa lỗi.&quot;:&quot;Thực hiện; đối chiếu.&quot;),
+        time:t
+      });
+    });
+  });
+  // bảo toàn tuyệt đối tổng thời gian
+  const sum=result.reduce((a,b)=&gt;a+b.time,0);
+  if(sum!==target &amp;&amp; result.length){
+    result[result.length-1].time += (target-sum);
+  }
+  return result;
+}
+function objectives(type){
+  const p=currentProgram(),l=currentLesson(),sec=currentSection();
+  const base=`Sau khi học xong nội dung ${sec?.title||&quot;&quot;}, người học có khả năng:`;
+  if(type===&quot;theory&quot;)return `${base}&lt;br&gt;- Trình bày và giải thích được các kiến thức cốt lõi của nội dung học.&lt;br&gt;- Phân tích được ví dụ/tình huống liên quan và vận dụng kiến thức vào nhiệm vụ đơn giản.&lt;br&gt;- Chủ động học tập, trao đổi và tự đánh giá mức độ hiểu bài.`;
+  if(type===&quot;practice&quot;)return `${base}&lt;br&gt;- Thực hiện đúng quy trình và thao tác kỹ thuật theo yêu cầu.&lt;br&gt;- Tạo được sản phẩm/kết quả đạt tiêu chí cơ bản; phát hiện và sửa được lỗi thường gặp.&lt;br&gt;- Rèn luyện tác phong cẩn thận, chủ động và chịu trách nhiệm với kết quả thực hành.`;
+  return `${base}&lt;br&gt;- Trình bày được kiến thức, nguyên tắc hoặc quy trình trực tiếp liên quan đến nhiệm vụ.&lt;br&gt;- Thực hiện được các thao tác và hoàn thiện sản phẩm theo yêu cầu.&lt;br&gt;- Tự kiểm tra, điều chỉnh và chịu trách nhiệm với kết quả học tập.`
+}
+function buildPaper(){
+  const type=$(&quot;#type&quot;).value,p=currentProgram(),l=currentLesson(),sec=currentSection(),items=selectedContent();
+  if(!p||!l||!sec){alert(&quot;Vui lòng chọn đủ môn, bài/chương và nội dung.&quot;);return}
+
+  if($(&quot;#subject&quot;).disabled){
+    const imported=$(&quot;#scheduleImportInfo&quot;)?.innerText||&quot;&quot;;
+    if(!imported.includes(p.name) || !imported.includes(p.code)){
+      alert(&quot;Không thể tạo giáo án vì Môn học – Mã môn tại Bước 2 không khớp dữ liệu từ Bước 1.&quot;);
+      return;
+    }
+  }
+
+  if($(&quot;#subject&quot;).disabled &amp;&amp; !$(&quot;#type&quot;).disabled){
+    alert(&quot;Không thể tạo giáo án vì Loại giáo án phải được khóa theo Sổ đầu bài ở Bước 1.&quot;);
+    return;
+  }
+
+  if($(&quot;#subject&quot;).disabled){
+    const expectedPeriods=Number($(&quot;#periods&quot;).dataset.fromSchedule)||0;
+    const actualPeriods=Number($(&quot;#periods&quot;).value)||0;
+    if(expectedPeriods&lt;=0 || actualPeriods!==expectedPeriods){
+      alert(&quot;Không thể tạo giáo án vì Số tiết tại Bước 2 không khớp Sổ đầu bài ở Bước 1.&quot;);
+      return;
+    }
+  }
+
+  if($(&quot;#subject&quot;).disabled){
+    const expectedLesson=$(&quot;#lesson&quot;).dataset.fromSchedule;
+    const actualLesson=$(&quot;#lesson&quot;).value;
+    if(expectedLesson===undefined || actualLesson!==expectedLesson){
+      alert(&quot;Không thể tạo giáo án vì Bài / Chương tại Bước 2 không khớp Sổ đầu bài ở Bước 1.&quot;);
+      return;
+    }
+  }
+
+  if($(&quot;#subject&quot;).disabled){
+    const expectedTotal=Number($(&quot;#totalMinutes&quot;).dataset.fromSchedule)||0;
+    const actualTotal=(Number($(&quot;#periods&quot;).value)||0)*45;
+    if(expectedTotal&lt;=0 || actualTotal!==expectedTotal){
+      alert(&quot;Không thể tạo giáo án vì Tổng thời gian tại Bước 2 không khớp Sổ đầu bài ở Bước 1.&quot;);
+      return;
+    }
+  }
+  const total=Number($(&quot;#periods&quot;).value)*45;
+  const assessmentCount=Math.max(0,Number(p?.scheduleAssessment?.ktCount||0));
+  const assessmentMinutes=assessmentCount*45;
+  const pureAssessment=assessmentCount&gt;0 &amp;&amp; assessmentCount===Number($(&quot;#periods&quot;).value);
+  const stabilize = pureAssessment ? 0 : (total&gt;=90 ? 5 : 3);
+  const teachingMinutes=Math.max(0,total-stabilize-assessmentMinutes);
+  let rows=teachingMinutes&gt;0 ? activityRows(type,items,teachingMinutes) : [];
+
+  // Dòng KIỂM TRA là ngoại lệ: giữ nguyên 45 phút/tiết, không chia nhỏ 5–12 phút.
+  // Đặt SAU phần Hướng dẫn tự học / tự rèn luyện, tức ở cuối tiến trình giáo án.
+  if(assessmentCount&gt;0){
+    const assessmentType=p?.scheduleAssessment?.type || (type===&quot;theory&quot;?&quot;Lý thuyết&quot;:&quot;Thực hành&quot;);
+    const assessmentRows=Array.from({length:assessmentCount},(_,idx)=&gt;({
+      title:`KT${assessmentCount&gt;1?(&quot;.&quot;+(idx+1)): &quot;&quot;}. Kiểm tra ${assessmentType}`,
+      content:assessmentType===&quot;Lý thuyết&quot;
+        ? &quot;Thực hiện bài kiểm tra lý thuyết trong phạm vi kiến thức đã học trước thời điểm kiểm tra; yêu cầu người học trả lời đúng trọng tâm, vận dụng kiến thức phù hợp và hoàn thành bài trong thời gian quy định.&quot;
+        : &quot;Thực hiện bài kiểm tra thực hành trong phạm vi kỹ năng và nội dung đã học trước thời điểm kiểm tra; yêu cầu thao tác đúng quy trình, hoàn thiện sản phẩm/kết quả theo yêu cầu và nộp đúng thời gian quy định.&quot;,
+      gv:&quot;Giao đề; phổ biến yêu cầu; giám sát; thu bài.&quot;,
+      sv:assessmentType===&quot;Lý thuyết&quot;?&quot;Nhận đề; làm bài; nộp bài.&quot;:&quot;Nhận đề; thực hành; hoàn thiện; nộp sản phẩm.&quot;,
+      time:45,
+      isAssessment:true
+    }));
+
+    // Hướng dẫn tự học / tự rèn luyện đã là mục cuối của activityRows().
+    // Vì vậy nối Kiểm tra sau cùng để đúng yêu cầu hồ sơ.
+    rows.push(...assessmentRows);
+  }
+
+  const names={theory:&quot;GIÁO ÁN LÝ THUYẾT&quot;,practice:&quot;GIÁO ÁN THỰC HÀNH&quot;,integrated:&quot;GIÁO ÁN TÍCH HỢP&quot;};
+  const prevValue=String($(&quot;#prevLesson&quot;).value||&quot;&quot;).trim();
+  let lead;
+  if($(&quot;#subject&quot;).disabled){
+    const prevTitle=String($(&quot;#prevLesson&quot;).dataset.title||&quot;&quot;).trim();
+    let prevItems=[];
+    try{ prevItems=JSON.parse($(&quot;#prevLesson&quot;).dataset.items||&quot;[]&quot;); }catch(e){ prevItems=[]; }
+
+    if(prevTitle){
+      const itemHtml=(prevItems||[]).map(x=&gt;`&lt;div style=&quot;margin-left:18px&quot;&gt;${escapeHtml(x)}&lt;/div&gt;`).join(&quot;&quot;);
+      lead = `&lt;b&gt;Tên bài học trước:&lt;/b&gt; ${escapeHtml(prevTitle)}${itemHtml}`;
+    }else{
+      lead = `&lt;b&gt;Tên bài học trước:&lt;/b&gt;`;
+    }
+  }else{
+    lead = type===&quot;theory&quot;
+      ? `Tên chương: ${escapeHtml(prevValue||&quot;................................................&quot;)}`
+      : `Tên bài học trước: ${escapeHtml(prevValue||&quot;................................................&quot;)}`;
+  }
+
+  const rowHtml=rows.map((r,i)=&gt;`&lt;tr&gt;
+    &lt;td class=&quot;tt&quot;&gt;${i+1}&lt;/td&gt;
+    &lt;td class=&quot;content editable ai-content-cell&quot; contenteditable=&quot;true&quot;&gt;&lt;b&gt;${escapeHtml(r.title)}&lt;/b&gt;&lt;br&gt;&lt;span class=&quot;ai-text&quot;&gt;${escapeHtml(r.content)}&lt;/span&gt;
+      &lt;div class=&quot;ai-tools no-print&quot; contenteditable=&quot;false&quot;&gt;
+        &lt;button class=&quot;ai-btn&quot; onclick=&quot;runRowAI(this,&#x27;expand&#x27;)&quot;&gt;✨ Triển khai&lt;/button&gt;
+        &lt;button class=&quot;ai-btn&quot; onclick=&quot;runRowAI(this,&#x27;rewrite&#x27;)&quot;&gt;✍ Viết lại&lt;/button&gt;
+        &lt;button class=&quot;ai-btn&quot; onclick=&quot;runRowAI(this,&#x27;example&#x27;)&quot;&gt;➕ Ví dụ&lt;/button&gt;
+        &lt;button class=&quot;ai-btn&quot; onclick=&quot;runRowAI(this,&#x27;steps&#x27;)&quot;&gt;🔧 Thao tác&lt;/button&gt;
+        &lt;button class=&quot;ai-btn&quot; onclick=&quot;runRowAI(this,&#x27;errors&#x27;)&quot;&gt;⚠ Lỗi &amp; khắc phục&lt;/button&gt;
+        &lt;button class=&quot;ai-btn&quot; onclick=&quot;runRowAI(this,&#x27;skillcheck&#x27;)&quot;&gt;✓ Kiểm tra Skill&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/td&gt;
+    &lt;td class=&quot;activity editable&quot; contenteditable=&quot;true&quot;&gt;${escapeHtml(r.gv)}&lt;/td&gt;
+    &lt;td class=&quot;activity editable&quot; contenteditable=&quot;true&quot;&gt;${escapeHtml(r.sv)}&lt;/td&gt;
+    &lt;td class=&quot;time&quot;&gt;&lt;input class=&quot;time-input${r.isAssessment?&quot; assessment-time&quot;:&quot;&quot;}&quot; type=&quot;number&quot; min=&quot;0&quot; value=&quot;${r.time}&quot; ${r.isAssessment?&#x27;readonly data-fixed-assessment=&quot;1&quot; title=&quot;Tiết kiểm tra cố định 45 phút&quot;&#x27;:&#x27;oninput=&quot;checkTime()&quot;&#x27;}&gt;&lt;/td&gt;
+  &lt;/tr&gt;`).join(&quot;&quot;);
+
+  $(&quot;#paper&quot;).innerHTML=`
+    &lt;table class=&quot;top-template&quot;&gt;
+      &lt;tr&gt;
+        &lt;td class=&quot;logo-cell&quot;&gt;&lt;/td&gt;
+        &lt;td class=&quot;appendix-cell&quot;&gt;
+          &lt;div class=&quot;appendix-title&quot;&gt;PHỤ LỤC 10&lt;/div&gt;
+          &lt;div class=&quot;appendix-note&quot;&gt;(Ban hành kèm theo Quyết định số …./QĐ-NSG ngày …tháng … năm 2018 của&lt;br&gt;Hiệu trưởng trường Cao đẳng Bách khoa Nam Sài Gòn)&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;
+
+    &lt;table class=&quot;meta-template&quot;&gt;
+      &lt;tr&gt;
+        &lt;td class=&quot;left-meta&quot;&gt;
+          GIÁO ÁN SỐ: &lt;span contenteditable=&quot;true&quot;&gt;${escapeHtml($(&quot;#gaNumber&quot;).value||&quot;............................&quot;)}&lt;/span&gt;
+        &lt;/td&gt;
+        &lt;td class=&quot;right-meta&quot;&gt;
+          &lt;b&gt;Thời gian thực hiện:&lt;/b&gt; ${total} phút (${String(Number($(&quot;#periods&quot;).value)).padStart(2,&quot;0&quot;)} tiết)&lt;br&gt;
+          ${lead}&lt;br&gt;
+          Thực hiện từ ngày ${escapeHtml(p?.scheduleDate||&quot;.................&quot;)} đến ngày ${escapeHtml(p?.scheduleDate||&quot;.................&quot;)}
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;
+
+    &lt;div class=&quot;lesson-heading&quot;&gt;
+      ${(()=&gt;{
+        const groups=Array.isArray(p?.scheduleGroups) ? p.scheduleGroups : [];
+        if(groups.length){
+          return `&lt;div class=&quot;lesson-main-title&quot;&gt;&lt;b&gt;TÊN BÀI:&lt;/b&gt;&lt;/div&gt;` +
+            groups.map(g=&gt;{
+              const lesson=String(g.lesson||&quot;&quot;).trim();
+              const its=Array.isArray(g.items)?g.items:[];
+              return `&lt;div class=&quot;lesson-group&quot;&gt;
+                &lt;div class=&quot;lesson-group-title&quot;&gt;${escapeHtml(lesson)}&lt;/div&gt;
+                ${its.map(x=&gt;`&lt;div class=&quot;exact-outline-item&quot;&gt;${escapeHtml(String(x||&quot;&quot;))}&lt;/div&gt;`).join(&quot;&quot;)}
+              &lt;/div&gt;`;
+            }).join(&quot;&quot;);
+        }
+
+        // Fallback cho dữ liệu cũ chỉ có một bài.
+        return `&lt;div class=&quot;lesson-main-title&quot;&gt;&lt;b&gt;TÊN BÀI:&lt;/b&gt; ${escapeHtml(l.title)}&lt;/div&gt;` +
+          `&lt;div class=&quot;lesson-outline exact-outline&quot;&gt;${
+            (items||[]).map(x=&gt;`&lt;div class=&quot;exact-outline-item&quot;&gt;${escapeHtml(String(x||&quot;&quot;))}&lt;/div&gt;`).join(&quot;&quot;)
+          }&lt;/div&gt;`;
+      })()}
+    &lt;/div&gt;
+
+    &lt;div class=&quot;section-title&quot;&gt;MỤC TIÊU CỦA BÀI:&lt;/div&gt;
+    &lt;div class=&quot;editable&quot; contenteditable=&quot;true&quot;&gt;${objectives(type)}&lt;/div&gt;
+
+    &lt;div class=&quot;section-title&quot;&gt;${type===&quot;theory&quot;?&quot;ĐỒ DÙNG VÀ PHƯƠNG TIỆN DẠY HỌC&quot;:&quot;ĐỒ DÙNG VÀ TRANG THIẾT BỊ DẠY HỌC&quot;}&lt;/div&gt;
+    &lt;div class=&quot;editable&quot; contenteditable=&quot;true&quot;&gt;Máy vi tính; máy chiếu; phần mềm/công cụ phù hợp với chương trình môn học; tài liệu hướng dẫn; dữ liệu hoặc tệp thực hành phục vụ trực tiếp cho nội dung được chọn.&lt;/div&gt;
+
+    ${type!==&quot;theory&quot;?`&lt;div class=&quot;section-title&quot;&gt;HÌNH THỨC TỔ CHỨC DẠY HỌC:&lt;/div&gt;
+    &lt;div class=&quot;editable&quot; contenteditable=&quot;true&quot;&gt;Tổ chức tại phòng học/phòng máy phù hợp; kết hợp hướng dẫn chung, minh họa/thao tác mẫu, thực hành cá nhân hoặc nhóm và kiểm tra sản phẩm.&lt;/div&gt;`:&quot;&quot;}
+
+    &lt;div class=&quot;section-title&quot;&gt;I. ỔN ĐỊNH LỚP HỌC: &lt;span style=&quot;font-weight:normal&quot;&gt;Thời gian: &lt;b id=&quot;stabilizeTime&quot;&gt;${stabilize}&lt;/b&gt; phút&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;editable&quot; contenteditable=&quot;true&quot;&gt;Kiểm tra sĩ số, thiết bị, phần mềm và điều kiện học tập; ổn định vị trí; bảo đảm người học sẵn sàng tham gia bài học.&lt;/div&gt;
+
+    &lt;div class=&quot;section-title&quot;&gt;II. THỰC HIỆN BÀI HỌC&lt;/div&gt;
+    &lt;table class=&quot;ga&quot;&gt;
+      &lt;colgroup&gt;
+        &lt;col style=&quot;width:5%&quot;&gt;
+        &lt;col style=&quot;width:41%&quot;&gt;
+        &lt;col style=&quot;width:22%&quot;&gt;
+        &lt;col style=&quot;width:22%&quot;&gt;
+        &lt;col style=&quot;width:10%&quot;&gt;
+      &lt;/colgroup&gt;
+      &lt;thead&gt;&lt;tr&gt;&lt;th&gt;TT&lt;/th&gt;&lt;th&gt;NỘI DUNG&lt;/th&gt;&lt;th&gt;HOẠT ĐỘNG CỦA GIẢNG VIÊN&lt;/th&gt;&lt;th&gt;HOẠT ĐỘNG CỦA SINH VIÊN&lt;/th&gt;&lt;th&gt;THỜI GIAN&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+      &lt;tbody&gt;${rowHtml}&lt;/tbody&gt;
+      &lt;tfoot&gt;
+        &lt;tr&gt;&lt;td colspan=&quot;4&quot; class=&quot;sum&quot; style=&quot;text-align:right&quot;&gt;CỘNG PHẦN II&lt;/td&gt;&lt;td class=&quot;time sum&quot; id=&quot;sumCell&quot;&gt;${teachingMinutes+assessmentMinutes}&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td colspan=&quot;4&quot; class=&quot;sum&quot; style=&quot;text-align:right&quot;&gt;TỔNG TOÀN BỘ GIÁO ÁN (gồm ổn định lớp)&lt;/td&gt;&lt;td class=&quot;time sum&quot; id=&quot;grandTotalCell&quot;&gt;${total}&lt;/td&gt;&lt;/tr&gt;
+      &lt;/tfoot&gt;
+    &lt;/table&gt;
+
+    ${type!==&quot;theory&quot;?`&lt;div class=&quot;section-title&quot;&gt;IV. RÚT KINH NGHIỆM TỔ CHỨC THỰC HIỆN:&lt;/div&gt;
+    &lt;div class=&quot;editable&quot; contenteditable=&quot;true&quot;&gt;....................................................................................................................................................................................&lt;/div&gt;`:&quot;&quot;}
+
+    ${type===&quot;theory&quot;?`&lt;div class=&quot;section-title&quot;&gt;Nguồn tài liệu tham khảo&lt;/div&gt;
+    &lt;div class=&quot;editable&quot; contenteditable=&quot;true&quot;&gt;Chương trình môn học; mẫu giáo án tương ứng; tài liệu chuyên môn do người dùng cung cấp. Khi bổ sung kiến thức ngoài chương trình phải ưu tiên nguồn chính thức/uy tín.&lt;/div&gt;`:&quot;&quot;}
+
+    &lt;div class=&quot;footer-sign&quot;&gt;
+      &lt;div&gt;&lt;b&gt;TRƯỞNG KHOA&lt;/b&gt;&lt;/div&gt;
+      &lt;div&gt;Ngày.....tháng.....năm.....&lt;br&gt;&lt;b&gt;GIẢNG VIÊN&lt;/b&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  `;
+  $(&quot;#paper&quot;).setAttribute(&quot;contenteditable&quot;,&quot;false&quot;);
+  checkTime();
+}
+window.checkTime=function(){
+  const target=Number($(&quot;#periods&quot;).value)*45;
+  const stabilize=Number($(&quot;#stabilizeTime&quot;)?.textContent)||0;
+  const inputs=$$(&quot;.time-input&quot;);
+  const vals=inputs.map(x=&gt;Number(x.value)||0);
+  const normalVals=inputs.filter(x=&gt;!x.classList.contains(&quot;assessment-time&quot;)).map(x=&gt;Number(x.value)||0);
+  const assessmentVals=inputs.filter(x=&gt;x.classList.contains(&quot;assessment-time&quot;)).map(x=&gt;Number(x.value)||0);
+  const part2=vals.reduce((a,b)=&gt;a+b,0);
+  const sum=part2+stabilize;
+  if($(&quot;#sumCell&quot;))$(&quot;#sumCell&quot;).textContent=part2;
+  if($(&quot;#grandTotalCell&quot;))$(&quot;#grandTotalCell&quot;).textContent=sum;
+
+  const invalidAssessment=assessmentVals.filter(v=&gt;v!==45).length;
+  const over=normalVals.filter(v=&gt;v&gt;15).length;
+  const at15=normalVals.filter(v=&gt;v===15).length;
+  const over12=normalVals.filter(v=&gt;v&gt;12 &amp;&amp; v&lt;=15).length;
+  const under5=normalVals.filter(v=&gt;v&gt;0 &amp;&amp; v&lt;5).length;
+  const el=$(&quot;#timeStatus&quot;);
+
+  if(invalidAssessment&gt;0){
+    el.className=&quot;status bad&quot;;
+    el.textContent=`Chưa đạt: có ${invalidAssessment} dòng Kiểm tra không đúng 45 phút. Mỗi tiết Kiểm tra bắt buộc giữ nguyên 45 phút.`;
+    return;
+  }
+  if(sum!==target){
+    el.className=&quot;status bad&quot;;
+    el.textContent=`Chưa đạt Skill: tổng hiện tại ${sum}/${target} phút (${sum-target&gt;0?&quot;+&quot;:&quot;&quot;}${sum-target} phút). Phải cân đối lại để đúng tuyệt đối.`;
+    return;
+  }
+  if(over&gt;0){
+    el.className=&quot;status bad&quot;;
+    el.textContent=`Chưa đạt Skill: có ${over} hoạt động vượt 15 phút. Bắt buộc chia nhỏ.`;
+    return;
+  }
+  if(over12&gt;0 || under5&gt;0){
+    el.className=&quot;status warn&quot;;
+    el.textContent=`Đủ ${sum}/${target} phút. Không vượt 15 phút; tuy nhiên có ${over12} hoạt động 13–15 phút${at15?` (${at15} hoạt động đúng 15 phút)`:&quot;&quot;}${under5?` và ${under5} hoạt động dưới 5 phút`:&quot;&quot;}. Skill ưu tiên 5–12 phút, vì vậy nên tiếp tục tối ưu khi có thể.`;
+    return;
+  }
+  el.className=&quot;status ok&quot;;
+  el.textContent=`Đạt Skill: ${sum}/${target} phút; các hoạt động dạy học nằm trong vùng ưu tiên 5–12 phút; ${assessmentVals.length?assessmentVals.length+&quot; tiết Kiểm tra được giữ cố định 45 phút; &quot;:&quot;&quot;}không có hoạt động dạy học vượt 15 phút.`;
+}
+
+function getAIKey(){
+  const key=$(&quot;#apiKey&quot;)?.value.trim() || localStorage.getItem(&quot;giaoan_gemini_key&quot;) || &quot;&quot;;
+  return key;
+}
+function getAIModel(){
+  return $(&quot;#aiModel&quot;)?.value || localStorage.getItem(&quot;giaoan_gemini_model&quot;) || &quot;gemini-3.7-flash&quot;;
+}
+function saveAISettings(){
+  const key=$(&quot;#apiKey&quot;).value.trim();
+  const model=$(&quot;#aiModel&quot;).value;
+  if($(&quot;#saveKey&quot;).value===&quot;yes&quot;){
+    if(key) localStorage.setItem(&quot;giaoan_gemini_key&quot;,key);
+  }else{
+    localStorage.removeItem(&quot;giaoan_gemini_key&quot;);
+  }
+  localStorage.setItem(&quot;giaoan_gemini_model&quot;,model);
+  $(&quot;#aiStatus&quot;).className=&quot;status ok&quot;;
+  $(&quot;#aiStatus&quot;).textContent=`Đã lưu cài đặt Gemini. Model: ${model}.`;
+}
+function loadAISettings(){
+  const key=localStorage.getItem(&quot;giaoan_gemini_key&quot;)||&quot;&quot;;
+  let model=localStorage.getItem(&quot;giaoan_gemini_model&quot;)||&quot;gemini-3.7-flash&quot;;
+  const retired=[&quot;gemini-2.5-flash&quot;,&quot;gemini-2.5-pro&quot;,&quot;gemini-2.5-flash-lite&quot;];
+  if(retired.includes(model)){
+    model=&quot;gemini-3.7-flash&quot;;
+    localStorage.setItem(&quot;giaoan_gemini_model&quot;,model);
+  }
+  if($(&quot;#apiKey&quot;)) $(&quot;#apiKey&quot;).value=key;
+  if($(&quot;#aiModel&quot;)) $(&quot;#aiModel&quot;).value=model;
+  if($(&quot;#aiStatus&quot;)){
+    if(key){
+      $(&quot;#aiStatus&quot;).className=&quot;status ok&quot;;
+      $(&quot;#aiStatus&quot;).textContent=`Đã có API key trên máy. Model: ${model}.`;
+    }
+  }
+}
+
+async function testGeminiConnection(){
+  try{
+    if(document.fonts &amp;&amp; document.fonts.ready){
+      await document.fonts.ready;
+    }
+    await new Promise(r=&gt;requestAnimationFrame(()=&gt;requestAnimationFrame(r)));
+
+    $(&quot;#aiStatus&quot;).className=&quot;status warn&quot;;
+    $(&quot;#aiStatus&quot;).textContent=&quot;Đang kiểm tra kết nối Gemini...&quot;;
+    const result=await callOpenAI(&quot;Chỉ trả lời đúng một từ: OK&quot;);
+    $(&quot;#aiStatus&quot;).className=&quot;status ok&quot;;
+    $(&quot;#aiStatus&quot;).textContent=`Kết nối Gemini thành công. Model: ${getAIModel()}.`;
+  }catch(e){
+    $(&quot;#aiStatus&quot;).className=&quot;status bad&quot;;
+    let msg=e.message||&quot;Lỗi không xác định&quot;;
+    if(/API key|API_KEY_INVALID|invalid key|key not valid/i.test(msg)){
+      msg=&quot;Gemini API Key không hợp lệ. Hãy tạo/kiểm tra key trong Google AI Studio.&quot;;
+    }else if(/quota|RESOURCE_EXHAUSTED|429/i.test(msg)){
+      msg=&quot;Đã vượt hạn mức/quota Gemini API. Hãy kiểm tra quota hoặc billing của Google AI Studio.&quot;;
+    }else if(/not found|model/i.test(msg)){
+      msg=&quot;Model Gemini đã chọn không khả dụng với API key này. Hãy thử gemini-3.7-flash.&quot;;
+    }
+    $(&quot;#aiStatus&quot;).textContent=&quot;Không kết nối được Gemini: &quot;+msg;
+    alert(&quot;Không kết nối được Gemini: &quot;+msg);
+  }
+}
+
+function skillRulesText(){
+  return `
+BẮT BUỘC BÁM SÁT SKILL SOẠN GIÁO ÁN:
+- Đúng môn học, mã môn, bài/chương, đề mục, mục tiêu và phạm vi chương trình.
+- Không tự đổi tên bài, mã môn, số tiết hay phạm vi nội dung.
+- Đúng cấu trúc riêng của loại giáo án; tuyệt đối không trộn Lý thuyết/Thực hành/Tích hợp.
+- 01 tiết = 45 phút; tổng thời gian phải chính xác.
+- Mỗi nội dung/tiểu hoạt động ưu tiên 5–12 phút; hạn chế tối đa 15 phút; không để lý thuyết/hướng dẫn thao tác vượt 15 phút.
+- Cột NỘI DUNG phải chi tiết, đủ để giảng viên nhìn vào là triển khai được ngay.
+- Nếu là lý thuyết, khi phù hợp phải có: khái niệm, bản chất, đặc điểm, vai trò, phân loại, nguyên tắc, thành phần, quy tắc sử dụng, trường hợp áp dụng, ví dụ, so sánh, lỗi nhận thức, câu hỏi kiểm tra.
+- Nếu là thực hành/tích hợp, khi phù hợp phải có: mục tiêu thao tác, công cụ, chuẩn bị dữ liệu/môi trường, điều kiện đầu vào, quy trình, bước thực hiện, thao tác cụ thể, kết quả mong đợi, cách kiểm tra, lỗi thường gặp, nguyên nhân, cách sửa, mẹo, yêu cầu sản phẩm, tiêu chí đánh giá, bài tập áp dụng.
+- Khi chương trình ghi ngắn nhưng thời lượng lớn, phải phát triển thêm nội dung chuyên môn có giá trị; không lặp câu chữ, không kéo dài cơ học, không lan man, không bịa kiến thức.
+- Giáo án Tích hợp phải có kiến thức + minh họa/thao tác mẫu + SV thực hành + kiểm tra/sửa lỗi + củng cố.
+- Giáo án Thực hành ưu tiên phần lớn thời gian cho thao tác mẫu, luyện tập, kiểm tra sản phẩm, sửa lỗi.
+- Giáo án Lý thuyết phải có dẫn nhập, kiến thức mới, ví dụ/minh họa, tương tác, câu hỏi, vận dụng, củng cố.
+- Hoạt động của giảng viên viết ngắn gọn, chỉ hành động.
+- Hoạt động của sinh viên viết ngắn gọn, tương ứng trực tiếp với GV và nội dung.
+- Phải có ví dụ/minh họa/bài tập/lỗi thường gặp/tiêu chí sản phẩm khi phù hợp.
+`;
+}
+function currentContext(){
+  const p=currentProgram(),l=currentLesson(),s=currentSection();
+  const total=Number($(&quot;#periods&quot;).value)*45;
+  return `
+Môn học: ${p?.name||&quot;&quot;}
+Mã môn: ${p?.code||&quot;&quot;}
+Loại giáo án: ${$(&quot;#type option:checked&quot;)?.textContent||&quot;&quot;}
+Bài/Chương: ${l?.title||&quot;&quot;}
+Đề mục: ${s?.title||&quot;&quot;}
+Các tiểu mục được chọn: ${selectedContent().join(&quot; | &quot;)}
+Số tiết: ${$(&quot;#periods&quot;).value}
+Tổng thời gian giáo án: ${total} phút
+`;
+}
+async function listGeminiModels(key){
+  const res=await fetch(&quot;https://generativelanguage.googleapis.com/v1beta/models&quot;,{
+    headers:{&quot;x-goog-api-key&quot;:key}
+  });
+  const data=await res.json();
+  if(!res.ok) throw new Error(data?.error?.message||(&quot;Không lấy được danh sách model: HTTP &quot;+res.status));
+  return (data.models||[])
+    .filter(m=&gt;(m.supportedGenerationMethods||[]).includes(&quot;generateContent&quot;))
+    .map(m=&gt;m.name.replace(/^models\//,&quot;&quot;));
+}
+
+function modelPriority(models, preferred){
+  const uniq=[];
+  const add=m=&gt;{if(m &amp;&amp; models.includes(m) &amp;&amp; !uniq.includes(m))uniq.push(m)};
+  add(preferred);
+  // Ưu tiên Flash trước vì phù hợp tác vụ viết giáo án và thường nhanh hơn.
+  models.filter(m=&gt;/flash/i.test(m) &amp;&amp; !/lite/i.test(m)).sort().reverse().forEach(add);
+  models.filter(m=&gt;/flash-lite/i.test(m)).sort().reverse().forEach(add);
+  models.filter(m=&gt;/pro/i.test(m)).sort().reverse().forEach(add);
+  models.forEach(add);
+  return uniq;
+}
+
+function sleep(ms){return new Promise(r=&gt;setTimeout(r,ms))}
+
+async function generateWithGemini(key,model,prompt){
+  const url=`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
+  const res=await fetch(url,{
+    method:&quot;POST&quot;,
+    headers:{&quot;Content-Type&quot;:&quot;application/json&quot;,&quot;x-goog-api-key&quot;:key},
+    body:JSON.stringify({contents:[{role:&quot;user&quot;,parts:[{text:prompt}]}]})
+  });
+  const data=await res.json();
+  if(!res.ok){
+    const err=new Error(data?.error?.message||(&quot;Gemini API HTTP &quot;+res.status));
+    err.status=res.status; err.model=model; throw err;
+  }
+  const parts=data?.candidates?.[0]?.content?.parts||[];
+  const out=parts.map(p=&gt;p.text||&quot;&quot;).join(&quot;\n&quot;).trim();
+  if(!out) throw new Error(&quot;Gemini không trả về nội dung.&quot;);
+  return out;
+}
+
+async function callOpenAI(prompt){
+  const key=getAIKey();
+  if(!key) throw new Error(&quot;Chưa có Google/Gemini API Key.&quot;);
+
+  let models;
+  try{
+    models=await listGeminiModels(key);
+  }catch(e){
+    // Nếu endpoint danh sách model tạm lỗi, vẫn thử model người dùng đang chọn.
+    models=[getAIModel()];
+  }
+  const candidates=modelPriority(models,getAIModel());
+  if(!candidates.length) throw new Error(&quot;API key này không có model hỗ trợ generateContent.&quot;);
+
+  let lastErr=null;
+  for(let mi=0;mi&lt;candidates.length;mi++){
+    const model=candidates[mi];
+    // Mỗi model thử tối đa 3 lần khi quá tải/429/503.
+    for(let attempt=1;attempt&lt;=3;attempt++){
+      try{
+        if($(&quot;#aiStatus&quot;)){
+          $(&quot;#aiStatus&quot;).className=&quot;status warn&quot;;
+          $(&quot;#aiStatus&quot;).textContent=`Đang gọi ${model}${attempt&gt;1?` – thử lại ${attempt}/3`:&quot;&quot;}...`;
+        }
+        const out=await generateWithGemini(key,model,prompt);
+        localStorage.setItem(&quot;giaoan_gemini_model&quot;,model);
+        if($(&quot;#aiModel&quot;)){
+          let opt=[...$(&quot;#aiModel&quot;).options].find(o=&gt;o.value===model);
+          if(!opt){opt=new Option(model,model);$(&quot;#aiModel&quot;).add(opt)}
+          $(&quot;#aiModel&quot;).value=model;
+        }
+        return out;
+      }catch(e){
+        lastErr=e;
+        const msg=(e.message||&quot;&quot;).toLowerCase();
+        const temporary=e.status===429 || e.status===503 ||
+          /high demand|overloaded|temporar|resource_exhausted|unavailable|try again later/.test(msg);
+        if(temporary &amp;&amp; attempt&lt;3){
+          if($(&quot;#aiStatus&quot;)) $(&quot;#aiStatus&quot;).textContent=`${model} đang bận. Tự thử lại sau ${attempt*2} giây...`;
+          await sleep(attempt*2000);
+          continue;
+        }
+        if(temporary){
+          if($(&quot;#aiStatus&quot;)) $(&quot;#aiStatus&quot;).textContent=`${model} vẫn đang bận. Đang tự chuyển model dự phòng...`;
+          break;
+        }
+        // Model không còn tồn tại/không hỗ trợ: chuyển model khác.
+        if(e.status===404 || /not found|not supported|no longer available/.test(msg)) break;
+        // Lỗi key/quyền/billing: không fallback vô ích.
+        throw e;
+      }
+    }
+  }
+  throw lastErr||new Error(&quot;Không có model Gemini khả dụng lúc này.&quot;);
+}
+
+async function refreshGeminiModels(){
+  const key=getAIKey();
+  if(!key) return;
+  try{
+    const models=await listGeminiModels(key);
+    const sel=$(&quot;#aiModel&quot;);
+    const current=getAIModel();
+    sel.innerHTML=&quot;&quot;;
+    modelPriority(models,current).forEach((m,i)=&gt;sel.add(new Option(m+(i===0?&quot; (ưu tiên)&quot;:&quot;&quot;),m)));
+    if(models.includes(current))sel.value=current;
+    $(&quot;#aiStatus&quot;).className=&quot;status ok&quot;;
+    $(&quot;#aiStatus&quot;).textContent=`Đã tải ${models.length} model Gemini khả dụng từ API.`;
+  }catch(e){
+    $(&quot;#aiStatus&quot;).className=&quot;status warn&quot;;
+    $(&quot;#aiStatus&quot;).textContent=&quot;Chưa tải được danh sách model động: &quot;+e.message;
+  }
+}
+function cleanAIText(t){
+  return String(t||&quot;&quot;).replace(/^```(?:html|text|markdown)?/i,&quot;&quot;).replace(/```$/,&quot;&quot;).trim();
+}
+function rowPrompt(cell, action){
+  const current=cell.querySelector(&quot;.ai-text&quot;)?.innerText.trim() || cell.innerText.trim();
+  const minutes=Number(cell.closest(&quot;tr&quot;)?.querySelector(&quot;.time-input&quot;)?.value)||0;
+  const actionMap={
+    expand:&quot;Triển khai nội dung hiện tại chi tiết hơn, giàu giá trị giảng dạy, nhưng tuyệt đối không lan man.&quot;,
+    rewrite:&quot;Viết lại nội dung hiện tại rõ ràng, mạch lạc, chuyên nghiệp và đúng phong cách cột NỘI DUNG của giáo án.&quot;,
+    example:&quot;Bổ sung ví dụ/minh họa sát đề mục, có thể dùng trực tiếp khi giảng dạy.&quot;,
+    steps:&quot;Bổ sung quy trình/bước thực hiện cụ thể, thao tác theo thứ tự, kết quả mong đợi và cách kiểm tra.&quot;,
+    errors:&quot;Bổ sung lỗi thường gặp, nguyên nhân, cách khắc phục và mẹo thực hiện khi phù hợp.&quot;,
+    skillcheck:&quot;Kiểm tra đoạn hiện tại theo Skill; viết lại thành phiên bản đạt yêu cầu, loại bỏ nội dung chung chung hoặc thiếu chi tiết.&quot;
+  };
+  return `
+Bạn là trợ lý chuyên soạn giáo án nghề nghiệp.
+${skillRulesText()}
+NGỮ CẢNH:
+${currentContext()}
+Thời lượng của hoạt động hiện tại: ${minutes} phút.
+
+YÊU CẦU AI:
+${actionMap[action]||actionMap.rewrite}
+
+NỘI DUNG HIỆN TẠI:
+${current}
+
+QUY TẮC ĐẦU RA:
+- Chỉ trả về NỘI DUNG đã hoàn thiện để đưa vào chính ô này.
+- Không trả về tiêu đề &quot;NỘI DUNG&quot;, không giải thích cách làm, không chào hỏi.
+- Không tự thêm thời gian.
+- Không đổi tên môn/bài/đề mục.
+- Mức độ chi tiết phải phù hợp với ${minutes} phút.
+`;
+}
+window.runRowAI=async function(btn,action){
+  const cell=btn.closest(&quot;.ai-content-cell&quot;);
+  if(!cell)return;
+  const oldText=cell.querySelector(&quot;.ai-text&quot;)?.innerText.trim()||&quot;&quot;;
+  try{
+    btn.closest(&quot;.ai-tools&quot;).classList.add(&quot;ai-loading&quot;);
+    $(&quot;#aiStatus&quot;).className=&quot;status warn&quot;;
+    $(&quot;#aiStatus&quot;).textContent=&quot;Gemini đang xử lý nội dung...&quot;;
+    const result=cleanAIText(await callOpenAI(rowPrompt(cell,action)));
+    showAICompare(cell,oldText,result);
+    $(&quot;#aiStatus&quot;).className=&quot;status ok&quot;;
+    $(&quot;#aiStatus&quot;).textContent=&quot;Gemini đã tạo đề xuất. Hãy xem trước trước khi áp dụng.&quot;;
+  }catch(e){
+    $(&quot;#aiStatus&quot;).className=&quot;status bad&quot;;
+    $(&quot;#aiStatus&quot;).textContent=&quot;Lỗi Gemini: &quot;+e.message;
+    alert(&quot;Không gọi được Gemini: &quot;+e.message);
+  }finally{
+    btn.closest(&quot;.ai-tools&quot;).classList.remove(&quot;ai-loading&quot;);
+  }
+}
+function showAICompare(cell,oldText,newText){
+  showModal(&quot;Gemini đề xuất chỉnh sửa&quot;,`
+    &lt;div class=&quot;row2&quot;&gt;
+      &lt;div&gt;&lt;label&gt;Nội dung hiện tại&lt;/label&gt;&lt;textarea id=&quot;aiOld&quot; style=&quot;min-height:300px&quot;&gt;${escapeHtml(oldText)}&lt;/textarea&gt;&lt;/div&gt;
+      &lt;div&gt;&lt;label&gt;Gemini đề xuất&lt;/label&gt;&lt;textarea id=&quot;aiNew&quot; style=&quot;min-height:300px&quot;&gt;${escapeHtml(newText)}&lt;/textarea&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;toolbar&quot; style=&quot;margin-top:12px&quot;&gt;
+      &lt;button class=&quot;btn primary&quot; id=&quot;aiReplace&quot;&gt;Thay thế&lt;/button&gt;
+      &lt;button class=&quot;btn&quot; id=&quot;aiAppend&quot;&gt;Chèn thêm&lt;/button&gt;
+      &lt;button class=&quot;btn&quot; id=&quot;aiCancel&quot;&gt;Hủy&lt;/button&gt;
+    &lt;/div&gt;`);
+  $(&quot;#aiReplace&quot;).onclick=()=&gt;{
+    cell.querySelector(&quot;.ai-text&quot;).innerText=$(&quot;#aiNew&quot;).value.trim();
+    closeModal();
+  };
+  $(&quot;#aiAppend&quot;).onclick=()=&gt;{
+    const current=cell.querySelector(&quot;.ai-text&quot;).innerText.trim();
+    cell.querySelector(&quot;.ai-text&quot;).innerText=current+&quot;\n&quot;+$(&quot;#aiNew&quot;).value.trim();
+    closeModal();
+  };
+  $(&quot;#aiCancel&quot;).onclick=closeModal;
+}
+async function runWholeAI(){
+  if(!$(&quot;#paper table.ga&quot;)) return alert(&quot;Hãy tạo giáo án trước.&quot;);
+  try{
+    if(document.fonts &amp;&amp; document.fonts.ready){
+      await document.fonts.ready;
+    }
+    await new Promise(r=&gt;requestAnimationFrame(()=&gt;requestAnimationFrame(r)));
+
+    $(&quot;#aiStatus&quot;).className=&quot;status warn&quot;;
+    $(&quot;#aiStatus&quot;).textContent=&quot;Gemini đang rà soát toàn bộ giáo án...&quot;;
+    const rows=$$(&quot;#paper table.ga tbody tr&quot;);
+    const payload=rows.map((tr,i)=&gt;({
+      index:i+1,
+      content:tr.querySelector(&quot;.ai-text&quot;)?.innerText.trim()||&quot;&quot;,
+      gv:tr.children[2]?.innerText.trim()||&quot;&quot;,
+      sv:tr.children[3]?.innerText.trim()||&quot;&quot;,
+      time:Number(tr.querySelector(&quot;.time-input&quot;)?.value)||0
+    }));
+    const prompt=`
+Bạn là chuyên gia kiểm định và hoàn thiện giáo án.
+${skillRulesText()}
+NGỮ CẢNH:
+${currentContext()}
+
+DỮ LIỆU CÁC HOẠT ĐỘNG HIỆN TẠI:
+${JSON.stringify(payload,null,2)}
+
+Hãy rà soát toàn bộ và trả về CHỈ một JSON array hợp lệ, mỗi phần tử dạng:
+{&quot;index&quot;:1,&quot;content&quot;:&quot;...&quot;,&quot;gv&quot;:&quot;...&quot;,&quot;sv&quot;:&quot;...&quot;}
+Yêu cầu:
+- Giữ nguyên số lượng dòng và index.
+- Không thay đổi thời gian.
+- Viết cột content thật chi tiết, sát đề mục, không chung chung.
+- gv và sv ngắn gọn, chỉ mô tả hành động, tương ứng trực tiếp với content.
+- Không thêm markdown, không bao JSON bằng code fence.
+`;
+    const raw=cleanAIText(await callOpenAI(prompt));
+    let arr;
+    try{arr=JSON.parse(raw)}catch(e){throw new Error(&quot;Gemini chưa trả về JSON hợp lệ. Hãy thử lại.&quot;)}
+    if(!Array.isArray(arr))throw new Error(&quot;Định dạng Gemini trả về không đúng.&quot;);
+    showModal(&quot;Gemini hoàn thiện toàn bộ giáo án&quot;,`
+      &lt;p&gt;Gemini đã đề xuất cập nhật &lt;b&gt;${arr.length}&lt;/b&gt; hoạt động. Hệ thống sẽ không thay đổi thời gian.&lt;/p&gt;
+      &lt;div class=&quot;note&quot;&gt;Nên xem nhanh nội dung sau khi áp dụng và bấm &lt;b&gt;Kiểm tra thời gian&lt;/b&gt;.&lt;/div&gt;
+      &lt;div class=&quot;toolbar&quot; style=&quot;margin-top:12px&quot;&gt;
+        &lt;button class=&quot;btn primary&quot; id=&quot;applyWholeAI&quot;&gt;Áp dụng toàn bộ&lt;/button&gt;
+        &lt;button class=&quot;btn&quot; id=&quot;cancelWholeAI&quot;&gt;Hủy&lt;/button&gt;
+      &lt;/div&gt;`);
+    $(&quot;#applyWholeAI&quot;).onclick=()=&gt;{
+      arr.forEach(x=&gt;{
+        const tr=rows[Number(x.index)-1]; if(!tr)return;
+        const aiText=tr.querySelector(&quot;.ai-text&quot;); if(aiText&amp;&amp;x.content)aiText.innerText=x.content;
+        if(tr.children[2]&amp;&amp;x.gv)tr.children[2].innerText=x.gv;
+        if(tr.children[3]&amp;&amp;x.sv)tr.children[3].innerText=x.sv;
+      });
+      closeModal();checkTime();
+      $(&quot;#aiStatus&quot;).className=&quot;status ok&quot;;
+      $(&quot;#aiStatus&quot;).textContent=&quot;Đã áp dụng Gemini cho toàn bộ giáo án.&quot;;
+    };
+    $(&quot;#cancelWholeAI&quot;).onclick=closeModal;
+  }catch(e){
+    $(&quot;#aiStatus&quot;).className=&quot;status bad&quot;;
+    $(&quot;#aiStatus&quot;).textContent=&quot;Lỗi Gemini: &quot;+e.message;
+    alert(e.message);
+  }
+}
+
+
+function runTimeCheck(){
+  // Nút kiểm tra phải luôn có phản hồi rõ ràng.
+  if(!$(&quot;#paper table.ga&quot;)){
+    const p=Number($(&quot;#periods&quot;).value)||0;
+    if(p&lt;=0){
+      $(&quot;#timeStatus&quot;).className=&quot;status bad&quot;;
+      $(&quot;#timeStatus&quot;).textContent=&quot;Chưa có dữ liệu buổi học từ Sổ đầu bài để kiểm tra thời gian.&quot;;
+      $(&quot;#timeStatus&quot;).scrollIntoView({behavior:&quot;smooth&quot;,block:&quot;center&quot;});
+      return;
+    }
+    $(&quot;#timeStatus&quot;).className=&quot;status warn&quot;;
+    $(&quot;#timeStatus&quot;).textContent=`Buổi học có ${p} tiết = ${p*45} phút. Hãy bấm Tạo giáo án trước để kiểm tra tổng thời gian của các hoạt động.`;
+    $(&quot;#timeStatus&quot;).scrollIntoView({behavior:&quot;smooth&quot;,block:&quot;center&quot;});
+    return;
+  }
+
+  checkTime();
+  const status=$(&quot;#timeStatus&quot;);
+  status.scrollIntoView({behavior:&quot;smooth&quot;,block:&quot;center&quot;});
+
+  // Hiện kết quả ngay để người dùng biết nút đã hoạt động.
+  const msg=status.textContent.trim();
+  if(status.classList.contains(&quot;bad&quot;)){
+    alert(&quot;KIỂM TRA THỜI GIAN\\n\\n&quot;+msg);
+  }else if(status.classList.contains(&quot;warn&quot;)){
+    alert(&quot;KIỂM TRA THỜI GIAN\\n\\n&quot;+msg);
+  }else{
+    alert(&quot;KIỂM TRA THỜI GIAN\\n\\n&quot;+msg);
+  }
+}
+
+function addRow(){
+  const tbody=$(&quot;#paper table.ga tbody&quot;); if(!tbody){alert(&quot;Hãy tạo giáo án trước.&quot;);return}
+  const i=tbody.children.length+1;
+  const tr=document.createElement(&quot;tr&quot;);
+  tr.innerHTML=`&lt;td class=&quot;tt&quot;&gt;${i}&lt;/td&gt;&lt;td class=&quot;content editable&quot; contenteditable=&quot;true&quot;&gt;&lt;b&gt;Nội dung bổ sung&lt;/b&gt;&lt;br&gt;Mô tả chi tiết...&lt;/td&gt;&lt;td class=&quot;activity editable&quot; contenteditable=&quot;true&quot;&gt;Hướng dẫn.&lt;/td&gt;&lt;td class=&quot;activity editable&quot; contenteditable=&quot;true&quot;&gt;Thực hiện.&lt;/td&gt;&lt;td class=&quot;time&quot;&gt;&lt;input class=&quot;time-input&quot; type=&quot;number&quot; min=&quot;0&quot; value=&quot;5&quot; oninput=&quot;checkTime()&quot;&gt;&lt;/td&gt;`;
+  tbody.appendChild(tr);checkTime()
+}
+
+async function importJSON(text){
+  const obj=JSON.parse(text);
+  const list=Array.isArray(obj)?obj:[obj];
+  for(const p0 of list){
+    if(!p0.code||!p0.name||!Array.isArray(p0.lessons)) throw new Error(&quot;JSON chưa đúng cấu trúc chương trình.&quot;);
+    const exist=programs.find(p=&gt;p.code===p0.code &amp;&amp; (p.version||&quot;&quot;)===(p0.version||&quot;&quot;));
+    if(exist){
+      const choice=confirm(`Đã có ${p0.code}${p0.version?&quot; phiên bản &quot;+p0.version:&quot;&quot;}. Bấm OK để cập nhật; Cancel để lưu bản mới.`);
+      if(choice){p0.id=exist.id;await putProgram(p0)}
+      else{delete p0.id; p0.version=p0.version||new Date().getFullYear()+&quot;-&quot;+Date.now(); await addProgram(p0)}
+    }else await addProgram(p0);
+  }
+  programs=await getAll();renderSubjects()
+}
+function basicParseText(text, filename){
+  const clean=text.replace(/\r/g,&quot;&quot;).replace(/\t/g,&quot; &quot;).replace(/[ ]{2,}/g,&quot; &quot;);
+  const code=(clean.match(/Mã (?:số )?môn học\s*:?\s*(MH\s*\d+)/i)||[])[1]?.replace(/\s+/g,&quot;&quot;) || prompt(&quot;Không tự nhận diện được mã môn. Nhập mã môn:&quot;);
+  const name=(clean.match(/Tên môn học\s*:?\s*([^\n]+)/i)||[])[1]?.trim() || prompt(&quot;Không tự nhận diện được tên môn. Nhập tên môn:&quot;);
+  const hours=Number((clean.match(/(?:Thời gian thực hiện môn học|Thời gian môn học)\s*:?\s*(\d+)\s*giờ/i)||[])[1])||0;
+  const lines=clean.split(&quot;\n&quot;).map(x=&gt;x.trim()).filter(Boolean);
+  const lessonIdx=[];
+  lines.forEach((x,i)=&gt;{if(/^(Bài|Chương)\s*\d+\s*:/i.test(x))lessonIdx.push(i)});
+  const lessons=[];
+  for(let k=0;k&lt;lessonIdx.length;k++){
+    const start=lessonIdx[k],end=lessonIdx[k+1]??lines.length,title=lines[start];
+    const chunk=lines.slice(start+1,end);
+    const sections=[];
+    chunk.forEach(x=&gt;{
+      if(/^\d+(?:\.\d+)?\.\s+/.test(x) || /^\d+\.\s+/.test(x)){
+        if(/^\d+\.\d+\.\s+/.test(x) &amp;&amp; sections.length) sections[sections.length-1].items.push(x);
+        else sections.push({title:x,items:[]});
+      }
+    });
+    lessons.push({title,hours:0,sections});
+  }
+  return {code,name,totalHours:hours,version:String(new Date().getFullYear()),lessons,sourceFile:filename}
+}
+async function handleProgramFile(file){
+  const ext=file.name.split(&quot;.&quot;).pop().toLowerCase();
+  if(ext===&quot;json&quot;){
+    await importJSON(await file.text());
+    alert(&quot;Đã nhập chương trình.&quot;);
+    return
+  }
+  if(ext===&quot;txt&quot;){
+    const p=basicParseText(await file.text(),file.name); previewParsed(p); return
+  }
+  if(ext===&quot;docx&quot;){
+    try{
+      if(!window.mammoth) await loadScript(&quot;https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js&quot;);
+      const arr=await file.arrayBuffer();const result=await mammoth.extractRawText({arrayBuffer:arr});
+      previewParsed(basicParseText(result.value,file.name));return
+    }catch(e){showModal(&quot;Không đọc được DOCX&quot;,`&lt;p&gt;Trình duyệt đang chạy ngoại tuyến hoặc thư viện đọc DOCX chưa tải được.&lt;/p&gt;&lt;p&gt;Giải pháp ổn định: lưu chương trình thành &lt;b&gt;TXT&lt;/b&gt; hoặc &lt;b&gt;JSON&lt;/b&gt; rồi nhập lại.&lt;/p&gt;&lt;p&gt;${escapeHtml(e.message)}&lt;/p&gt;`);return}
+  }
+  if(ext===&quot;pdf&quot;){
+    showModal(&quot;Nhập PDF&quot;,`&lt;p&gt;Bản HTML độc lập chưa OCR/đọc PDF phức tạp ngoại tuyến một cách tin cậy.&lt;/p&gt;&lt;p&gt;Để tránh nhập sai chương trình, hãy chuyển PDF thành TXT/JSON hoặc dùng bản XAMPP có bộ đọc PDF phía máy chủ.&lt;/p&gt;`);
+    return
+  }
+}
+function loadScript(src){return new Promise((res,rej)=&gt;{const s=document.createElement(&quot;script&quot;);s.src=src;s.onload=res;s.onerror=()=&gt;rej(new Error(&quot;Không tải được thư viện&quot;));document.head.appendChild(s)})}
+function previewParsed(p){
+  showModal(&quot;Xem trước chương trình được nhận diện&quot;,`
+    &lt;p&gt;&lt;b&gt;Môn:&lt;/b&gt; ${escapeHtml(p.name||&quot;&quot;)}&lt;/p&gt;
+    &lt;p&gt;&lt;b&gt;Mã:&lt;/b&gt; ${escapeHtml(p.code||&quot;&quot;)} &amp;nbsp; &lt;b&gt;Tổng giờ:&lt;/b&gt; ${p.totalHours||&quot;?&quot;}&lt;/p&gt;
+    &lt;p&gt;&lt;b&gt;Phát hiện:&lt;/b&gt; ${p.lessons.length} bài/chương&lt;/p&gt;
+    &lt;div style=&quot;max-height:320px;overflow:auto;border:1px solid #ddd;padding:8px&quot;&gt;&lt;pre style=&quot;white-space:pre-wrap&quot;&gt;${escapeHtml(JSON.stringify(p.lessons,null,2))}&lt;/pre&gt;&lt;/div&gt;
+    &lt;div class=&quot;toolbar&quot; style=&quot;margin-top:12px&quot;&gt;&lt;button class=&quot;btn primary&quot; id=&quot;confirmParsed&quot;&gt;Xác nhận nhập&lt;/button&gt;&lt;/div&gt;`);
+  $(&quot;#confirmParsed&quot;).onclick=async()=&gt;{await addProgram(p);programs=await getAll();renderSubjects();closeModal();alert(&quot;Đã nhập chương trình.&quot;)}
+}
+function newProgram(){
+  showModal(&quot;Tạo chương trình thủ công&quot;,`
+    &lt;div class=&quot;row2&quot;&gt;&lt;div&gt;&lt;label&gt;Mã môn&lt;/label&gt;&lt;input id=&quot;npCode&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;label&gt;Tổng giờ&lt;/label&gt;&lt;input id=&quot;npHours&quot; type=&quot;number&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+    &lt;label&gt;Tên môn&lt;/label&gt;&lt;input id=&quot;npName&quot;&gt;
+    &lt;label&gt;Phiên bản&lt;/label&gt;&lt;input id=&quot;npVersion&quot; value=&quot;${new Date().getFullYear()}&quot;&gt;
+    &lt;p class=&quot;hint&quot;&gt;Sau khi tạo, có thể nhập chương trình chi tiết bằng JSON để có đầy đủ bài, mục và tiểu mục.&lt;/p&gt;
+    &lt;button class=&quot;btn primary&quot; id=&quot;npSave&quot;&gt;Lưu&lt;/button&gt;`);
+  $(&quot;#npSave&quot;).onclick=async()=&gt;{const p={code:$(&quot;#npCode&quot;).value.trim(),name:$(&quot;#npName&quot;).value.trim(),totalHours:Number($(&quot;#npHours&quot;).value)||0,version:$(&quot;#npVersion&quot;).value.trim(),lessons:[]};if(!p.code||!p.name)return alert(&quot;Cần mã môn và tên môn.&quot;);await addProgram(p);programs=await getAll();renderSubjects();closeModal()}
+}
+function exportBlob(name,data,type){
+  const a=document.createElement(&quot;a&quot;);a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=&gt;{URL.revokeObjectURL(a.href);a.remove()},300)
+}
+function backup(){exportBlob(`backup_giao_an_${new Date().toISOString().slice(0,10)}.json`,JSON.stringify(programs,null,2),&quot;application/json&quot;)}
+function getCleanPaperClone(){
+  if(!$(&quot;#paper table&quot;)) return null;
+  const clone=$(&quot;#paper&quot;).cloneNode(true);
+  clone.querySelectorAll(&quot;.ai-tools&quot;).forEach(x=&gt;x.remove());
+  // Hai dòng tổng thời gian chỉ phục vụ kiểm tra nội bộ, không đưa vào Word/PDF.
+  clone.querySelectorAll(&quot;table.ga tfoot&quot;).forEach(x=&gt;x.remove());
+  clone.querySelectorAll(&quot;.time-input&quot;).forEach(inp=&gt;{
+    const span=document.createElement(&quot;span&quot;);
+    span.textContent=inp.value;
+    inp.replaceWith(span);
+  });
+  clone.querySelectorAll(&quot;[contenteditable]&quot;).forEach(x=&gt;x.removeAttribute(&quot;contenteditable&quot;));
+  return clone;
+}
+
+function exportWord(){
+  const clone=getCleanPaperClone();
+  if(!clone){alert(&quot;Hãy tạo giáo án trước.&quot;);return;}
+
+  const css=`
+    @page{size:A4 portrait;margin:20mm 15mm 20mm 20mm}
+    body{font-family:&quot;Times New Roman&quot;,serif;font-size:12pt;color:#111;margin:0}
+    table{border-collapse:collapse;width:100%;table-layout:fixed}
+    th,td{border:1px solid #222;padding:5px;vertical-align:top;line-height:1.2}
+    .top-template td,.meta-template td{border:1px dashed #999}
+    .top-template{width:100%;border-collapse:collapse;margin-bottom:0}
+    .logo-cell{width:28%;height:76px}
+    .appendix-cell{text-align:center;height:76px;line-height:1.2}
+    .appendix-title{font-weight:bold;font-size:16px}
+    .appendix-note{font-style:italic;font-size:14px}
+    .meta-template{width:93%;margin:0 auto;border-collapse:collapse}
+    .left-meta{width:40%;font-weight:bold}
+    .right-meta{width:60%;line-height:1.2}
+    .lesson-heading{margin-top:16px;font-size:12pt;line-height:1.2}
+    .lesson-main-title{font-weight:bold}
+    .lesson-outline{margin:4px 0 0 46px;padding-left:22px;font-weight:bold}
+    .lesson-outline li{padding-left:4px;margin:2px 0}.exact-outline{margin:4px 0 0 46px;font-weight:bold}.exact-outline-item{margin:2px 0}
+    .section-title{font-weight:bold;margin:10px 0 5px;font-size:12pt}
+    table.ga{width:100%;table-layout:fixed}
+    table.ga th,table.ga td{border:1.2px solid #111;padding:5px;vertical-align:top;font-size:12pt;line-height:1.22;color:#000;background:#fff}
+    table.ga th:nth-child(1),table.ga td:nth-child(1){width:5%}
+    table.ga th:nth-child(2),table.ga td:nth-child(2){width:41%}
+    table.ga th:nth-child(3),table.ga td:nth-child(3){width:22%}
+    table.ga th:nth-child(4),table.ga td:nth-child(4){width:22%}
+    table.ga th:nth-child(5),table.ga td:nth-child(5){width:10%}
+    .footer-sign{display:grid;grid-template-columns:1fr 1fr;text-align:center;margin-top:28px}
+  `;
+
+  const doc=`&lt;!doctype html&gt;
+  &lt;html xmlns:o=&quot;urn:schemas-microsoft-com:office:office&quot;
+        xmlns:w=&quot;urn:schemas-microsoft-com:office:word&quot;
+        xmlns=&quot;http://www.w3.org/TR/REC-html40&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;title&gt;Giáo án&lt;/title&gt;
+    &lt;style&gt;${css}&lt;/style&gt;
+  &lt;/head&gt;
+  &lt;body&gt;${clone.innerHTML}&lt;/body&gt;
+  &lt;/html&gt;`;
+
+  const blob=new Blob([&quot;\ufeff&quot;,doc],{type:&quot;application/msword;charset=utf-8&quot;});
+  const a=document.createElement(&quot;a&quot;);
+  a.href=URL.createObjectURL(blob);
+  a.download=`Giao_an_${currentProgram()?.code||&quot;mon_hoc&quot;}_${new Date().toISOString().slice(0,10)}.doc`;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=&gt;{URL.revokeObjectURL(a.href);a.remove()},300);
+}
+
+async function exportPdf(){
+  if(!$(&quot;#paper table&quot;)){alert(&quot;Hãy tạo giáo án trước.&quot;);return;}
+
+  if(typeof html2pdf===&quot;undefined&quot;){
+    alert(&quot;Chưa tải được thư viện xuất PDF. Vui lòng kiểm tra kết nối Internet rồi thử lại.&quot;);
+    return;
+  }
+
+  const clone=getCleanPaperClone();
+  if(!clone){alert(&quot;Hãy tạo giáo án trước.&quot;);return;}
+
+  // Loại bỏ toàn bộ thành phần giao diện không thuộc giáo án.
+  clone.querySelectorAll(&quot;.no-print,.ai-tools,button,input,select&quot;).forEach(el=&gt;{
+    if(el.classList?.contains(&quot;time-input&quot;)){
+      const span=document.createElement(&quot;span&quot;);
+      span.textContent=el.value;
+      el.replaceWith(span);
+    }else if(el.tagName===&quot;INPUT&quot; || el.tagName===&quot;SELECT&quot;){
+      const span=document.createElement(&quot;span&quot;);
+      span.textContent=el.value||el.options?.[el.selectedIndex]?.text||&quot;&quot;;
+      el.replaceWith(span);
+    }else{
+      el.remove();
+    }
+  });
+
+  // Tạo container riêng đúng khổ A4.
+  const holder=document.createElement(&quot;div&quot;);
+  holder.style.width=&quot;175mm&quot;;
+  holder.style.background=&quot;#fff&quot;;
+  holder.style.fontFamily=&#x27;&quot;Times New Roman&quot;, serif&#x27;;
+  holder.style.fontSize=&quot;12pt&quot;;
+  holder.style.color=&quot;#111&quot;;
+  holder.style.padding=&quot;0&quot;;
+  holder.style.boxSizing=&quot;border-box&quot;;
+  holder.style.overflow=&quot;visible&quot;;
+  holder.appendChild(clone);
+
+  // Bỏ khung xem trước, bóng đổ và padding màn hình.
+  const paper=holder.querySelector(&quot;.paper&quot;) || clone;
+  paper.style.width=&quot;175mm&quot;;
+  paper.style.maxWidth=&quot;175mm&quot;;
+  paper.style.minHeight=&quot;auto&quot;;
+  paper.style.margin=&quot;0&quot;;
+  paper.style.padding=&quot;0&quot;;
+  paper.style.border=&quot;0&quot;;
+  paper.style.boxShadow=&quot;none&quot;;
+
+  const pdfStyle=document.createElement(&quot;style&quot;);
+  pdfStyle.textContent=`
+    *{
+      box-sizing:border-box!important;
+      -webkit-print-color-adjust:exact!important;
+      print-color-adjust:exact!important;
+      text-rendering:geometricPrecision!important;
+    }
+    .paper{
+      width:175mm!important;
+      max-width:175mm!important;
+      min-width:175mm!important;
+      min-height:0!important;
+      padding:0!important;
+      margin:0!important;
+      border:0!important;
+      box-shadow:none!important;
+      overflow:visible!important;
+      background:#fff!important;
+      color:#000!important;
+      font-family:&quot;Times New Roman&quot;,serif!important;
+      font-size:12pt!important;
+    }
+    table{
+      border-collapse:collapse!important;
+      border-spacing:0!important;
+      page-break-inside:auto!important;
+    }
+    table.ga{
+      width:175mm!important;
+      max-width:175mm!important;
+      table-layout:fixed!important;
+      border:1.2px solid #000!important;
+      background:#fff!important;
+    }
+    table.ga thead{
+      display:table-header-group!important;
+    }
+    table.ga tr{
+      page-break-inside:avoid!important;
+      break-inside:avoid!important;
+    }
+    table.ga th,table.ga td{
+      border:1.2px solid #000!important;
+      padding:5px!important;
+      vertical-align:top!important;
+      box-sizing:border-box!important;
+      overflow:visible!important;
+      overflow-wrap:break-word!important;
+      word-break:normal!important;
+      white-space:normal!important;
+      color:#000!important;
+      background:#fff!important;
+      font-family:&quot;Times New Roman&quot;,serif!important;
+      font-size:12pt!important;
+      line-height:1.22!important;
+    }
+    table.ga th{
+      font-weight:700!important;
+      text-align:center!important;
+    }
+    table.ga th:nth-child(1),table.ga td:nth-child(1){width:5%!important;min-width:5%!important;max-width:5%!important}
+    table.ga th:nth-child(2),table.ga td:nth-child(2){width:41%!important;min-width:41%!important;max-width:41%!important}
+    table.ga th:nth-child(3),table.ga td:nth-child(3){width:22%!important;min-width:22%!important;max-width:22%!important}
+    table.ga th:nth-child(4),table.ga td:nth-child(4){width:22%!important;min-width:22%!important;max-width:22%!important}
+    table.ga th:nth-child(5),table.ga td:nth-child(5){width:10%!important;min-width:10%!important;max-width:10%!important}
+    .top-template,.meta-template{
+      width:100%!important;
+      table-layout:fixed!important;
+      border-collapse:collapse!important;
+    }
+    .top-template td,.meta-template td{
+      border:1px solid #777!important;
+      color:#000!important;
+      background:#fff!important;
+      overflow:visible!important;
+      white-space:normal!important;
+    }
+  `;
+  holder.prepend(pdfStyle);
+
+  const filename=`Giao_an_${currentProgram()?.code||&quot;mon_hoc&quot;}_${new Date().toISOString().slice(0,10)}.pdf`;
+
+  const opt={
+    margin:[20,15,20,20], // mm: trên, phải, dưới, trái
+    filename,
+    image:{type:&quot;png&quot;,quality:1},
+    html2canvas:{
+      scale:3,
+      useCORS:true,
+      allowTaint:false,
+      backgroundColor:&quot;#ffffff&quot;,
+      logging:false,
+      scrollX:0,
+      scrollY:0,
+      windowWidth:Math.ceil(175/25.4*96),
+      letterRendering:true
+    },
+    jsPDF:{
+      unit:&quot;mm&quot;,
+      format:&quot;a4&quot;,
+      orientation:&quot;portrait&quot;,
+      compress:true
+    },
+    pagebreak:{
+      mode:[&quot;css&quot;,&quot;legacy&quot;],
+      avoid:[&quot;tr&quot;,&quot;thead&quot;,&quot;.top-template&quot;,&quot;.meta-template&quot;,&quot;.lesson-heading&quot;,&quot;.section-title&quot;]
+    }
+  };
+
+  try{
+    if(document.fonts &amp;&amp; document.fonts.ready){
+      await document.fonts.ready;
+    }
+    await new Promise(r=&gt;requestAnimationFrame(()=&gt;requestAnimationFrame(r)));
+
+    $(&quot;#aiStatus&quot;).className=&quot;status warn&quot;;
+    $(&quot;#aiStatus&quot;).textContent=&quot;Đang tạo PDF A4, không kèm ngày giờ, tên trang, đường dẫn hay số trang của trình duyệt...&quot;;
+    await html2pdf().set(opt).from(holder).save();
+    $(&quot;#aiStatus&quot;).className=&quot;status ok&quot;;
+    $(&quot;#aiStatus&quot;).textContent=&quot;Đã xuất PDF A4 sạch, không có header/footer của trình duyệt.&quot;;
+  }catch(e){
+    console.error(e);
+    $(&quot;#aiStatus&quot;).className=&quot;status bad&quot;;
+    $(&quot;#aiStatus&quot;).textContent=&quot;Không xuất được PDF: &quot;+(e?.message||e);
+    alert(&quot;Không xuất được PDF: &quot;+(e?.message||e));
+  }
+}
+
+
+let receivedFullProgram=null;
+let receivedFullCourse=null;
+
+function escProgram(s){ return escapeHtml(String(s??&quot;&quot;)); }
+
+function renderFullProgramViewer(){
+  const box=$(&quot;#fullProgramViewer&quot;);
+  if(!box) return;
+  const seq=receivedFullProgram||[];
+  const c=receivedFullCourse||{};
+  if(!seq.length){
+    box.innerHTML=&#x27;&lt;div class=&quot;hint&quot;&gt;Không có dữ liệu chương trình để hiển thị.&lt;/div&gt;&#x27;;
+    return;
+  }
+
+  let html=`
+    &lt;div style=&quot;font-family:&#x27;Times New Roman&#x27;,serif&quot;&gt;
+      &lt;div style=&quot;text-align:center;font-weight:bold;font-size:18px;margin-bottom:8px&quot;&gt;CHƯƠNG TRÌNH MÔN HỌC&lt;/div&gt;
+      &lt;div&gt;&lt;b&gt;Tên môn học:&lt;/b&gt; ${escProgram(c.name||&quot;&quot;)}&lt;/div&gt;
+      &lt;div&gt;&lt;b&gt;Mã môn:&lt;/b&gt; ${escProgram(c.code||&quot;&quot;)}&lt;/div&gt;
+      &lt;div&gt;&lt;b&gt;Thời gian môn học:&lt;/b&gt; ${Number(c.total||0)} giờ
+        ${c.lt||c.th||c.kt ? ` (Lý thuyết: ${Number(c.lt||0)} giờ; Thực hành: ${Number(c.th||0)} giờ; Kiểm tra/Thi: ${Number(c.kt||0)} giờ)` : &quot;&quot;}
+      &lt;/div&gt;
+      &lt;hr style=&quot;border:0;border-top:1px solid #ddd;margin:10px 0&quot;&gt;
+  `;
+
+  seq.forEach((x,idx)=&gt;{
+    if(x.kind===&quot;lesson&quot;){
+      html+=`&lt;div style=&quot;margin:12px 0&quot;&gt;
+        &lt;div style=&quot;font-weight:bold&quot;&gt;${escProgram(x.title||(&quot;Bài &quot;+(idx+1)))}&lt;/div&gt;
+        &lt;div style=&quot;font-size:13px;color:#475569;margin:2px 0&quot;&gt;
+          LT: ${Number(x.ltHours||0)} giờ → ${Number(x.ltPeriods||0)} tiết;
+          TH: ${Number(x.thHours||0)} giờ → ${Number(x.thPeriods||0)} tiết ·
+          &lt;b&gt;${(x.items||[]).length} đề mục&lt;/b&gt;
+        &lt;/div&gt;`;
+      (x.items||[]).forEach(it=&gt;{
+        const cls=Array.isArray(it)?it[0]:&quot;&quot;;
+        const txt=Array.isArray(it)?it[1]:it;
+        html+=`&lt;div style=&quot;margin-left:${cls===&quot;sub&quot;?&quot;34&quot;:&quot;18&quot;}px;line-height:1.35&quot;&gt;${escProgram(txt)}&lt;/div&gt;`;
+      });
+      html+=`&lt;/div&gt;`;
+    }else if(x.kind===&quot;assessment&quot;){
+      html+=`&lt;div style=&quot;margin:10px 0;font-weight:bold&quot;&gt;${escProgram(x.title||&quot;Kiểm tra&quot;)}
+        &lt;span style=&quot;font-weight:normal;color:#475569&quot;&gt; – ${Number(x.periods||0)} tiết&lt;/span&gt;
+      &lt;/div&gt;`;
+    }
+  });
+
+  html+=&#x27;&lt;/div&gt;&#x27;;
+  box.innerHTML=html;
+}
+
+function setFullProgramFromSchedule(pld){
+  receivedFullCourse=pld.fullCourse||null;
+  receivedFullProgram=Array.isArray(pld.fullProgram)?pld.fullProgram:null;
+
+  const head=$(&quot;#fullProgramHeader&quot;);
+  const btn=$(&quot;#btnToggleFullProgram&quot;);
+  const viewer=$(&quot;#fullProgramViewer&quot;);
+
+  if(receivedFullCourse &amp;&amp; receivedFullProgram){
+    head.className=&quot;status ok&quot;;
+    head.innerHTML=`&lt;b&gt;${escapeHtml(receivedFullCourse.name||&quot;&quot;)} – ${escapeHtml(receivedFullCourse.code||&quot;&quot;)}&lt;/b&gt;&lt;br&gt;
+      Tổng thời gian chương trình: ${Number(receivedFullCourse.total||0)} giờ ·
+      ${receivedFullProgram.filter(x=&gt;x.kind===&quot;lesson&quot;).length} Bài/Chương ·
+      ${receivedFullProgram.filter(x=&gt;x.kind===&quot;assessment&quot;).length} mốc kiểm tra`;
+    btn.disabled=false;
+    btn.textContent=&quot;Xem toàn bộ chương trình&quot;;
+    viewer.classList.add(&quot;hidden&quot;);
+    renderFullProgramViewer();
+  }else{
+    head.className=&quot;status warn&quot;;
+    head.textContent=&quot;Bước 1 chưa truyền được toàn bộ chương trình môn học.&quot;;
+    btn.disabled=true;
+  }
+}
+
+function toggleFullProgram(){
+  const viewer=$(&quot;#fullProgramViewer&quot;);
+  const btn=$(&quot;#btnToggleFullProgram&quot;);
+  if(!viewer)return;
+  const hidden=viewer.classList.contains(&quot;hidden&quot;);
+  viewer.classList.toggle(&quot;hidden&quot;);
+  btn.textContent=hidden ? &quot;Ẩn chương trình môn học&quot; : &quot;Xem toàn bộ chương trình&quot;;
+}
+
+async function receiveScheduleSession(data){
+  const pld=data||{};
+  const sourceName=String(pld.courseName||&quot;&quot;).trim();
+  const sourceCode=String(pld.courseCode||&quot;&quot;).trim();
+  const info=$(&quot;#scheduleImportInfo&quot;);
+
+  setFullProgramFromSchedule(pld);
+
+  if(!sourceName || !sourceCode){
+    if(info){
+      info.className=&quot;status bad&quot;;
+      info.innerHTML=&quot;&lt;b&gt;Không thể soạn giáo án:&lt;/b&gt; Bước 1 chưa xác định đầy đủ Tên môn học và Mã môn.&quot;;
+    }
+    alert(&quot;Bước 1 chưa có đầy đủ Tên môn học – Mã môn. Vui lòng tải đúng Chương trình môn học trước.&quot;);
+    return;
+  }
+
+  if(info){
+    info.className=&quot;status ok&quot;;
+    info.innerHTML=`&lt;b&gt;Môn học – Mã môn từ Bước 1:&lt;/b&gt; ${escapeHtml(sourceName)} – ${escapeHtml(sourceCode)}&lt;br&gt;
+      &lt;b&gt;TT ${pld.scheduleTT||&quot;&quot;}&lt;/b&gt; · ${escapeHtml(pld.weekday||&quot;&quot;)} ${escapeHtml(pld.date||&quot;&quot;)} ·
+      &lt;b&gt;${pld.periods||0} tiết&lt;/b&gt; (khóa theo Sổ đầu bài) · &lt;b&gt;${(Number(pld.periods)||0)*45} phút&lt;/b&gt; · LT ${pld.lt||0} · TH ${pld.th||0} · KT ${pld.kt||0}&lt;br&gt;
+      &lt;span style=&quot;font-size:13px&quot;&gt;${escapeHtml(pld.summaryText||&quot;&quot;)}&lt;/span&gt;&lt;br&gt;
+      &lt;span style=&quot;font-size:13px&quot;&gt;&lt;b&gt;Tên bài học trước:&lt;/b&gt;&lt;br&gt;
+      ${pld.previousLesson ? escapeHtml(pld.previousLesson).replace(/\n/g,&quot;&lt;br&gt;&quot;) : &quot;(không có – TT 1)&quot;}&lt;/span&gt;`;
+  }
+
+  // BẮT BUỘC: Loại giáo án được xác định từ cơ cấu tiết của chính buổi trong Sổ đầu bài.
+  // Người dùng không tự chọn loại giáo án tại Bước 2.
+  const ltCount=Number(pld.lt)||0;
+  const thCount=Number(pld.th)||0;
+  const ktCount=Number(pld.kt)||0;
+
+  let gaType=&quot;&quot;;
+  let gaReason=&quot;&quot;;
+
+  if(pld.courseMode===&quot;theory&quot; &amp;&amp; (ltCount&gt;0||ktCount&gt;0)){gaType=&quot;theory&quot;;gaReason=&quot;Môn Lý thuyết → dùng Giáo án Lý thuyết.&quot;;
+  }else if(pld.courseMode===&quot;practice&quot; &amp;&amp; (thCount&gt;0||ktCount&gt;0)){gaType=&quot;practice&quot;;gaReason=&quot;Môn Thực hành → dùng Giáo án Thực hành.&quot;;
+  }else if(ltCount&gt;0 &amp;&amp; thCount&gt;0){
+    gaType=&quot;integrated&quot;;
+    gaReason=`Buổi học có ${ltCount} tiết Lý thuyết + ${thCount} tiết Thực hành → Giáo án Tích hợp.`;
+  }else if(thCount&gt;0){
+    gaType=&quot;practice&quot;;
+    gaReason=`Buổi học có ${thCount} tiết Thực hành${ktCount&gt;0?` và ${ktCount} tiết Kiểm tra`:&quot;&quot;} → Giáo án Thực hành.`;
+  }else if(ltCount&gt;0){
+    gaType=&quot;theory&quot;;
+    gaReason=`Buổi học có ${ltCount} tiết Lý thuyết${ktCount&gt;0?` và ${ktCount} tiết Kiểm tra`:&quot;&quot;} → Giáo án Lý thuyết.`;
+  }else if(ktCount&gt;0){
+    // Nếu buổi chỉ có Kiểm tra, giữ logic theo dữ liệu Sổ đầu bài:
+    // mốc kiểm tra không có LT/TH đi kèm được xử lý như một buổi kiểm tra độc lập.
+    gaType=pld.courseMode===&quot;theory&quot;?&quot;theory&quot;:&quot;practice&quot;;
+    gaReason=pld.courseMode===&quot;theory&quot;?`Buổi học có ${ktCount} tiết Kiểm tra Lý thuyết → Giáo án Lý thuyết.`:`Buổi học có ${ktCount} tiết Kiểm tra Thực hành → Giáo án Thực hành.`;
+  }else{
+    if(info){
+      info.className=&quot;status bad&quot;;
+      info.innerHTML=&quot;&lt;b&gt;Không thể xác định loại giáo án:&lt;/b&gt; buổi học trong Sổ đầu bài không có tiết LT/TH/KT.&quot;;
+    }
+    alert(&quot;Không thể xác định loại giáo án vì buổi học không có tiết LT/TH/KT.&quot;);
+    return;
+  }
+
+  $(&quot;#type&quot;).value=gaType;
+  $(&quot;#type&quot;).disabled=true;
+  $(&quot;#type&quot;).title=&quot;Loại giáo án được khóa theo cơ cấu tiết LT/TH/KT của buổi trong Sổ đầu bài.&quot;;
+
+  if(info){
+    const lessonText=(pld.lessons&amp;&amp;pld.lessons.length)?pld.lessons.join(&quot; + &quot;):&quot;&quot;;
+    info.innerHTML += `&lt;br&gt;&lt;b&gt;Bài / Chương:&lt;/b&gt; ${escapeHtml(lessonText)}&lt;br&gt;
+      &lt;b&gt;Loại giáo án:&lt;/b&gt; ${escapeHtml($(&quot;#type option:checked&quot;).textContent)}&lt;br&gt;
+      &lt;span style=&quot;font-size:13px&quot;&gt;${escapeHtml(gaReason)}&lt;/span&gt;`;
+  }
+
+
+  // BẮT BUỘC: Số tiết lấy trực tiếp từ đúng buổi trong Sổ đầu bài.
+  // Không cho chọn, không giữ danh sách 1–12 tiết, không dùng giá trị mặc định.
+  const periods=Number(pld.periods)||0;
+  if(periods&lt;=0){
+    if(info){
+      info.className=&quot;status bad&quot;;
+      info.innerHTML += &quot;&lt;br&gt;&lt;b&gt;Không thể soạn giáo án:&lt;/b&gt; buổi học chưa có số tiết hợp lệ.&quot;;
+    }
+    alert(&quot;Buổi học trong Sổ đầu bài chưa có số tiết hợp lệ.&quot;);
+    return;
+  }
+
+  $(&quot;#periods&quot;).innerHTML=&quot;&quot;;
+  $(&quot;#periods&quot;).add(new Option(`${periods} tiết`,String(periods)));
+  $(&quot;#periods&quot;).value=String(periods);
+  $(&quot;#periods&quot;).disabled=true;
+  $(&quot;#periods&quot;).dataset.fromSchedule=String(periods);
+
+  // BẮT BUỘC: Tổng thời gian lấy từ Sổ đầu bài Bước 1.
+  // Quy đổi theo Skill: 1 tiết = 45 phút.
+  const scheduleTotalMinutes=periods*45;
+  $(&quot;#totalMinutes&quot;).value=scheduleTotalMinutes+&quot; phút&quot;;
+  $(&quot;#totalMinutes&quot;).dataset.fromSchedule=String(scheduleTotalMinutes);
+  $(&quot;#totalMinutes&quot;).readOnly=true;
+  $(&quot;#totalMinutes&quot;).title=&quot;Tổng thời gian được tính tự động từ số tiết của buổi trong Sổ đầu bài: 1 tiết = 45 phút.&quot;;
+
+  // Bước 2 chỉ sử dụng dữ liệu nhận từ Bước 1.
+  // Xóa mọi dữ liệu môn mặc định/phiên trước khỏi giao diện Bước 2 để tránh chọn nhầm.
+  programs=[];
+
+  // Tạo chương trình tạm theo đúng nội dung của buổi Sổ đầu bài.
+  const tempId=&quot;schedule_&quot;+Date.now();
+  const groups=Array.isArray(pld.lessonGroups) ? pld.lessonGroups : [];
+  const fallbackTitle=(pld.lessons&amp;&amp;pld.lessons.length)?pld.lessons[0]:&quot;Nội dung theo Sổ đầu bài&quot;;
+  const fallbackItems=(pld.items&amp;&amp;pld.items.length)?pld.items:[pld.summaryText||fallbackTitle];
+
+  // Không ghép tên nhiều bài bằng dấu &quot;+&quot;.
+  // Giữ nguyên từng nhóm Tên bài -&gt; đề mục như Sổ đầu bài.
+  const tempProgram={
+    id:tempId,
+    code:sourceCode,
+    name:sourceName,
+    totalHours:periods,
+    version:&quot;Sổ đầu bài&quot;,
+    scheduleGroups:groups,
+    scheduleDate:String(pld.date||&quot;&quot;).trim(),
+    scheduleAssessment:{
+      ktCount:ktCount,
+      type:pld.assessmentType||&quot;&quot;,
+      label:pld.assessmentType?(`Kiểm tra ${pld.assessmentType}`):&quot;Kiểm tra&quot;
+    },
+    lessons:[{
+      title:fallbackTitle,
+      hours:periods,
+      sections:[{
+        title:&quot;&quot;,
+        items:fallbackItems
+      }]
+    }]
+  };
+
+  // Gắn duy nhất môn/buổi nhận từ Bước 1 vào Bước 2.
+  programs=[tempProgram];
+  renderSubjects();
+
+  $(&quot;#subject&quot;).disabled=false;
+  $(&quot;#lesson&quot;).disabled=false;
+  $(&quot;#section&quot;).disabled=false;
+  $(&quot;#periods&quot;).disabled=false;
+
+  $(&quot;#subject&quot;).value=tempId;
+  renderLessons();
+
+  const selectedP=currentProgram();
+  if(!selectedP || String(selectedP.name).trim()!==sourceName || String(selectedP.code).trim()!==sourceCode){
+    if(info){
+      info.className=&quot;status bad&quot;;
+      info.innerHTML=`&lt;b&gt;Lỗi đồng bộ:&lt;/b&gt; Bước 1 = ${escapeHtml(sourceName)} – ${escapeHtml(sourceCode)}; Bước 2 không khớp.`;
+    }
+    alert(&quot;Lỗi đồng bộ: Môn học – Mã môn tại Bước 2 không khớp Bước 1.&quot;);
+    return;
+  }
+
+  $(&quot;#lesson&quot;).value=&quot;0&quot;;
+  renderSections();
+  $(&quot;#section&quot;).value=&quot;0&quot;;
+  renderSubitems();
+
+  // BẮT BUỘC: Bài / Chương tại Bước 2 lấy đúng từ Sổ đầu bài và không cho chọn lại.
+  $(&quot;#lesson&quot;).disabled=true;
+  $(&quot;#lesson&quot;).dataset.fromSchedule=$(&quot;#lesson&quot;).value;
+  $(&quot;#lesson&quot;).title=&quot;Bài / Chương được khóa theo đúng buổi học trong Sổ đầu bài ở Bước 1.&quot;;
+
+  $(&quot;#subject&quot;).disabled=true;
+  $(&quot;#type&quot;).disabled=true;
+  $(&quot;#periods&quot;).disabled=true;
+  $(&quot;#subject&quot;).title=&quot;Môn học – Mã môn được khóa theo Sổ đầu bài ở Bước 1.&quot;;
+  $(&quot;#type&quot;).title=&quot;Loại giáo án được xác định từ cơ cấu LT/TH/KT của buổi ở Bước 1.&quot;;
+  $(&quot;#periods&quot;).title=&quot;Số tiết được lấy trực tiếp từ buổi học ở Bước 1.&quot;;
+  // Tên bài học trước lấy từ TT liền trước trong Sổ đầu bài,
+  // gồm TÊN BÀI + toàn bộ đề mục/tiểu mục thực tế đã dạy trong ngày đó.
+  // Nếu đang soạn TT 1 thì để trống.
+  $(&quot;#prevLesson&quot;).value=String(pld.previousLesson||&quot;&quot;).trim();
+  $(&quot;#prevLesson&quot;).dataset.title=String(pld.previousLessonTitle||&quot;&quot;).trim();
+  $(&quot;#prevLesson&quot;).dataset.items=JSON.stringify(pld.previousLessonItems||[]);
+  // Giáo án số luôn lấy trực tiếp từ STT của Sổ đầu bài.
+  $(&quot;#gaNumber&quot;).value=String(pld.scheduleTT||&quot;&quot;);
+  $(&quot;#gaNumber&quot;).readOnly=true;
+  $(&quot;#gaNumber&quot;).title=&quot;Giáo án số được lấy tự động từ STT của Sổ đầu bài.&quot;;
+  $(&quot;#btnGenerate&quot;).disabled=false;
+  $(&quot;#btnGenerate&quot;).classList.add(&quot;primary&quot;);
+  $(&quot;#btnGenerate&quot;).title=&quot;Tạo giáo án từ đúng dữ liệu buổi học đã chọn ở Sổ đầu bài.&quot;;
+  $(&quot;#btnAIWhole&quot;).disabled=false;
+  checkTime();
+
+  // Cuộn đến khu vực chọn nội dung để người dùng có thể điều chỉnh nếu muốn.
+  $(&quot;#scheduleImportCard&quot;)?.scrollIntoView({behavior:&quot;smooth&quot;,block:&quot;start&quot;});
+}
+
+window.addEventListener(&quot;message&quot;,e=&gt;{
+  if(e.data?.type===&quot;LOAD_SCHEDULE_SESSION&quot;){
+    receiveScheduleSession(e.data.payload);
+  }
+});
+async function init(){
+  await openDB();
+  // Bước 2 KHÔNG hiển thị sẵn môn học. Chỉ nạp dữ liệu khi nhận một buổi từ Sổ đầu bài ở Bước 1.
+  programs=[];
+
+  // Bước 2 không có Số tiết mặc định.
+  // Số tiết chỉ được nhận từ đúng buổi học trong Sổ đầu bài ở Bước 1.
+  $(&quot;#periods&quot;).innerHTML=&#x27;&lt;option value=&quot;&quot;&gt;— Chưa nhận số tiết từ Bước 1 —&lt;/option&gt;&#x27;;
+  $(&quot;#totalMinutes&quot;).value=&quot;—&quot;;
+  $(&quot;#totalMinutes&quot;).dataset.fromSchedule=&quot;&quot;;
+
+  $(&quot;#subject&quot;).innerHTML=&#x27;&lt;option value=&quot;&quot;&gt;— Chưa nhận dữ liệu từ Bước 1 —&lt;/option&gt;&#x27;;
+  $(&quot;#lesson&quot;).innerHTML=&#x27;&lt;option value=&quot;&quot;&gt;— Chưa có bài/chương —&lt;/option&gt;&#x27;;
+  $(&quot;#section&quot;).innerHTML=&#x27;&lt;option value=&quot;&quot;&gt;— Chưa có nội dung —&lt;/option&gt;&#x27;;
+  $(&quot;#subitems&quot;).innerHTML=&#x27;&lt;div class=&quot;hint&quot;&gt;Hãy tải Chương trình môn học và chia Sổ đầu bài ở Bước 1, sau đó bấm &lt;b&gt;SOẠN GIÁO ÁN BUỔI NÀY&lt;/b&gt;.&lt;/div&gt;&#x27;;
+
+  $(&quot;#subject&quot;).disabled=true;
+  $(&quot;#type&quot;).disabled=true;
+  $(&quot;#lesson&quot;).disabled=true;
+  $(&quot;#section&quot;).disabled=true;
+  $(&quot;#periods&quot;).disabled=true;
+
+  $(&quot;#subject&quot;).onchange=renderLessons;$(&quot;#lesson&quot;).onchange=renderSections;$(&quot;#section&quot;).onchange=renderSubitems;$(&quot;#periods&quot;).onchange=()=&gt;{updateMinutes();checkTime()};
+  $(&quot;#btnGenerate&quot;).onclick=()=&gt;{
+    try{ buildPaper(); }
+    catch(e){
+      console.error(e);
+      alert(&quot;Không tạo được giáo án do lỗi nội bộ: &quot;+(e?.message||e));
+    }
+  };
+  $(&quot;#btnCheck&quot;).onclick=runTimeCheck;
+  $(&quot;#btnAddRow&quot;).onclick=addRow;
+  $(&quot;#btnGenerate&quot;).disabled=true;
+  $(&quot;#btnAIWhole&quot;).disabled=true;
+$(&quot;#modalClose&quot;).onclick=closeModal;$(&quot;#modal&quot;).onclick=e=&gt;{if(e.target.id===&quot;modal&quot;)closeModal()};
+  $(&quot;#btnBackup&quot;).onclick=backup;$(&quot;#btnRestore&quot;).onclick=()=&gt;$(&quot;#restoreFile&quot;).click();
+  $(&quot;#restoreFile&quot;).onchange=async e=&gt;{const f=e.target.files[0];if(!f)return;const list=JSON.parse(await f.text());if(!Array.isArray(list))return alert(&quot;File backup không hợp lệ.&quot;);for(const p of list){delete p.id;await addProgram(p)}programs=await getAll();renderSubjects();alert(&quot;Đã khôi phục dữ liệu.&quot;);e.target.value=&quot;&quot;};
+  $(&quot;#btnExportWord&quot;).onclick=exportWord;
+  $(&quot;#btnExportPdf&quot;).onclick=exportPdf;
+  $(&quot;#btnToggleFullProgram&quot;).onclick=toggleFullProgram;
+  $(&quot;#btnSaveAI&quot;).onclick=saveAISettings;
+  $(&quot;#btnTestAI&quot;).onclick=testGeminiConnection;
+  $(&quot;#btnRefreshModels&quot;).onclick=refreshGeminiModels;
+  $(&quot;#btnAIWhole&quot;).onclick=runWholeAI;
+  loadAISettings();
+}
+init();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;"></iframe>
+</section>
+</div>
+
+<script>
+window.addEventListener("message",e=>{
+  if(e.data?.type==="OPEN_LESSON_PLAN_FROM_SCHEDULE"){
+    const p=e.data.payload||{};
+    const st=document.getElementById("transferStatus");
+    st.style.display="block";
+    st.innerHTML=`Đã chọn <b>${p.courseName||""} – ${p.courseCode||""}</b> · ${p.weekday||""} ${p.date||""} · ${p.periods||0} tiết. Bước 2 sẽ khóa đúng Môn học – Mã môn này.`;
+    document.getElementById("plannerFrame").contentWindow.postMessage({type:"LOAD_SCHEDULE_SESSION",payload:p},"*");
+    setTimeout(()=>document.getElementById("step2").scrollIntoView({behavior:"smooth",block:"start"}),150);
+  }
+});
+</script>
+</body>
+</html>
