@@ -39,7 +39,7 @@ window.App = {
       if (res.data && res.data.course && window.ScheduleModule.applyWorkSessionState) {
         window.ScheduleModule.applyWorkSessionState(res.data);
         if (Array.isArray(res.data.sessions) && res.data.sessions.length > 0) {
-          renderSchedule(res.data.sessions);
+          if (typeof buildSchedule === 'function') buildSchedule();
         }
       }
     } catch (e) {
@@ -204,7 +204,7 @@ window.App = {
       if (res.data) {
         window.ScheduleModule.applyWorkSessionState(res.data);
         if (Array.isArray(res.data.sessions) && res.data.sessions.length > 0) {
-          renderSchedule(res.data.sessions);
+          if (typeof buildSchedule === 'function') buildSchedule();
         }
         this.switchTab('step1');
         showToast("Đã nạp phiên Sổ đầu bài!", "success");
