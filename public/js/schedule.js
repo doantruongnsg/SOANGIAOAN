@@ -1347,3 +1347,47 @@ window.ScheduleModule = {
     buildSchedule();
   }
 };
+
+
+// Expose all handlers to global window for inline HTML onclick/onchange
+if (typeof window !== 'undefined') {
+  window.onCourseModeChange = onCourseModeChange;
+  window.readProgramFile = readProgramFile;
+  window.renderWeeklySlots = renderWeeklySlots;
+  window.updateWeeklyCheck = updateWeeklyCheck;
+  window.onExclusionDraftChange = onExclusionDraftChange;
+  window.addExclusion = addExclusion;
+  window.removeExclusion = removeExclusion;
+  window.clearExclusions = clearExclusions;
+  window.formatDateInput = formatDateInput;
+  window.buildSchedule = buildSchedule;
+  window.chiaLich = buildSchedule;
+  window.exportExcel = exportExcel;
+  window.saveWorkSession = saveWorkSession;
+  window.loadSelectedWorkSession = loadSelectedWorkSession;
+  window.deleteSelectedWorkSession = deleteSelectedWorkSession;
+  window.restoreLastWorkSession = restoreLastWorkSession;
+  window.sendSessionToPlanner = sendSessionToPlanner;
+  window.openLessonPlan = sendSessionToPlanner;
+}
+
+function initSchedule() {
+  try {
+    if (typeof renderWeeklySlots === 'function') renderWeeklySlots();
+    if (typeof renderExclusions === 'function') renderExclusions();
+    if (typeof renderSavedSessionList === 'function') renderSavedSessionList();
+    if (typeof updateWeeklyCheck === 'function') updateWeeklyCheck();
+    if (typeof restoreLastWorkSession === 'function') restoreLastWorkSession();
+  } catch (err) {
+    console.warn("Schedule init error:", err);
+  }
+}
+
+// Auto run on load or DOM ready
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSchedule);
+  } else {
+    initSchedule();
+  }
+}

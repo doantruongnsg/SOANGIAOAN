@@ -6,6 +6,15 @@ window.App = {
   currentTab: 'step1',
 
   async init() {
+    // Initialize Schedule Module (Slots, Exclusions, Saved Sessions)
+    if (typeof initSchedule === 'function') {
+      initSchedule();
+    } else if (window.ScheduleModule && window.ScheduleModule.renderWeeklySlots) {
+      window.ScheduleModule.renderWeeklySlots();
+      window.ScheduleModule.renderExclusions();
+      window.ScheduleModule.renderSavedSessionList();
+      window.ScheduleModule.updateWeeklyCheck();
+    }
     console.log("Initializing Quản lý Sổ đầu bài & Soạn giáo án Web App v2.0...");
     
     // Check server connection
